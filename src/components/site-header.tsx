@@ -1,83 +1,93 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { ShieldCheck, Truck } from "lucide-react";
+import { categoryImages, landingImages } from "@/config/images";
+import { fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
+import { getCatalog } from "@/lib/catalog";
 import { CartButton } from "./cart/cart-button";
+import { MegaMenu, type MenuCategory } from "./header/mega-menu";
+import { MobileMenu } from "./header/mobile-menu";
+import { MobileSearch } from "./header/mobile-search";
+import { SearchBox } from "./header/search-box";
 
-export const mainNav = [
-  { href: "/productos", label: "Catálogo" },
-  { href: "/a-medida", label: "A medida" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/contacto", label: "Contacto" },
-];
+export async function SiteHeader() {
+  const { categories, products } = await getCatalog();
+  const menuCategories: MenuCategory[] = categories.map((c) => {
+    const inCategory = products.filter((p) => p.categorySlug === c.slug);
+    return {
+      slug: c.slug,
+      name: c.name,
+      image: categoryImages[c.slug] ?? null,
+      count: inCategory.length,
+      inStock: inCategory.filter((p) => p.saleMode === "stock" && p.stock > 0).length,
+      subcategories: c.subcategories,
+    };
+  });
+  const searchCategories = categories.map(({ slug, name }) => ({ slug, name }));
+  const mobileStores = stores.map((s) => ({
+    slug: s.slug,
+    city: s.city,
+    phone: s.phone,
+    phoneLabel: formatPhone(s.phone),
+    whatsapp: whatsappUrl(s.phone, "Hola, les escribo desde la página web."),
+  }));
 
-export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-sand bg-cream/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-20">
-        <Link href="/" className="shrink-0" aria-label="San Francisco Muebles, inicio">
-          <Image
-            src="/brand/logo-horizontal.png"
-            alt="San Francisco Muebles"
-            width={1319}
-            height={606}
-            priority
-            className="h-10 w-auto md:h-12"
-          />
-        </Link>
-
-        <nav aria-label="Principal" className="hidden md:block">
-          <ul className="flex items-center gap-8 font-display text-lg font-semibold uppercase tracking-wide text-brand-blue">
-            {mainNav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="transition-colors hover:text-brand-orange-dark">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href="/cotizar"
-            className="hidden rounded-md bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark sm:inline-block"
-          >
-            Cotizar gratis
-          </Link>
-          <CartButton />
-
-          {/* Menú móvil sin JavaScript */}
-          <details className="group relative md:hidden">
-            <summary
-              aria-label="Abrir menú"
-              className="list-none rounded-md p-2 text-brand-blue hover:bg-sand [&::-webkit-details-marker]:hidden"
-            >
-              <Menu className="size-6 group-open:hidden" aria-hidden />
-              <X className="hidden size-6 group-open:block" aria-hidden />
-            </summary>
-            <nav
-              aria-label="Menú móvil"
-              className="fixed inset-x-0 top-16 border-b border-sand bg-cream px-4 pb-6 pt-2 shadow-lg"
-            >
-              <ul className="font-display text-2xl font-semibold uppercase text-brand-blue">
-                {mainNav.map((item) => (
-                  <li key={item.href} className="border-b border-sand">
-                    <Link href={item.href} className="block py-3">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/cotizar"
-                className="mt-5 block rounded-md bg-brand-blue px-4 py-3 text-center font-semibold text-white"
-              >
-                Cotizar gratis
-              </Link>
-            </nav>
-          </details>
-        </div>
+    <>
+      {/* ── 1. Barra de anuncios ─────────────────────────── */}
+      <div className="bg-brand-navy text-cream/85">
+        <ul className="mx-auto flex h-9 max-w-7xl items-center justify-center gap-10 px-4 text-xs">
+          <li className="flex items-center gap-2">
+            <Truck className="size-3.5 text-brand-orange" aria-hidden />
+            Despacho en toda la {fulfillment.shippingArea}
+          </li>
+          <li className="hidden items-center gap-2 md:flex">
+            <ShieldCheck className="size-3.5 text-brand-orange" aria-hidden />
+            Pago seguro con Webpay
+          </li>
+          <li className="hidden items-center gap-2 lg:flex">
+            <span className="font-bold text-brand-orange">✦</span>
+            Cotización sin costo en proyectos a medida
+          </li>
+        </ul>
       </div>
-    </header>
+
+      {/* ── 2. Barra principal: logo, menú, buscador, acciones ── */}
+      <header className="sticky top-0 z-40 border-b border-sand bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 md:h-[72px] md:gap-6">
+          <MobileMenu categories={menuCategories} stores={mobileStores} />
+
+          <Link href="/" className="shrink-0" aria-label="San Francisco Muebles, inicio">
+            <Image
+              src="/brand/logo-horizontal.png"
+              alt="San Francisco Muebles"
+              width={1319}
+              height={606}
+              priority
+              className="h-10 w-auto md:h-12"
+            />
+          </Link>
+
+          <div className="hidden h-full lg:block">
+            <MegaMenu categories={menuCategories} customImage={landingImages.aMedida.desktop} />
+          </div>
+
+          <div className="ml-auto hidden min-w-0 flex-1 md:block lg:max-w-xs xl:max-w-sm">
+            <SearchBox categories={searchCategories} />
+          </div>
+
+          <div className="ml-auto flex items-center gap-1 md:ml-0">
+            <MobileSearch categories={searchCategories} />
+            <Link
+              href="/cotizar"
+              className="hidden whitespace-nowrap rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark xl:inline-block"
+            >
+              Cotizar gratis
+            </Link>
+            <CartButton />
+          </div>
+        </div>
+      </header>
+    </>
   );
 }

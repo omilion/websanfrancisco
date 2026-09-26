@@ -93,7 +93,7 @@ export function toSearchParams(filters: CatalogFilters, omit: (keyof CatalogFilt
   return qs ? `?${qs}` : "";
 }
 
-function normalize(text: string): string {
+export function normalize(text: string): string {
   return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 }
 
@@ -109,7 +109,9 @@ export function applyFilters(products: Product[], f: CatalogFilters): Product[] 
     if (f.disponible && !(p.saleMode === "stock" && p.stock > 0)) return false;
     if (range && (p.price === null || p.price < range.min || p.price >= range.max)) return false;
     if (terms.length) {
-      const haystack = normalize(`${p.name} ${p.shortDescription} ${p.sku}`);
+      const haystack = normalize(
+        `${p.name} ${p.shortDescription} ${p.sku} ${p.categorySlug} ${p.subcategorySlug ?? ""}`.replace(/-/g, " "),
+      );
       if (!terms.every((t) => haystack.includes(t))) return false;
     }
     return true;
