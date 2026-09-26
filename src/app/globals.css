@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* Paleta San Francisco Muebles (colores extraídos del logo) */
+:root {
+  --brand-blue: #014c81; /* contraste 8.9:1 sobre blanco: texto, botones, navegación */
+  --brand-blue-dark: #013a63;
+  --brand-orange: #f38f17; /* 2.4:1 sobre blanco: solo acentos, nunca texto chico */
+  --brand-orange-dark: #b8650a; /* versión accesible para texto y botones */
+  --cream: #faf6ef; /* fondo cálido tipo lino */
+  --sand: #efe6d8;
+  --ink: #1f2328;
+  --ink-muted: #5b6168;
+}
+
+@theme inline {
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-cream: var(--cream);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --font-sans: var(--font-body-family);
+  --font-display: var(--font-display-family);
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+}

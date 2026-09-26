@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Cocina sin fotografía disponible">
+  <rect width="1200" height="1200" fill="#FAF6EF"/>
+  <g fill="none" stroke="#D9CBB5" stroke-width="25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M285 340h630v220H285ZM285 650h630v230H285ZM495 340v220M705 340v220M455 650v230M745 650v230M285 630h630"/>
+    <path d="M550 710h100v110H550M525 560h150"/>
+  </g>
+  <path d="M535 295h130" stroke="#F38F17" stroke-width="25" stroke-linecap="round"/>
+</svg>

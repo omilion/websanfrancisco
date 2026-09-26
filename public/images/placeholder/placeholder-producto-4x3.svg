@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" role="img" aria-label="Mueble sin fotografía disponible, formato horizontal">
+  <rect width="1600" height="1200" fill="#FAF6EF"/>
+  <g fill="none" stroke="#D9CBB5" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="450" y="385" width="700" height="400" rx="22"/>
+    <path d="M450 500h700M800 500v285M515 785v75M1085 785v75"/>
+    <path d="M585 590h140M875 590h140"/>
+  </g>
+  <path d="M715 335h170" stroke="#F38F17" stroke-width="28" stroke-linecap="round"/>
+</svg>

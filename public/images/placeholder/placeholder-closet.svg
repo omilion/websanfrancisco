@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Clóset sin fotografía disponible">
+  <rect width="1200" height="1200" fill="#FAF6EF"/>
+  <g fill="none" stroke="#D9CBB5" stroke-width="25" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="365" y="285" width="470" height="610" rx="10"/>
+    <path d="M600 285v610M365 735h470M540 560v55M660 560v55M420 895v35M780 895v35"/>
+  </g>
+  <path d="M535 240h130" stroke="#F38F17" stroke-width="25" stroke-linecap="round"/>
+</svg>

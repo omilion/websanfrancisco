@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Sofá sin fotografía disponible">
+  <rect width="1200" height="1200" fill="#FAF6EF"/>
+  <g fill="none" stroke="#D9CBB5" stroke-width="25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M350 570v-90c0-70 55-120 125-120h250c70 0 125 50 125 120v90"/>
+    <path d="M335 540c-45 0-75 35-75 80v145h680V620c0-45-30-80-75-80-38 0-65 27-65 67v38H400v-38c0-40-27-67-65-67Z"/>
+    <path d="M315 765v70M885 765v70M600 645v120"/>
+  </g>
+  <path d="M535 320h130" stroke="#F38F17" stroke-width="25" stroke-linecap="round"/>
+</svg>

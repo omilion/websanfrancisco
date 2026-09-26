@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Cama sin fotografía disponible">
+  <rect width="1200" height="1200" fill="#FAF6EF"/>
+  <g fill="none" stroke="#D9CBB5" stroke-width="25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M310 420h580v350H310ZM310 560h580M365 500h210v60M625 500h210v60M350 770v70M850 770v70"/>
+  </g>
+  <path d="M535 370h130" stroke="#F38F17" stroke-width="25" stroke-linecap="round"/>
+</svg>
