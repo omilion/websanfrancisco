@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { CheckCircle2, Minus, Plus, ShoppingBag } from "lucide-react";
-import { addToCart, useCart } from "@/lib/cart/store";
+import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { addToCart, openCartDrawer, useCart } from "@/lib/cart/store";
 
 interface AddToCartProps {
   sku: string;
@@ -18,13 +17,12 @@ export function AddToCart({ sku, slug, name, price, image, stock }: AddToCartPro
   const inCart = useCart().find((item) => item.sku === sku)?.quantity ?? 0;
   const available = Math.max(0, stock - inCart);
   const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
   const qty = Math.min(quantity, Math.max(1, available));
 
   function handleAdd() {
     addToCart({ sku, slug, name, price, image, maxQuantity: stock }, qty);
-    setAdded(true);
     setQuantity(1);
+    openCartDrawer(sku);
   }
 
   return (
@@ -64,18 +62,6 @@ export function AddToCart({ sku, slug, name, price, image, stock }: AddToCartPro
           {available === 0 ? "Ya tienes todo el stock en tu carrito" : "Agregar al carrito"}
         </button>
       </div>
-
-      {added && (
-        <p role="status" className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-brand-blue">
-          <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="size-5" aria-hidden />
-            Agregado al carrito ({inCart} en total)
-          </span>
-          <Link href="/carrito" className="underline hover:no-underline">
-            Ver carrito
-          </Link>
-        </p>
-      )}
     </div>
   );
 }

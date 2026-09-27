@@ -126,3 +126,52 @@ export function removeFromCart(sku: string) {
 export function clearCart() {
   emit(EMPTY);
 }
+
+// ── Panel lateral del carrito (estado de interfaz compartido entre componentes) ──
+
+interface DrawerState {
+  open: boolean;
+  /** SKU recién agregado, para destacarlo al abrir. */
+  highlight: string | null;
+}
+
+const CLOSED: DrawerState = { open: false, highlight: null };
+let drawer: DrawerState = CLOSED;
+const drawerListeners = new Set<() => void>();
+
+function setDrawer(next: DrawerState) {
+  drawer = next;
+  drawerListeners.forEach((listener) => listener());
+}
+
+export function useCartDrawer() {
+  return useSyncExternalStore(
+    (listener) => {
+      drawerListeners.add(listener);
+      return () => drawerListeners.delete(listener);
+    },
+    () => drawer,
+    () => CLOSED,
+  );
+}
+
+/** Guarda el borde inferior del encabezado para que el panel se abra justo debajo. */
+function measureHeader() {
+  const header = document.querySelector("header");
+  const top = header ? Math.max(0, Math.round(header.getBoundingClientRect().bottom)) : 0;
+  document.documentElement.style.setProperty("--cart-top", `${top}px`);
+}
+
+export function openCartDrawer(highlight: string | null = null) {
+  measureHeader();
+  setDrawer({ open: true, highlight });
+}
+
+export function closeCartDrawer() {
+  if (drawer.open) setDrawer(CLOSED);
+}
+
+export function toggleCartDrawer() {
+  if (drawer.open) setDrawer(CLOSED);
+  else openCartDrawer();
+}

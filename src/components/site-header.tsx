@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ShieldCheck, Truck } from "lucide-react";
 import { categoryImages, landingImages } from "@/config/images";
 import { fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
+import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { getCatalog } from "@/lib/catalog";
 import { CartButton } from "./cart/cart-button";
 import { MegaMenu, type MenuCategory } from "./header/mega-menu";
@@ -11,7 +12,7 @@ import { MobileSearch } from "./header/mobile-search";
 import { SearchBox } from "./header/search-box";
 
 export async function SiteHeader() {
-  const { categories, products } = await getCatalog();
+  const [{ categories, products }, cartCatalog] = await Promise.all([getCatalog(), getCartCatalogInfo()]);
   const menuCategories: MenuCategory[] = categories.map((c) => {
     const inCategory = products.filter((p) => p.categorySlug === c.slug);
     return {
@@ -84,7 +85,7 @@ export async function SiteHeader() {
             >
               Cotizar gratis
             </Link>
-            <CartButton />
+            <CartButton catalog={cartCatalog} />
           </div>
         </div>
       </header>

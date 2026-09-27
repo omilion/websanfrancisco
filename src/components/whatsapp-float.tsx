@@ -1,15 +1,17 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useCartDrawer } from "@/lib/cart/store";
 
 interface WhatsAppFloatProps {
   href: string;
 }
 
-/** Botón flotante de WhatsApp (se oculta en el checkout para no distraer del pago). */
+/** Botón flotante de WhatsApp (se oculta en el checkout y con el carrito abierto, para no distraer). */
 export function WhatsAppFloat({ href }: WhatsAppFloatProps) {
   const pathname = usePathname();
-  if (pathname.startsWith("/checkout")) return null;
+  const { open: cartOpen } = useCartDrawer();
+  if (pathname.startsWith("/checkout") || cartOpen) return null;
 
   return (
     <a
