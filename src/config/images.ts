@@ -34,8 +34,12 @@ export const pageImages = {
     mobile: "/images/paginas/cotizacion-movil.jpg",
     alt: "Mesa de trabajo con boceto de un mueble, huincha y muestras de madera",
   },
-  // Debe ser una foto real del taller o del equipo (no se genera con IA).
-  nosotros: { desktop: null, mobile: null, alt: "Taller de San Francisco Muebles en Ancud" },
+  // PROVISORIA: imagen de muestra para la presentación al cliente. Reemplazar por la foto real del equipo.
+  nosotros: {
+    desktop: "/images/nosotros/equipo-referencial.jpg",
+    mobile: "/images/nosotros/equipo-referencial.jpg",
+    alt: "Equipo de San Francisco Muebles en la tienda",
+  },
 } satisfies Record<string, ResponsiveImage>;
 
 /** Textura clara para fondos detrás de texto. */

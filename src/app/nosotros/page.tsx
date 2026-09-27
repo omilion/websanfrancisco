@@ -5,7 +5,7 @@ import { PageHero } from "@/components/page-hero";
 import { SectionTitle } from "@/components/section-title";
 import { SocialLinks } from "@/components/social-links";
 import { StoreCard } from "@/components/store-card";
-import { woodBackground } from "@/config/images";
+import { pageImages } from "@/config/images";
 import { site, stores } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -70,7 +70,7 @@ export default function NosotrosPage() {
         eyebrow={`Mueblería familiar · Desde ${site.since} en Ancud`}
         title="Un taller del corazón de Chiloé"
         description="Somos una empresa chilota del rubro del hogar y los muebles: fabricamos nuestra propia línea y proyectos a medida para las casas de la isla."
-        background={woodBackground}
+        image={{ ...pageImages.nosotros, pending: "equipo" }}
       />
 
       {/* ── Historia ─────────────────────────────────────── */}
