@@ -22,14 +22,12 @@ export const landingImages = {
   },
 } satisfies Record<string, ResponsiveImage>;
 
-/** Carrusel del banner principal de la portada, en orden. */
+/** Carrusel del banner principal de la portada, en orden. Formato ideal: 21:9 con la zona izquierda despejada. */
 export const heroSlides = [
   {
     src: "/images/tiendas/ancud.jpg",
     alt: "Casa central de San Francisco Muebles en Ancud",
-    // El letrero del local queda detrás del título: zoom en escritorio y encuadre a la derecha en celular.
-    position: "left center",
-    desktopClassName: "origin-left scale-[1.75] xl:scale-[1.35]",
+    // Provisoria hasta tener la versión 21:9 (brief-hero-21x9-carla.md). En celular se encuadra la fachada azul.
     mobilePosition: "82% center",
   },
   // Posición 2: foto provisoria (living) hasta recibir la imagen definitiva.

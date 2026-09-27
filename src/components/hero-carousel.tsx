@@ -13,8 +13,6 @@ export interface HeroSlide {
   position?: string;
   /** object-position en celular, si conviene otro encuadre. */
   mobilePosition?: string;
-  /** Clases de encuadre en escritorio (ej. zoom anclado a la izquierda para correr lo que choca con el texto). */
-  desktopClassName?: string;
 }
 
 const INTERVAL = 6000;
@@ -52,7 +50,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 className={`absolute inset-0 transition-transform duration-[7000ms] ease-out motion-reduce:transition-none ${active ? "scale-100" : "scale-[1.06]"}`}
               >
                 {/* Escritorio */}
-                <div className={`absolute inset-0 hidden md:block ${slide.desktopClassName ?? ""}`}>
+                <div className="absolute inset-0 hidden md:block">
                   <Image
                     src={slide.src}
                     alt={slide.alt}

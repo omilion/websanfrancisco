@@ -56,8 +56,8 @@ export default async function Home() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
         <HeroCarousel slides={heroSlides} />
-        {/* Degradado suave: deja ver la foto y mantiene legible el texto */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cream/90 via-cream/60 via-45% to-cream/5 md:bg-gradient-to-r md:from-cream/85 md:via-cream/45 md:via-35% md:to-transparent md:to-65%" />
+        {/* Degradado: firme detrás del texto y transparente en el resto para que se vea la foto */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cream/95 via-cream/80 via-55% to-cream/10 md:bg-gradient-to-r md:from-cream/95 md:via-cream/80 md:via-[38%] md:to-transparent md:to-[62%]" />
 
         <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-4 pb-16 pt-12 md:min-h-[640px] md:justify-center md:py-24">
           <div className="max-w-xl">
