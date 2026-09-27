@@ -8,7 +8,7 @@ import { ServiceIcon } from "@/components/service-icon";
 import { StoreCard } from "@/components/store-card";
 import { processSteps } from "@/config/content";
 import { categoryImages, landingImages, processImages } from "@/config/images";
-import { fulfillment, services, stores, whatsappUrl } from "@/config/site";
+import { fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 
 export default async function Home() {
@@ -18,8 +18,39 @@ export default async function Home() {
   ]);
   const featured = [...stockProducts].sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0)).slice(0, 8);
 
+  // Datos estructurados para Google: mueblería con sus sucursales, año de fundación y redes.
+  const businessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FurnitureStore",
+    name: site.name,
+    foundingDate: String(site.since),
+    email: site.email,
+    telephone: stores[0].phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Arturo Prat 130",
+      addressLocality: "Ancud",
+      addressRegion: "Los Lagos",
+      addressCountry: "CL",
+    },
+    areaServed: fulfillment.shippingArea,
+    sameAs: [site.social.instagram.url, site.social.facebook.url],
+    department: stores
+      .filter((s) => !s.isHeadquarters)
+      .map((s) => ({
+        "@type": "FurnitureStore",
+        name: s.name,
+        telephone: s.phone,
+        address: { "@type": "PostalAddress", addressLocality: s.city, addressCountry: "CL" },
+      })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
         <div className="absolute inset-0 -z-10 hidden md:block">
@@ -47,7 +78,7 @@ export default async function Home() {
           <div className="max-w-xl">
             <Plank className="w-16" />
             <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
-              Precisión artesanal desde Ancud
+              Desde {site.since} · Precisión artesanal en Ancud
             </p>
             <h1
               id="hero-title"
@@ -56,8 +87,8 @@ export default async function Home() {
               Muebles de madera hechos en Chiloé
             </h1>
             <p className="mt-5 max-w-md text-lg text-ink">
-              Comedores, dormitorios, sofás, closets y cocinas: en stock listos para despacho o fabricados
-              a tu medida en nuestro taller. Despacho en toda la isla.
+              Comedores, dormitorios, sofás, closets y cocinas: en stock listos para despacho o fabricados a
+              tu medida en nuestro taller. Despacho en toda la isla.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -157,10 +188,14 @@ export default async function Home() {
             />
           </div>
           <div>
-            <SectionTitle id="a-medida-title" eyebrow="Hecho a medida" title="Lo hacemos para tu espacio exacto" />
+            <SectionTitle
+              id="a-medida-title"
+              eyebrow="Hecho a medida"
+              title="Lo hacemos para tu espacio exacto"
+            />
             <p className="mt-5 text-lg text-ink-muted">
-              Cocinas, closets, bibliotecas o ese rincón difícil bajo la escalera. Diseñamos y
-              fabricamos contigo, con maderas nobles y terminaciones a tu gusto.
+              Cocinas, closets, bibliotecas o ese rincón difícil bajo la escalera. Diseñamos y fabricamos
+              contigo, con maderas nobles y terminaciones a tu gusto.
             </p>
             <ol className="mt-8 space-y-5">
               {processSteps.map((step, i) => (

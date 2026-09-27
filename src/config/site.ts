@@ -9,6 +9,8 @@ export interface Store {
   phone: string;
   address: string | null;
   isHeadquarters: boolean;
+  /** Foto de la fachada (optimizada, en /public/images/tiendas). */
+  image: string | null;
 }
 
 export const stores: Store[] = [
@@ -19,6 +21,7 @@ export const stores: Store[] = [
     phone: "+56982735261",
     address: "Arturo Prat 130, esquina Baquedano, Ancud",
     isHeadquarters: true,
+    image: "/images/tiendas/ancud.jpg",
   },
   {
     slug: "castro",
@@ -27,6 +30,7 @@ export const stores: Store[] = [
     phone: "+56956901262",
     address: null,
     isHeadquarters: false,
+    image: "/images/tiendas/castro.jpg",
   },
   {
     slug: "quellon",
@@ -35,6 +39,7 @@ export const stores: Store[] = [
     phone: "+56940975021",
     address: null,
     isHeadquarters: false,
+    image: "/images/tiendas/quellon.jpg",
   },
   {
     slug: "quemchi",
@@ -43,13 +48,19 @@ export const stores: Store[] = [
     phone: "+56956233768",
     address: null,
     isHeadquarters: false,
+    image: null, // falta foto de la tienda
   },
 ];
 
 export const site = {
   name: "San Francisco Muebles",
   email: "contacto@sanfranciscomuebles.cl",
-  instagram: null as string | null, // confirmar usuario exacto (empieza con "muebleriasanfrancisco")
+  /** Año desde el que la familia está en el rubro (inicio formal: 2000, primeros muebles propios: 2002). */
+  since: 1999,
+  social: {
+    instagram: { handle: "@muebleriasanfrancisco", url: "https://www.instagram.com/muebleriasanfrancisco/" },
+    facebook: { handle: "Mueblería San Francisco", url: "https://www.facebook.com/msanfrancisco1/" },
+  },
 };
 
 // Servicios que la marca ya comunica en redes (banner de Facebook/Instagram).

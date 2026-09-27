@@ -15,6 +15,7 @@ import {
 import { fulfillment, formatPhone, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories } from "@/lib/catalog";
 import { Plank } from "./plank";
+import { SocialLinks } from "./social-links";
 
 const promises = [
   { icon: Hammer, title: "Fabricado en Ancud", text: "Taller propio en el corazón de Chiloé" },
@@ -84,8 +85,8 @@ export async function SiteFooter() {
               Precisión artesanal desde el corazón de Chiloé
             </p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
-              Muebles de stock y proyectos a medida fabricados en nuestro taller de Ancud, con maderas nobles
-              del sur y cuatro tiendas en la isla.
+              Desde {site.since} en Ancud. Fabricamos nuestra propia línea de muebles y proyectos a medida, con
+              cuatro tiendas en la isla de Chiloé.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -103,6 +104,10 @@ export async function SiteFooter() {
                 <MessageCircle className="size-4" aria-hidden />
                 WhatsApp
               </a>
+            </div>
+            <div className="mt-8 flex items-center gap-4">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-orange">Síguenos</span>
+              <SocialLinks />
             </div>
           </div>
 
