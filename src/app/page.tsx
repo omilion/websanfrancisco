@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { ImageSlot } from "@/components/image-slot";
@@ -124,7 +125,7 @@ export default async function Home() {
       </section>
 
       {/* ── Categorías ───────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:py-24" aria-labelledby="categorias-title">
+      <section className="mx-auto max-w-7xl px-4 py-16 md:py-20 lg:py-16" aria-labelledby="categorias-title">
         <div className="flex items-end justify-between gap-4">
           <SectionTitle id="categorias-title" eyebrow="Explora" title="Muebles para cada espacio" />
           <Link
@@ -135,22 +136,22 @@ export default async function Home() {
           </Link>
         </div>
 
-        <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+        <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:mt-8 lg:grid-cols-6 lg:gap-4">
           {categories.map((category) => (
             <li key={category.slug}>
               <Link
                 href={`/categoria/${category.slug}`}
-                className="group relative block aspect-[4/5] overflow-hidden rounded-lg"
+                className="group relative block aspect-[4/5] overflow-hidden rounded-lg lg:aspect-[3/4]"
               >
                 <ImageSlot
                   src={categoryImages[category.slug] ?? null}
                   alt={category.name}
                   pending={`cat-${category.slug === "sofas" ? "living" : category.slug}.jpg`}
-                  sizes="(min-width: 768px) 33vw, 50vw"
+                  sizes="(min-width: 1024px) 17vw, (min-width: 768px) 33vw, 50vw"
                   className="transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/75 to-transparent p-4 pt-16 md:p-6 md:pt-24">
-                  <span className="font-display text-2xl font-bold uppercase text-white md:text-3xl">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/75 to-transparent p-4 pt-16 md:p-6 md:pt-24 lg:p-4 lg:pt-16">
+                  <span className="font-display text-2xl font-bold uppercase text-white md:text-3xl lg:text-2xl">
                     {category.name}
                   </span>
                 </div>
@@ -172,6 +173,30 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
+
+            {/* Banner de categoría: Sofás y sillones (versión recortada en celular para que el texto se lea) */}
+            <Link
+              href="/categoria/sofas"
+              aria-label="Sofás y sillones: ver categoría"
+              className="group mt-12 block overflow-hidden rounded-xl shadow-[0_20px_40px_-24px_rgba(1,42,72,0.45)] ring-1 ring-sand md:mt-16"
+            >
+              <Image
+                src="/images/banners/sofas-desktop.jpg"
+                alt="Sofás y sillones San Francisco Muebles: diseños que combinan comodidad, estilo y fabricación a medida"
+                width={2172}
+                height={724}
+                sizes="(min-width: 1280px) 1248px, 100vw"
+                className="hidden h-auto w-full transition-transform duration-700 group-hover:scale-[1.015] md:block"
+              />
+              <Image
+                src="/images/banners/sofas-movil.jpg"
+                alt="Sofás y sillones San Francisco Muebles: diseños que combinan comodidad, estilo y fabricación a medida"
+                width={1150}
+                height={724}
+                sizes="100vw"
+                className="h-auto w-full md:hidden"
+              />
+            </Link>
           </div>
         </section>
       )}

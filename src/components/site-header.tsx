@@ -60,12 +60,12 @@ export async function SiteHeader() {
 
           <Link href="/" className="shrink-0" aria-label="San Francisco Muebles, inicio">
             <Image
-              src="/brand/logo-horizontal.png"
+              src="/brand/logo-nav.png"
               alt="San Francisco Muebles"
-              width={1319}
-              height={606}
+              width={1200}
+              height={263}
               priority
-              className="h-10 w-auto md:h-12"
+              className="h-8 w-auto md:h-10"
             />
           </Link>
 
