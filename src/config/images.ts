@@ -1,6 +1,7 @@
 // Imágenes de la tienda (entrega de Carla, ver /imagenes/README.md en la raíz del proyecto).
 // Mientras un valor sea null, <ImageSlot> muestra un bloque de color con el nombre del archivo pendiente.
 
+import type { HeroSlide } from "@/components/hero-carousel";
 import type { Product } from "@/lib/catalog/types";
 
 export interface ResponsiveImage {
@@ -22,23 +23,36 @@ export const landingImages = {
   },
 } satisfies Record<string, ResponsiveImage>;
 
-/** Carrusel del banner principal de la portada, en orden. Formato ideal: 21:9 con la zona izquierda despejada. */
-export const heroSlides = [
+/** Carrusel del banner principal de la portada, en orden. Formato ideal: 21:9 (brief-hero-21x9-carla.md). */
+export const heroSlides: HeroSlide[] = [
+  // 1 · Solo la foto de la casa central.
   {
     src: "/images/tiendas/ancud.jpg",
     alt: "Casa central de San Francisco Muebles en Ancud",
-    // Provisoria hasta tener la versión 21:9 (brief-hero-21x9-carla.md). En celular se encuadra la fachada azul.
     mobilePosition: "82% center",
   },
-  // Posición 2: foto provisoria (living) hasta recibir la imagen definitiva.
+  // 2 · Título de la página a la izquierda (foto provisoria: living).
   {
     src: "/images/landing/hero-desktop.jpg",
     mobileSrc: "/images/landing/hero-movil.jpg",
     alt: "Living de una casa en Chiloé con sofá, mesa de madera y estufa a leña",
+    content: {
+      align: "left",
+      isPageTitle: true,
+      title: "Muebles de madera hechos en Chiloé",
+      subtitle: "Calidad, durabilidad y confort",
+      cta: { href: "/productos", label: "Ver catálogo" },
+    },
   },
+  // 3 · Proyectos a medida, centrado.
   {
     src: "/images/landing/hero-cocina-castro.jpg",
     alt: "Cocina a medida en madera oscura con cubierta negra, fabricada por San Francisco Muebles",
+    content: {
+      align: "center",
+      title: "Proyectos a medida",
+      cta: { href: "/a-medida", label: "Conoce cómo trabajamos" },
+    },
   },
 ];
 
