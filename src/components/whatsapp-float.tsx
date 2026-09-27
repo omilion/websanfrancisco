@@ -16,7 +16,7 @@ export interface WhatsAppContact {
 
 /**
  * Botón flotante de WhatsApp con selector de sucursal.
- * Se oculta en el checkout y con el carrito abierto, para no distraer.
+ * Se oculta en el checkout, en el cotizador y con el carrito abierto, para no distraer.
  */
 export function WhatsAppFloat({ contacts }: { contacts: WhatsAppContact[] }) {
   const pathname = usePathname();
@@ -39,7 +39,8 @@ export function WhatsAppFloat({ contacts }: { contacts: WhatsAppContact[] }) {
     };
   }, [open]);
 
-  if (pathname.startsWith("/checkout") || cartOpen) return null;
+  // Oculto en checkout y cotizador (taparía sus botones) y con el carrito abierto.
+  if (pathname.startsWith("/checkout") || pathname.startsWith("/cotizar") || cartOpen) return null;
   // En la ficha de producto hay una barra de compra fija abajo (celular): el botón sube.
   const onProductPage = /^\/productos\/[^/]+$/.test(pathname);
 

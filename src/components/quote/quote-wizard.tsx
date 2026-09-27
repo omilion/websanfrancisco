@@ -55,7 +55,7 @@ interface Attachment {
 }
 
 const inputClass =
-  "mt-1.5 w-full rounded-md border border-sand bg-white px-3 py-2.5 text-base outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20";
+  "mt-1 w-full rounded-md border border-sand bg-white px-3 py-2 text-base outline-none sm:mt-1.5 sm:py-2.5 transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20";
 
 function initialDetails(type: QuoteType | undefined): Record<string, DetailValue> {
   const out: Record<string, DetailValue> = {};
@@ -308,14 +308,14 @@ export function QuoteWizard() {
         Paso {step + 1} de 4 · {steps[step]}
       </p>
 
-      <div className="mt-8">
+      <div className="mt-5 sm:mt-8">
         {/* ── Paso 1: tipo ── */}
         {step === 0 && (
           <fieldset>
-            <legend className="font-display text-2xl font-bold uppercase text-brand-blue md:text-3xl">
+            <legend className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
               ¿Qué quieres fabricar?
             </legend>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
               {quoteTypes.map((t) => {
                 const Icon = typeIcons[t.slug] ?? PencilRuler;
                 const selected = t.slug === typeSlug;
@@ -326,18 +326,18 @@ export function QuoteWizard() {
                     type="button"
                     onClick={() => chooseType(t.slug)}
                     aria-pressed={selected}
-                    className={`flex items-start gap-4 rounded-xl border-2 p-4 text-left transition ${selected ? "border-brand-blue bg-brand-blue/5" : "border-sand bg-white hover:border-brand-blue/40"}`}
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition sm:flex-row sm:items-start sm:gap-4 sm:p-4 sm:text-left ${selected ? "border-brand-blue bg-brand-blue/5" : "border-sand bg-white hover:border-brand-blue/40"}`}
                   >
                     <span
-                      className={`flex size-12 shrink-0 items-center justify-center rounded-full ${selected ? "bg-brand-blue text-white" : "bg-brand-blue/10 text-brand-blue"}`}
+                      className={`flex size-10 shrink-0 items-center justify-center rounded-full sm:size-12 ${selected ? "bg-brand-blue text-white" : "bg-brand-blue/10 text-brand-blue"}`}
                     >
-                      <Icon className="size-6" strokeWidth={1.75} aria-hidden />
+                      <Icon className="size-5 sm:size-6" strokeWidth={1.75} aria-hidden />
                     </span>
                     <span>
-                      <span className="block font-display text-xl font-bold uppercase text-brand-blue">
+                      <span className="block font-display text-base font-bold uppercase leading-tight text-brand-blue sm:text-xl">
                         {t.name}
                       </span>
-                      {text && <span className="mt-0.5 block text-sm text-ink-muted">{text}</span>}
+                      {text && <span className="mt-0.5 hidden text-sm text-ink-muted sm:block">{text}</span>}
                     </span>
                   </button>
                 );
@@ -348,24 +348,24 @@ export function QuoteWizard() {
 
         {/* ── Paso 2: detalles ── */}
         {step === 1 && type && (
-          <div className="space-y-8">
-            <h2 className="font-display text-2xl font-bold uppercase text-brand-blue md:text-3xl">
+          <div className="space-y-5 sm:space-y-8">
+            <h2 className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
               {type.name}: detalles
             </h2>
 
             {type.dimensions.length > 0 && (
               <fieldset>
-                <legend className="text-sm font-bold uppercase tracking-wide text-ink">
+                <legend className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
                   Medidas del espacio
                 </legend>
-                <p className="mt-1 text-sm text-ink-muted">
+                <p className="mt-1 text-xs text-ink-muted sm:text-sm">
                   Medidas referenciales en centímetros. Si no las tienes, déjalas en blanco: podemos medir más
                   adelante.
                 </p>
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="mt-2 grid grid-cols-3 gap-2 sm:mt-3 sm:gap-3">
                   {type.dimensions.map((d) => (
                     <label key={d} className="block">
-                      <span className="text-sm font-semibold">{dimensionLabels[d]}</span>
+                      <span className="text-xs font-semibold sm:text-sm">{dimensionLabels[d]}</span>
                       <div className="relative">
                         <input
                           type="number"
@@ -375,9 +375,9 @@ export function QuoteWizard() {
                           value={dims[d] ?? ""}
                           onChange={(e) => setDims((p) => ({ ...p, [d]: e.target.value }))}
                           placeholder="0"
-                          className={`${inputClass} pr-10`}
+                          className={`${inputClass} pr-8 sm:pr-10`}
                         />
-                        <span className="pointer-events-none absolute bottom-3 right-3 text-sm text-ink-muted">
+                        <span className="pointer-events-none absolute bottom-2.5 right-2.5 text-xs text-ink-muted sm:bottom-3 sm:right-3 sm:text-sm">
                           cm
                         </span>
                       </div>
@@ -388,7 +388,7 @@ export function QuoteWizard() {
             )}
 
             {type.fields.length > 0 && (
-              <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-x-6 sm:gap-y-6">
                 {type.fields.map((f) => (
                   <DetailInput
                     key={f.name}
@@ -401,9 +401,11 @@ export function QuoteWizard() {
             )}
 
             <label className="block">
-              <span className="text-sm font-bold uppercase tracking-wide text-ink">Cuéntanos tu idea</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
+                Cuéntanos tu idea
+              </span>
               <textarea
-                rows={4}
+                rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 maxLength={2000}
@@ -416,18 +418,22 @@ export function QuoteWizard() {
 
         {/* ── Paso 3: materiales y archivos ── */}
         {step === 2 && (
-          <div className="space-y-8">
-            <h2 className="font-display text-2xl font-bold uppercase text-brand-blue md:text-3xl">
+          <div className="space-y-5 sm:space-y-8">
+            <h2 className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
               Materiales y fotos
             </h2>
 
             <fieldset>
-              <legend className="text-sm font-bold uppercase tracking-wide text-ink">Madera</legend>
+              <legend className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
+                Madera
+              </legend>
               <Chips options={quoteMaterials} value={material} onChange={setMaterial} />
             </fieldset>
 
             <label className="block">
-              <span className="text-sm font-bold uppercase tracking-wide text-ink">Color o terminación</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
+                Color o terminación
+              </span>
               <span className="ml-2 text-xs text-ink-muted">Opcional</span>
               <input
                 value={finish}
@@ -439,8 +445,10 @@ export function QuoteWizard() {
             </label>
 
             <div>
-              <p className="text-sm font-bold uppercase tracking-wide text-ink">Fotos, planos o bocetos</p>
-              <p className="mt-1 text-sm text-ink-muted">
+              <p className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
+                Fotos, planos o bocetos
+              </p>
+              <p className="mt-1 text-xs text-ink-muted sm:text-sm">
                 Una foto del espacio o un dibujo a mano con medidas nos ayuda mucho. Hasta{" "}
                 {attachmentRules.maxFiles} archivos ({attachmentRules.label}).
               </p>
@@ -452,7 +460,7 @@ export function QuoteWizard() {
                 }}
                 onDragLeave={() => setDragging(false)}
                 onDrop={onDrop}
-                className={`mt-3 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition ${dragging ? "border-brand-blue bg-brand-blue/5" : "border-sand bg-white hover:border-brand-blue/50"} ${files.length >= attachmentRules.maxFiles ? "pointer-events-none opacity-50" : ""}`}
+                className={`mt-3 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-5 text-center sm:px-6 sm:py-8 transition ${dragging ? "border-brand-blue bg-brand-blue/5" : "border-sand bg-white hover:border-brand-blue/50"} ${files.length >= attachmentRules.maxFiles ? "pointer-events-none opacity-50" : ""}`}
               >
                 {processing ? (
                   <Loader2 className="size-8 animate-spin text-brand-blue" aria-hidden />
@@ -478,7 +486,7 @@ export function QuoteWizard() {
               </label>
 
               {files.length > 0 && (
-                <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <ul className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
                   {files.map((f) => (
                     <li key={f.id} className="relative overflow-hidden rounded-lg bg-white ring-1 ring-sand">
                       {f.preview ? (
@@ -517,11 +525,11 @@ export function QuoteWizard() {
 
         {/* ── Paso 4: contacto ── */}
         {step === 3 && (
-          <div className="space-y-6">
-            <h2 className="font-display text-2xl font-bold uppercase text-brand-blue md:text-3xl">
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
               Tus datos
             </h2>
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 sm:gap-5">
               <Field label="Nombre" required>
                 <input
                   value={contact.nombre}
@@ -583,14 +591,14 @@ export function QuoteWizard() {
       </div>
 
       {error && (
-        <p role="alert" className="mt-6 rounded-md bg-brand-orange/10 px-4 py-3 text-sm text-ink">
+        <p role="alert" className="mt-4 rounded-md sm:mt-6 bg-brand-orange/10 px-4 py-3 text-sm text-ink">
           {error}
         </p>
       )}
 
       {/* Navegación */}
       {step > 0 && (
-        <div className="mt-8 flex items-center justify-between gap-3 border-t border-sand pt-6">
+        <div className="mt-6 flex items-center justify-between gap-3 border-t border-sand pt-4 sm:mt-8 sm:pt-6">
           <button
             type="button"
             onClick={() => goTo(step - 1)}
@@ -642,18 +650,18 @@ function DetailInput({
   if (field.kind === "toggle") {
     const on = value === true;
     return (
-      <div className="flex items-center justify-between gap-4 rounded-lg bg-white px-4 py-3 ring-1 ring-sand sm:self-end">
-        <span className="text-sm font-semibold">{field.label}</span>
+      <div className="flex items-center justify-between gap-2 rounded-lg bg-white px-3 py-2.5 ring-1 ring-sand sm:gap-4 sm:self-end sm:px-4 sm:py-3">
+        <span className="text-xs font-semibold leading-tight sm:text-sm">{field.label}</span>
         <button
           type="button"
           role="switch"
           aria-checked={on}
           aria-label={field.label}
           onClick={() => onChange(!on)}
-          className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${on ? "bg-brand-blue" : "bg-sand"}`}
+          className={`relative h-6 w-10 shrink-0 rounded-full transition-colors sm:h-7 sm:w-12 ${on ? "bg-brand-blue" : "bg-sand"}`}
         >
           <span
-            className={`absolute top-1 size-5 rounded-full bg-white shadow transition-all ${on ? "left-6" : "left-1"}`}
+            className={`absolute top-0.5 size-5 rounded-full bg-white shadow transition-all sm:top-1 ${on ? "left-[1.125rem] sm:left-6" : "left-0.5 sm:left-1"}`}
           />
         </button>
       </div>
@@ -666,10 +674,10 @@ function DetailInput({
     const max = field.max ?? 99;
     return (
       <div>
-        <span className="text-sm font-semibold">{field.label}</span>
-        {field.hint && <span className="ml-2 text-xs text-ink-muted">{field.hint}</span>}
+        <span className="block text-xs font-semibold leading-tight sm:inline sm:text-sm">{field.label}</span>
+        {field.hint && <span className="ml-2 hidden text-xs text-ink-muted sm:inline">{field.hint}</span>}
         <div
-          className="mt-1.5 flex w-fit items-center rounded-full border border-sand bg-white"
+          className="mt-1 flex w-fit sm:mt-1.5 items-center rounded-full border border-sand bg-white"
           role="group"
           aria-label={field.label}
         >
@@ -678,11 +686,14 @@ function DetailInput({
             onClick={() => onChange(Math.max(min, n - 1))}
             disabled={n <= min}
             aria-label={`Menos ${field.label.toLowerCase()}`}
-            className="flex size-11 items-center justify-center text-brand-blue disabled:opacity-30"
+            className="flex size-9 items-center justify-center text-brand-blue disabled:opacity-30 sm:size-11"
           >
             <Minus className="size-4" aria-hidden />
           </button>
-          <span className="w-10 text-center text-lg font-bold tabular-nums" aria-live="polite">
+          <span
+            className="w-8 text-center text-base font-bold tabular-nums sm:w-10 sm:text-lg"
+            aria-live="polite"
+          >
             {n}
           </span>
           <button
@@ -690,7 +701,7 @@ function DetailInput({
             onClick={() => onChange(Math.min(max, n + 1))}
             disabled={n >= max}
             aria-label={`Más ${field.label.toLowerCase()}`}
-            className="flex size-11 items-center justify-center text-brand-blue disabled:opacity-30"
+            className="flex size-9 items-center justify-center text-brand-blue disabled:opacity-30 sm:size-11"
           >
             <Plus className="size-4" aria-hidden />
           </button>
@@ -701,8 +712,8 @@ function DetailInput({
 
   if (field.kind === "select") {
     return (
-      <fieldset className="sm:col-span-2">
-        <legend className="text-sm font-semibold">{field.label}</legend>
+      <fieldset className="col-span-2">
+        <legend className="text-xs font-semibold sm:text-sm">{field.label}</legend>
         <Chips options={field.options ?? []} value={String(value ?? "")} onChange={onChange} />
       </fieldset>
     );
@@ -723,7 +734,7 @@ function DetailInput({
           className={`${inputClass} ${field.unit ? "pr-20" : ""}`}
         />
         {field.unit && (
-          <span className="pointer-events-none absolute bottom-3 right-3 text-sm text-ink-muted">
+          <span className="pointer-events-none absolute bottom-2.5 right-2.5 text-xs text-ink-muted sm:bottom-3 sm:right-3 sm:text-sm">
             {field.unit}
           </span>
         )}
@@ -742,7 +753,7 @@ function Chips({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="mt-2 flex flex-wrap gap-2" role="radiogroup">
+    <div className="mt-1.5 flex flex-wrap gap-1.5 sm:mt-2 sm:gap-2" role="radiogroup">
       {options.map((o) => {
         const selected = o === value;
         return (
@@ -752,7 +763,7 @@ function Chips({
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(o)}
-            className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${selected ? "border-brand-blue bg-brand-blue text-white" : "border-sand bg-white text-ink hover:border-brand-blue/40"}`}
+            className={`rounded-full border-2 px-3 py-1.5 text-xs font-semibold transition sm:px-4 sm:py-2 sm:text-sm ${selected ? "border-brand-blue bg-brand-blue text-white" : "border-sand bg-white text-ink hover:border-brand-blue/40"}`}
           >
             {o}
           </button>

@@ -23,24 +23,32 @@ export default function CotizarPage() {
         title="Cotiza tu mueble a medida"
         description="Cuéntanos qué necesitas en 4 pasos, adjunta fotos o planos de tu espacio y te enviamos la propuesta sin compromiso."
         image={{ ...pageImages.cotizacion, pending: "cotizacion" }}
+        compact
       />
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:py-24 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
-        <div className="rounded-lg bg-white p-6 ring-1 ring-sand md:p-8">
+      <section className="mx-auto grid max-w-7xl gap-10 px-3 py-6 sm:px-4 md:py-24 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
+        <div className="rounded-lg bg-white p-4 ring-1 ring-sand sm:p-6 md:p-8">
           <Suspense fallback={<div className="h-96 animate-pulse rounded-lg bg-sand/40" aria-busy />}>
             <QuoteWizard />
           </Suspense>
         </div>
 
         <aside aria-label="Cómo te acompañamos">
-          <h2 className="font-display text-3xl font-bold uppercase text-brand-blue">Te acompañamos</h2>
-          <ul className="mt-6 space-y-5">
+          <h2 className="font-display text-2xl font-bold uppercase text-brand-blue sm:text-3xl">
+            Te acompañamos
+          </h2>
+          <ul className="mt-4 grid grid-cols-2 gap-4 sm:mt-6 sm:block sm:space-y-5">
             {quoteServices.map((service) => (
-              <li key={service.slug} className="flex gap-4">
-                <ServiceIcon slug={service.slug} className="size-7 shrink-0 text-brand-orange-dark" />
+              <li key={service.slug} className="flex gap-2.5 sm:gap-4">
+                <ServiceIcon
+                  slug={service.slug}
+                  className="size-5 shrink-0 text-brand-orange-dark sm:size-7"
+                />
                 <div>
-                  <h3 className="font-semibold text-ink">{service.title}</h3>
-                  <p className="mt-0.5 text-sm text-ink-muted">{service.description}</p>
+                  <h3 className="text-sm font-semibold leading-tight text-ink sm:text-base">
+                    {service.title}
+                  </h3>
+                  <p className="mt-0.5 hidden text-sm text-ink-muted sm:block">{service.description}</p>
                 </div>
               </li>
             ))}
