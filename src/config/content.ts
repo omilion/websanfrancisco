@@ -1,25 +1,36 @@
 // Textos compartidos entre páginas.
 
+/** Proceso a medida oficial de la empresa (6 pasos, texto del sitio actual del cliente). */
 export const processSteps = [
   {
-    title: "Visitamos y medimos",
-    text: "Coordinamos una visita para tomar las medidas exactas de tu espacio.",
-    image: "proceso-1-medicion.jpg",
+    slug: "medidas",
+    title: "Toma de medidas",
+    text: "Medidas referenciales del espacio. Podemos rectificar más adelante.",
   },
   {
-    title: "Diseñamos contigo",
-    text: "Elegimos juntos madera, terminaciones y distribución. Te enviamos la cotización sin costo.",
-    image: "proceso-2-diseno.jpg",
+    slug: "ideas",
+    title: "Cuéntanos tus ideas",
+    text: "En sucursales o vía WhatsApp. Envíanos fotos, planos o bocetos.",
   },
   {
-    title: "Fabricamos en Ancud",
-    text: "Tu mueble se hace en nuestro taller, pieza por pieza, en encina o roble.",
-    image: "proceso-3-fabricacion.jpg",
+    slug: "cotizacion",
+    title: "Cotización y asesoría",
+    text: "Elige material, colores y acabados. Te enviamos la propuesta del mueble o proyecto.",
   },
   {
-    title: "Entregamos e instalamos",
-    text: "Lo llevamos a tu casa en cualquier punto de la isla y lo dejamos listo.",
-    image: "proceso-4-instalacion.jpg",
+    slug: "diseno",
+    title: "Diseño",
+    text: "Se estipula el diseño y hacemos los últimos retoques.",
+  },
+  {
+    slug: "fabricacion",
+    title: "Fabricación",
+    text: "Tu proyecto cobra vida en nuestro taller, en los plazos acordados.",
+  },
+  {
+    slug: "despacho",
+    title: "Despacho e instalación",
+    text: "Entrega coordinada e instalación. ¡Mueble o proyecto listo para su uso!",
   },
 ];
 

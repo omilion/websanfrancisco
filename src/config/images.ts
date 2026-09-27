@@ -48,12 +48,12 @@ export const materialImages: Record<string, string | null> = {
   tapiz: "/images/landing/material-tapiz.jpg",
 };
 
-/** Pasos del proceso a medida, en orden. El paso 3 es ilustrativo: reemplazar por foto real del taller. */
-export const processImages: (string | null)[] = [
-  "/images/landing/proceso-1-medicion.jpg",
-  "/images/landing/proceso-2-diseno.jpg",
-  "/images/landing/proceso-3-fabricacion.jpg",
-  "/images/landing/proceso-4-instalacion.jpg",
+/** Fotos del proceso a medida (galería). La de fabricación es ilustrativa: reemplazar por foto real del taller. */
+export const processPhotos = [
+  { src: "/images/landing/proceso-1-medicion.jpg", alt: "Manos midiendo un muro con huincha", caption: "Toma de medidas" },
+  { src: "/images/landing/proceso-2-diseno.jpg", alt: "Boceto de un mueble con muestras de madera y telas", caption: "Diseño y asesoría" },
+  { src: "/images/landing/proceso-3-fabricacion.jpg", alt: "Carpintero lijando una pieza de madera en el taller", caption: "Fabricación" },
+  { src: "/images/landing/proceso-4-instalacion.jpg", alt: "Ajuste de la bisagra de un mueble instalado", caption: "Instalación" },
 ];
 
 /** Imagen por slug de categoría del ERP. Las que falten muestran el bloque provisorio. */

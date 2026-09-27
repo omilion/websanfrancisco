@@ -2,12 +2,12 @@ import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { ImageSlot } from "@/components/image-slot";
 import { Plank } from "@/components/plank";
+import { ProcessPhotos, ProcessStepsGrid } from "@/components/process-steps";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
 import { StoreCard } from "@/components/store-card";
-import { processSteps } from "@/config/content";
-import { categoryImages, landingImages, processImages } from "@/config/images";
+import { categoryImages, landingImages } from "@/config/images";
 import { fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 
@@ -197,19 +197,9 @@ export default async function Home() {
               Cocinas, closets, bibliotecas o ese rincón difícil bajo la escalera. Diseñamos y fabricamos
               contigo, con maderas nobles y terminaciones a tu gusto.
             </p>
-            <ol className="mt-8 space-y-5">
-              {processSteps.map((step, i) => (
-                <li key={step.title} className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-blue font-display text-xl font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <h3 className="font-semibold text-ink">{step.title}</h3>
-                    <p className="text-sm text-ink-muted">{step.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <div className="mt-8">
+              <ProcessStepsGrid tone="light" compact />
+            </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/cotizar"
@@ -231,16 +221,9 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Fotos del proceso (aparecen cuando Carla las entregue) */}
-        {processImages.some(Boolean) && (
-          <ul className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
-            {processSteps.map((step, i) => (
-              <li key={step.image} className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                <ImageSlot src={processImages[i]} alt={step.title} pending={step.image} sizes="25vw" />
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="mt-12">
+          <ProcessPhotos />
+        </div>
       </section>
 
       {/* ── Tiendas ──────────────────────────────────────── */}

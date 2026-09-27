@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { CtaBand } from "@/components/cta-band";
 import { ImageSlot } from "@/components/image-slot";
 import { PageHero } from "@/components/page-hero";
+import { ProcessPhotos, ProcessStepsGrid } from "@/components/process-steps";
 import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
-import { customProjectTypes, materials, processSteps } from "@/config/content";
-import { landingImages, materialImages, processImages } from "@/config/images";
-import { fulfillment, services } from "@/config/site";
+import { customProjectTypes, materials } from "@/config/content";
+import { landingImages, materialImages } from "@/config/images";
+import { fulfillment, services, stores, whatsappUrl } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Muebles a medida",
@@ -47,31 +48,46 @@ export default function AMedidaPage() {
         </ul>
       </section>
 
-      {/* ── Proceso ──────────────────────────────────────── */}
-      <section className="bg-sand/50" aria-labelledby="proceso">
+      {/* ── Proceso (6 pasos oficiales) ──────────────────── */}
+      <section className="bg-brand-blue" aria-labelledby="proceso">
         <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
-          <SectionTitle id="proceso" eyebrow="Cómo trabajamos" title="De la idea a tu casa en 4 pasos" />
-          <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step, i) => (
-              <li key={step.title} className="flex flex-col overflow-hidden rounded-lg bg-white ring-1 ring-sand">
-                <div className="relative aspect-[4/3]">
-                  <ImageSlot
-                    src={processImages[i]}
-                    alt={step.title}
-                    pending={step.image}
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  />
-                </div>
-                <div className="p-5">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-brand-blue font-display text-xl font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-3 font-semibold text-ink">{step.title}</h3>
-                  <p className="mt-1 text-sm text-ink-muted">{step.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <SectionTitle
+            id="proceso"
+            eyebrow="Cómo trabajamos"
+            title="Tus muebles y proyectos a medida, paso a paso"
+            tone="dark"
+          />
+          <div className="mt-10">
+            <ProcessStepsGrid />
+          </div>
+
+          <div className="mt-10 flex flex-col items-start gap-4 rounded-xl bg-brand-navy/40 p-6 ring-1 ring-white/10 md:flex-row md:items-center md:justify-between md:p-8">
+            <p className="font-display text-2xl font-bold uppercase leading-tight text-cream md:text-3xl">
+              ¿Listo para empezar? Cuéntanos tu idea ahora mismo.
+            </p>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link
+                href="/cotizar"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-6 py-3.5 font-semibold text-brand-blue transition-colors hover:bg-cream"
+              >
+                Cotizar sin costo
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+              <a
+                href={whatsappUrl(stores[0].phone, "Hola, quiero contarles mi idea para un mueble a medida.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/60 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                <MessageCircle className="size-5" aria-hidden />
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <ProcessPhotos tone="dark" />
+          </div>
         </div>
       </section>
 
