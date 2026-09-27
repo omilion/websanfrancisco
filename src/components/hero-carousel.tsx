@@ -83,7 +83,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          <div className="mx-auto flex max-w-7xl items-center gap-3 px-4">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 md:justify-end">
             <div className="flex items-center gap-2" role="group" aria-label="Elegir imagen">
               {slides.map((slide, i) => (
                 <button

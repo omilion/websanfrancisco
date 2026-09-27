@@ -56,36 +56,36 @@ export default async function Home() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
         <HeroCarousel slides={heroSlides} />
-        {/* Degradado: firme detrás del texto y transparente en el resto para que se vea la foto */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cream/95 via-cream/80 via-55% to-cream/10 md:bg-gradient-to-r md:from-cream/95 md:via-cream/80 md:via-[38%] md:to-transparent md:to-[62%]" />
+        {/* Degradado azul: firme detrás del texto (derecha) y transparente en el resto para que se vea la foto */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-navy/90 via-brand-navy/75 via-55% to-brand-navy/25 md:bg-gradient-to-l md:from-brand-navy/90 md:via-brand-navy/75 md:via-[38%] md:to-transparent md:to-[62%]" />
 
-        <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-4 pb-16 pt-12 md:min-h-[640px] md:justify-center md:py-24">
-          <div className="max-w-xl">
+        <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-4 pb-16 pt-12 md:min-h-[640px] md:items-end md:justify-center md:py-24">
+          <div className="max-w-xl md:max-w-[26rem] lg:max-w-md xl:max-w-xl">
             <Plank className="w-16" />
-            <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
+            <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange">
               Desde {site.since} · Precisión artesanal en Ancud
             </p>
             <h1
               id="hero-title"
-              className="mt-2 font-display text-5xl font-bold uppercase leading-[0.95] text-brand-blue sm:text-6xl lg:text-7xl"
+              className="mt-2 font-display text-5xl font-bold uppercase leading-[0.95] text-white sm:text-6xl md:text-5xl lg:text-6xl xl:text-7xl"
             >
               Muebles de madera hechos en Chiloé
             </h1>
-            <p className="mt-5 max-w-md text-lg text-ink">
+            <p className="mt-5 max-w-md text-lg text-cream/90">
               Comedores, dormitorios, sofás, closets y cocinas: en stock listos para despacho o fabricados a
               tu medida en nuestro taller. Despacho en toda la isla.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/productos"
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-brand-blue px-6 py-3.5 font-semibold text-white transition-colors hover:bg-brand-blue-dark"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-brand-orange px-6 py-3.5 font-semibold text-ink transition-colors hover:bg-[#f7a33f]"
               >
                 Ver catálogo
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <Link
                 href="/cotizar"
-                className="inline-flex items-center justify-center rounded-md border-2 border-brand-blue bg-white/70 px-6 py-3 font-semibold text-brand-blue transition-colors hover:bg-white"
+                className="inline-flex items-center justify-center rounded-md border-2 border-white/80 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
               >
                 Cotizar a medida
               </Link>
