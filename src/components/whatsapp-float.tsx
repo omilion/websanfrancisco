@@ -12,6 +12,8 @@ export function WhatsAppFloat({ href }: WhatsAppFloatProps) {
   const pathname = usePathname();
   const { open: cartOpen } = useCartDrawer();
   if (pathname.startsWith("/checkout") || cartOpen) return null;
+  // En la ficha de producto hay una barra de compra fija abajo (celular): el botón sube.
+  const onProductPage = /^\/productos\/[^/]+$/.test(pathname);
 
   return (
     <a
@@ -19,7 +21,7 @@ export function WhatsAppFloat({ href }: WhatsAppFloatProps) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escríbenos por WhatsApp"
-      className="group fixed bottom-5 right-5 z-40 flex items-center gap-3 md:bottom-7 md:right-7"
+      className={`group fixed right-5 z-40 flex items-center gap-3 md:right-7 lg:bottom-7 ${onProductPage ? "bottom-24" : "bottom-5 md:bottom-7"}`}
     >
       <span className="pointer-events-none hidden translate-x-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink opacity-0 shadow-lg ring-1 ring-sand transition group-hover:translate-x-0 group-hover:opacity-100 md:block">
         ¿Te ayudamos? Escríbenos

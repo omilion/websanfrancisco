@@ -48,7 +48,7 @@ async function CategoryContent({
           <nav aria-label="Ruta de navegación">
             <ol className="flex items-center gap-1 text-sm text-ink-muted">
               <li>
-                <Link href="/productos" className="hover:text-brand-blue hover:underline">
+                <Link href="/productos" className="inline-block py-2 hover:text-brand-blue hover:underline">
                   Catálogo
                 </Link>
               </li>

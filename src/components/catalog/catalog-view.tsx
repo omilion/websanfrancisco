@@ -110,7 +110,7 @@ export async function CatalogView({ filters, basePath, lockedCategory }: Catalog
                 <Link
                   href={chip.href}
                   scroll={false}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-brand-blue/10 px-3 py-1 text-sm font-medium text-brand-blue hover:bg-brand-blue/15"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-brand-blue/10 px-3 py-2 text-sm font-medium text-brand-blue hover:bg-brand-blue/15"
                   aria-label={`Quitar filtro ${chip.label}`}
                 >
                   {chip.label}

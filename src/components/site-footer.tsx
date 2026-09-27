@@ -106,37 +106,39 @@ export async function SiteFooter() {
             </div>
           </div>
 
-          {/* Tienda */}
-          <nav aria-labelledby="footer-tienda" className="lg:col-span-2">
-            <FooterHeading id="footer-tienda">Tienda</FooterHeading>
-            <ul className="mt-5 space-y-3 text-sm">
-              {categories.map((c) => (
-                <li key={c.slug}>
-                  <FooterLink href={`/categoria/${c.slug}`}>{c.name}</FooterLink>
+          <div className="grid grid-cols-2 gap-8 lg:col-span-4">
+            {/* Tienda */}
+            <nav aria-labelledby="footer-tienda">
+              <FooterHeading id="footer-tienda">Tienda</FooterHeading>
+              <ul className="mt-4 space-y-0.5 text-sm">
+                {categories.map((c) => (
+                  <li key={c.slug}>
+                    <FooterLink href={`/categoria/${c.slug}`}>{c.name}</FooterLink>
+                  </li>
+                ))}
+                <li className="pt-1">
+                  <Link
+                    href="/productos"
+                    className="inline-flex items-center gap-1 py-2 font-semibold text-cream hover:text-brand-orange"
+                  >
+                    Ver todo el catálogo <ArrowUpRight className="size-3.5" aria-hidden />
+                  </Link>
                 </li>
-              ))}
-              <li className="pt-1">
-                <Link
-                  href="/productos"
-                  className="inline-flex items-center gap-1 font-semibold text-cream hover:text-brand-orange"
-                >
-                  Ver todo el catálogo <ArrowUpRight className="size-3.5" aria-hidden />
-                </Link>
-              </li>
-            </ul>
-          </nav>
+              </ul>
+            </nav>
 
-          {/* Ayuda */}
-          <nav aria-labelledby="footer-ayuda" className="lg:col-span-2">
-            <FooterHeading id="footer-ayuda">Te ayudamos</FooterHeading>
-            <ul className="mt-5 space-y-3 text-sm">
-              {helpLinks.map((l) => (
-                <li key={l.href}>
-                  <FooterLink href={l.href}>{l.label}</FooterLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
+            {/* Ayuda */}
+            <nav aria-labelledby="footer-ayuda">
+              <FooterHeading id="footer-ayuda">Te ayudamos</FooterHeading>
+              <ul className="mt-4 space-y-0.5 text-sm">
+                {helpLinks.map((l) => (
+                  <li key={l.href}>
+                    <FooterLink href={l.href}>{l.label}</FooterLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
 
           {/* Tiendas */}
           <div className="lg:col-span-4">
@@ -153,19 +155,19 @@ export async function SiteFooter() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`WhatsApp tienda ${store.city}`}
-                      className="-m-1 rounded p-1 text-cream/60 transition-colors hover:text-brand-orange"
+                      className="-m-2 rounded-full p-2 text-cream/60 transition-colors hover:text-brand-orange"
                     >
                       <MessageCircle className="size-4" aria-hidden />
                     </a>
                   </div>
                   {store.isHeadquarters && (
-                    <span className="mt-1 block text-[11px] font-semibold uppercase tracking-wider text-brand-orange">
+                    <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-brand-orange">
                       Casa matriz
                     </span>
                   )}
                   <a
                     href={`tel:${store.phone}`}
-                    className="mt-2 block text-sm tabular-nums transition-colors hover:text-cream"
+                    className="mt-1 block py-1.5 text-sm tabular-nums transition-colors hover:text-cream"
                   >
                     {formatPhone(store.phone)}
                   </a>
@@ -182,7 +184,10 @@ export async function SiteFooter() {
                   </li>
                 ))}
               <li>
-                <a href={`mailto:${site.email}`} className="flex gap-2 transition-colors hover:text-cream">
+                <a
+                  href={`mailto:${site.email}`}
+                  className="flex gap-2 py-1.5 transition-colors hover:text-cream"
+                >
                   <Mail className="mt-0.5 size-4 shrink-0 text-brand-orange" aria-hidden />
                   {site.email}
                 </a>
@@ -202,7 +207,7 @@ export async function SiteFooter() {
                 {paymentMethods.map((m) => (
                   <li
                     key={m}
-                    className="rounded border border-white/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-cream/70"
+                    className="rounded border border-white/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-cream/70"
                   >
                     {m}
                   </li>
@@ -218,7 +223,7 @@ export async function SiteFooter() {
                   href="https://hazlomejor.cl"
                   target="_blank"
                   rel="noopener"
-                  className="group inline-flex items-center gap-0.5 font-bold text-cream underline decoration-brand-orange decoration-2 underline-offset-4 transition-colors hover:text-brand-orange"
+                  className="group inline-flex items-center gap-0.5 py-1.5 font-bold text-cream underline decoration-brand-orange decoration-2 underline-offset-4 transition-colors hover:text-brand-orange"
                 >
                   Hazlo Mejor
                   <ArrowUpRight
@@ -252,7 +257,7 @@ function FooterHeading({ id, children }: { id: string; children: string }) {
 
 function FooterLink({ href, children }: { href: string; children: string }) {
   return (
-    <Link href={href} className="transition-colors hover:text-cream">
+    <Link href={href} className="inline-block py-2 transition-colors hover:text-cream">
       {children}
     </Link>
   );

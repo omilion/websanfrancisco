@@ -12,6 +12,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { AddToCart } from "@/components/product/add-to-cart";
+import { MobileBuyBar } from "@/components/product/mobile-buy-bar";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
@@ -72,13 +73,37 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
   return (
     <>
       <ProductJsonLd product={product} image={product.images[0]?.url} />
+      <MobileBuyBar
+        name={product.name}
+        price={product.price}
+        targetId="comprar"
+        action={
+          inStock
+            ? {
+                kind: "comprar",
+                sku: product.sku,
+                slug: product.slug,
+                image: product.images[0]?.url ?? placeholder.url,
+                stock: product.stock,
+              }
+            : isStock
+              ? {
+                  kind: "consultar",
+                  href: whatsappUrl(
+                    headquarters.phone,
+                    `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
+                  ),
+                }
+              : { kind: "cotizar", href: "/cotizar" }
+        }
+      />
 
       <div className="mx-auto max-w-7xl px-4 py-8 md:py-12">
         {/* ── Ruta ─────────────────────────────────────────── */}
         <nav aria-label="Ruta de navegación">
           <ol className="flex flex-wrap items-center gap-1 text-sm text-ink-muted">
             <li>
-              <Link href="/productos" className="hover:text-brand-blue hover:underline">
+              <Link href="/productos" className="inline-block py-2 hover:text-brand-blue hover:underline">
                 Catálogo
               </Link>
             </li>
@@ -88,7 +113,10 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                   <ChevronRight className="size-4" />
                 </li>
                 <li>
-                  <Link href={`/categoria/${category.slug}`} className="hover:text-brand-blue hover:underline">
+                  <Link
+                    href={`/categoria/${category.slug}`}
+                    className="inline-block py-2 hover:text-brand-blue hover:underline"
+                  >
                     {category.name}
                   </Link>
                 </li>
@@ -134,7 +162,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             {product.shortDescription && <p className="mt-5 text-lg text-ink">{product.shortDescription}</p>}
 
             {/* Compra / cotización */}
-            <div className="mt-8 rounded-lg bg-white p-5 ring-1 ring-sand">
+            <div id="comprar" className="mt-8 scroll-mt-28 rounded-lg bg-white p-5 ring-1 ring-sand">
               {inStock ? (
                 <>
                   <p className="mb-4 text-sm font-semibold text-brand-blue">
@@ -157,7 +185,10 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                   </p>
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <a
-                      href={whatsappUrl(headquarters.phone, `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`)}
+                      href={whatsappUrl(
+                        headquarters.phone,
+                        `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
+                      )}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-brand-blue px-5 py-3 font-semibold text-white hover:bg-brand-blue-dark"
@@ -204,14 +235,21 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             {/* Stock por tienda */}
             {isStock && (
               <div className="mt-6">
-                <h2 className="text-sm font-bold uppercase tracking-wide text-ink">Disponibilidad por tienda</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wide text-ink">
+                  Disponibilidad por tienda
+                </h2>
                 <ul className="mt-3 divide-y divide-sand rounded-lg bg-white ring-1 ring-sand">
                   {stores.map((store) => {
                     const n = product.stockByStore[store.slug] ?? 0;
                     return (
-                      <li key={store.slug} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
+                      <li
+                        key={store.slug}
+                        className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
+                      >
                         <span className="font-semibold">{store.city}</span>
-                        <span className={`ml-auto ${n > 0 ? "font-medium text-brand-blue" : "text-ink-muted"}`}>
+                        <span
+                          className={`ml-auto ${n > 0 ? "font-medium text-brand-blue" : "text-ink-muted"}`}
+                        >
                           {n > 0 ? `${n} ${n === 1 ? "disponible" : "disponibles"}` : "Sin stock"}
                         </span>
                         <a
@@ -222,7 +260,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`Consultar en ${store.city} por WhatsApp`}
-                          className="rounded-md p-1.5 text-brand-blue hover:bg-sand"
+                          className="-my-1 rounded-full p-2.5 text-brand-blue hover:bg-sand"
                         >
                           <MessageCircle className="size-4" aria-hidden />
                         </a>
@@ -356,8 +394,7 @@ function ProductJsonLd({ product, image }: { product: Product; image?: string })
             "@type": "Offer",
             priceCurrency: "CLP",
             price: product.price,
-            availability:
-              product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           }
         : undefined,
   };

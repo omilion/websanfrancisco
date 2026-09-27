@@ -262,7 +262,7 @@ export function SortSelect({
       <select
         value={filters.orden}
         onChange={(e) => navigate({ orden: e.target.value as SortValue })}
-        className="rounded-md border border-sand bg-white px-3 py-2 font-medium outline-none focus:border-brand-blue"
+        className="rounded-md border border-sand bg-white px-3 py-2 text-base font-medium outline-none focus:border-brand-blue sm:text-sm"
         aria-label="Ordenar productos"
       >
         {sortOptions.map((o) => (

@@ -47,17 +47,17 @@ export default async function Home() {
           <div className="max-w-xl">
             <Plank className="w-16" />
             <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
-              Hecho en Ancud, Chiloé
+              Precisión artesanal desde Ancud
             </p>
             <h1
               id="hero-title"
               className="mt-2 font-display text-5xl font-bold uppercase leading-[0.95] text-brand-blue sm:text-6xl lg:text-7xl"
             >
-              Precisión artesanal desde el corazón de Chiloé
+              Muebles de madera hechos en Chiloé
             </h1>
             <p className="mt-5 max-w-md text-lg text-ink">
-              Muebles de stock listos para tu casa y proyectos a medida hechos en nuestro taller.
-              Despacho en toda la isla.
+              Comedores, dormitorios, sofás, closets y cocinas: en stock listos para despacho o fabricados
+              a tu medida en nuestro taller. Despacho en toda la isla.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link

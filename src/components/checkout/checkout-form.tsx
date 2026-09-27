@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Info, Lock, Store as StoreIcon, Truck } from "lucide-react";
+import { ChevronDown, Info, Lock, Store as StoreIcon, Truck } from "lucide-react";
 import { fulfillment, shippingCommunes, stores } from "@/config/site";
 import type { CartCatalogInfo } from "@/lib/cart/catalog-info";
 import { cartSubtotal, reconcileCart, type CartLine } from "@/lib/cart/reconcile";
@@ -60,6 +60,23 @@ export function CheckoutForm({ catalog }: { catalog: CartCatalogInfo }) {
   return (
     <form onSubmit={handleSubmit} noValidate={false} className="grid gap-10 lg:grid-cols-[1fr_400px] lg:gap-12">
       <div className="space-y-8">
+        {/* Resumen plegable arriba en celular: el total se ve sin bajar hasta el final */}
+        <details className="group rounded-lg bg-white ring-1 ring-sand lg:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center gap-2 text-sm font-semibold text-brand-blue">
+              <span className="group-open:hidden">Ver resumen del pedido</span>
+              <span className="hidden group-open:inline">Ocultar resumen</span>
+              <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden />
+            </span>
+            <span className="text-lg font-bold">{formatPrice(subtotal)}</span>
+          </summary>
+          <ul className="divide-y divide-sand border-t border-sand px-5">
+            {lines.map((line) => (
+              <SummaryLine key={line.sku} line={line} />
+            ))}
+          </ul>
+        </details>
+
         <Step number={1} title="Tus datos">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Nombre y apellido" required>
@@ -221,7 +238,7 @@ export function CheckoutForm({ catalog }: { catalog: CartCatalogInfo }) {
           </p>
         )}
 
-        <Link href="/carrito" className="mt-4 block text-center text-sm font-medium text-brand-blue hover:underline">
+        <Link href="/carrito" className="mt-2 block py-3 text-center text-sm font-medium text-brand-blue hover:underline">
           Volver al carrito
         </Link>
       </aside>

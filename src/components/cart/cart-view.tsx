@@ -66,7 +66,7 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
                   type="button"
                   onClick={() => removeFromCart(line.sku)}
                   aria-label={`Quitar ${line.name}`}
-                  className="rounded-md p-1.5 text-ink-muted hover:bg-sand hover:text-ink"
+                  className="-mr-1 -mt-1 rounded-full p-2.5 text-ink-muted hover:bg-sand hover:text-ink"
                 >
                   <Trash2 className="size-4" aria-hidden />
                 </button>
@@ -156,7 +156,7 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
           Continuar al pago
           <ArrowRight className="size-4" aria-hidden />
         </Link>
-        <Link href="/productos" className="mt-3 block text-center text-sm font-medium text-brand-blue hover:underline">
+        <Link href="/productos" className="mt-1 block py-3 text-center text-sm font-medium text-brand-blue hover:underline">
           Seguir comprando
         </Link>
 
