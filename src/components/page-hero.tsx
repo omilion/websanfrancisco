@@ -46,7 +46,7 @@ export function PageHero({ eyebrow, title, description, image, background, child
           <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
             {eyebrow}
           </p>
-          <h1 className="mt-2 font-display text-5xl font-bold uppercase leading-[0.95] text-brand-blue md:text-6xl">
+          <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl">
             {title}
           </h1>
           {description && <div className="mt-5 max-w-xl text-lg text-ink">{description}</div>}

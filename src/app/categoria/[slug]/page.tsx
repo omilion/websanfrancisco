@@ -61,7 +61,7 @@ async function CategoryContent({
             </ol>
           </nav>
           <Plank className="mt-6 w-16" />
-          <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-brand-blue md:text-6xl">
+          <h1 className="mt-4 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-5xl md:text-6xl">
             {category.name}
           </h1>
         </div>

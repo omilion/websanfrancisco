@@ -106,7 +106,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     />
                     <Title
                       id={content.isPageTitle ? "hero-title" : undefined}
-                      className="mt-5 font-display text-5xl font-bold uppercase leading-[0.95] text-white sm:text-6xl lg:text-7xl"
+                      className="mt-5 font-display text-2xl font-bold uppercase leading-[0.95] text-white sm:text-6xl lg:text-7xl"
                     >
                       {content.title}
                     </Title>

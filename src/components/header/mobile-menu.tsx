@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
 import type { MenuCategory } from "./mega-menu";
 import { secondaryNav } from "./mega-menu";
+import { CategoryIcon } from "../category-icon";
 import { SearchBox } from "./search-box";
 
 interface MobileMenuProps {
@@ -92,10 +93,8 @@ export function MobileMenu({ categories, stores }: MobileMenuProps) {
                     <li key={c.slug}>
                       <details className="group">
                         <summary className="flex cursor-pointer list-none items-center gap-3 py-3 [&::-webkit-details-marker]:hidden">
-                          <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-sand">
-                            {c.image && (
-                              <Image src={c.image} alt="" fill sizes="44px" className="object-cover" />
-                            )}
+                          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-blue/10 text-brand-blue">
+                            <CategoryIcon slug={c.slug} className="size-5" />
                           </span>
                           <span className="flex-1 font-display text-xl font-bold uppercase text-brand-blue">
                             {c.name}

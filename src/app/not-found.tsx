@@ -6,7 +6,7 @@ export default function NotFound() {
     <section className="mx-auto flex max-w-2xl flex-col items-center px-4 py-24 text-center md:py-32">
       <Plank className="w-16" />
       <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">Error 404</p>
-      <h1 className="mt-2 font-display text-5xl font-bold uppercase leading-none text-brand-blue md:text-6xl">
+      <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-5xl md:text-6xl">
         No encontramos esta página
       </h1>
       <p className="mt-4 text-lg text-ink-muted">

@@ -60,11 +60,11 @@ export default async function Home() {
 
       {/* ── Servicios ────────────────────────────────────── */}
       <section className="bg-brand-blue text-white" aria-label="Nuestros servicios">
-        <ul className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-6 px-4 py-8 sm:grid-cols-3 lg:grid-cols-6">
+        <ul className="mx-auto grid max-w-7xl grid-cols-3 gap-x-3 gap-y-6 px-4 py-8 lg:grid-cols-6">
           {services.map((service) => (
-            <li key={service.slug} className="flex flex-col items-start gap-2 lg:items-center lg:text-center">
+            <li key={service.slug} className="flex flex-col items-center gap-2 text-center">
               <ServiceIcon slug={service.slug} className="size-7 text-brand-orange" />
-              <span className="font-display text-lg font-semibold uppercase leading-tight tracking-wide">
+              <span className="font-display text-sm font-semibold uppercase leading-tight tracking-wide sm:text-lg">
                 {service.title}
               </span>
             </li>
@@ -151,8 +151,16 @@ export default async function Home() {
 
       {/* ── A medida ─────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24" aria-labelledby="a-medida-title">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-lg sm:mx-auto sm:w-full sm:max-w-md lg:max-w-none">
+        {/* Celular: título → imagen → resto. Escritorio: imagen a la izquierda, título y contenido a la derecha. */}
+        <div className="grid gap-8 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0">
+          <div className="lg:col-start-2 lg:row-start-1">
+            <SectionTitle
+              id="a-medida-title"
+              eyebrow="Hecho a medida"
+              title="Lo hacemos para tu espacio exacto"
+            />
+          </div>
+          <div className="relative aspect-[3/4] overflow-hidden rounded-lg sm:mx-auto sm:w-full sm:max-w-md lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:max-w-none lg:self-center">
             <Image
               src={homeCustomImage.src}
               alt={homeCustomImage.alt}
@@ -161,13 +169,8 @@ export default async function Home() {
               className="object-cover"
             />
           </div>
-          <div>
-            <SectionTitle
-              id="a-medida-title"
-              eyebrow="Hecho a medida"
-              title="Lo hacemos para tu espacio exacto"
-            />
-            <p className="mt-5 text-lg text-ink-muted">
+          <div className="lg:col-start-2 lg:row-start-2">
+            <p className="text-lg text-ink-muted lg:mt-5">
               Cocinas, closets, bibliotecas o ese rincón difícil bajo la escalera. Diseñamos y fabricamos
               contigo, con maderas nobles y terminaciones a tu gusto.
             </p>
