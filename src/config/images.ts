@@ -22,6 +22,28 @@ export const landingImages = {
   },
 } satisfies Record<string, ResponsiveImage>;
 
+/** Carrusel del banner principal de la portada, en orden. */
+export const heroSlides = [
+  {
+    src: "/images/tiendas/ancud.jpg",
+    alt: "Casa central de San Francisco Muebles en Ancud",
+    // El letrero del local queda detrás del título: zoom en escritorio y encuadre a la derecha en celular.
+    position: "left center",
+    desktopClassName: "origin-left scale-[1.75] xl:scale-[1.35]",
+    mobilePosition: "82% center",
+  },
+  // Posición 2: foto provisoria (living) hasta recibir la imagen definitiva.
+  {
+    src: "/images/landing/hero-desktop.jpg",
+    mobileSrc: "/images/landing/hero-movil.jpg",
+    alt: "Living de una casa en Chiloé con sofá, mesa de madera y estufa a leña",
+  },
+  {
+    src: "/images/landing/hero-cocina-castro.jpg",
+    alt: "Cocina a medida en madera oscura con cubierta negra, fabricada por San Francisco Muebles",
+  },
+];
+
 /** Foto de la sección "Hecho a medida" de la portada (cocina a medida real, vertical 3:4). */
 export const homeCustomImage = {
   src: "/images/landing/cocina-a-medida.jpg",

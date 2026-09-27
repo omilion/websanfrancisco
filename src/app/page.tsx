@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
+import { HeroCarousel } from "@/components/hero-carousel";
 import { ImageSlot } from "@/components/image-slot";
 import { Plank } from "@/components/plank";
 import { ProcessStepsGrid } from "@/components/process-steps";
@@ -8,7 +9,7 @@ import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
 import { StoreCard } from "@/components/store-card";
-import { categoryImages, homeCustomImage, landingImages } from "@/config/images";
+import { categoryImages, heroSlides, homeCustomImage } from "@/config/images";
 import { fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 
@@ -54,26 +55,9 @@ export default async function Home() {
       />
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
-        <div className="absolute inset-0 -z-10 hidden md:block">
-          <ImageSlot
-            src={landingImages.hero.desktop}
-            alt={landingImages.hero.alt}
-            pending="hero-desktop.jpg"
-            sizes="100vw"
-            priority
-          />
-        </div>
-        <div className="absolute inset-0 -z-10 md:hidden">
-          <ImageSlot
-            src={landingImages.hero.mobile}
-            alt={landingImages.hero.alt}
-            pending="hero-movil.jpg"
-            sizes="100vw"
-            priority
-          />
-        </div>
-        {/* Degradado para que el texto se lea sobre la foto */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cream via-cream/85 to-transparent md:bg-gradient-to-r md:from-cream md:via-cream/80 md:via-45% md:to-transparent" />
+        <HeroCarousel slides={heroSlides} />
+        {/* Degradado suave: deja ver la foto y mantiene legible el texto */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-cream/90 via-cream/60 via-45% to-cream/5 md:bg-gradient-to-r md:from-cream/85 md:via-cream/45 md:via-35% md:to-transparent md:to-65%" />
 
         <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-4 pb-16 pt-12 md:min-h-[640px] md:justify-center md:py-24">
           <div className="max-w-xl">

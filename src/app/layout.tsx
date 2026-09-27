@@ -3,7 +3,7 @@ import { Barlow_Condensed, Figtree } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
-import { stores, whatsappUrl } from "@/config/site";
+import { formatPhone, stores, whatsappUrl } from "@/config/site";
 import "./globals.css";
 
 // Títulos: condensada y en mayúsculas, conversa con el logo y los banners de la marca.
@@ -42,7 +42,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
-        <WhatsAppFloat href={whatsappUrl(stores[0].phone, "Hola, les escribo desde la página web.")} />
+        <WhatsAppFloat
+          contacts={stores.map((s) => ({
+            slug: s.slug,
+            city: s.city,
+            phoneLabel: formatPhone(s.phone),
+            href: whatsappUrl(s.phone, "Hola, les escribo desde la página web."),
+            isHeadquarters: s.isHeadquarters,
+          }))}
+        />
       </body>
     </html>
   );
