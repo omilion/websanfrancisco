@@ -25,9 +25,12 @@ export interface Product {
   description: string;
   /** Pesos chilenos, IVA incluido. null en productos a medida sin precio base. */
   price: number | null;
-  /** Stock total (suma de todas las tiendas). */
+  /**
+   * Stock vendible online: el de la bodega "Internet" del ERP. Es el que usan el carrito,
+   * el pago y los filtros de disponibilidad.
+   */
   stock: number;
-  /** Stock por tienda, por slug de config/site.ts (ancud, castro, quellon, quemchi). */
+  /** Stock físico por tienda (ancud, castro, quellon, quemchi). Solo referencia para retiro o consulta. */
   stockByStore: Record<string, number>;
   saleMode: SaleMode;
   categorySlug: string;

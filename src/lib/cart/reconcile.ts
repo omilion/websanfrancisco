@@ -10,7 +10,6 @@ export interface CartLine extends CartItem {
   purchasable: number;
   priceChanged: boolean;
   unavailable: boolean;
-  stockByStore: Record<string, number>;
 }
 
 /** Cruza el carrito guardado con el catálogo vigente. */
@@ -28,7 +27,6 @@ export function reconcileCart(items: CartItem[], info: Record<string, CartProduc
       purchasable: unavailable ? 0 : Math.min(item.quantity, current.stock),
       priceChanged: !unavailable && currentPrice !== item.price,
       unavailable,
-      stockByStore: current?.stockByStore ?? {},
     };
   });
 }

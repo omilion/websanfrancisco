@@ -11,13 +11,18 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Nombre (slug) de la bodega del ERP que reserva el stock para la venta web. */
+export const ONLINE_WAREHOUSE = "internet";
+
 export function mapErpProduct(p: ErpProduct): Product {
   const stockByStore: Record<string, number> = {};
+  let onlineStock = 0;
   for (const { sucursal, stock } of p.stock_sucursales ?? []) {
     const slug = slugify(sucursal);
-    stockByStore[slug] = (stockByStore[slug] ?? 0) + Math.max(0, stock);
+    const n = Math.max(0, stock);
+    if (slug === ONLINE_WAREHOUSE) onlineStock += n;
+    else stockByStore[slug] = (stockByStore[slug] ?? 0) + n;
   }
-  const storeTotal = Object.values(stockByStore).reduce((sum, n) => sum + n, 0);
 
   return {
     id: String(p.id),
@@ -27,7 +32,7 @@ export function mapErpProduct(p: ErpProduct): Product {
     shortDescription: p.descripcion_corta ?? "",
     description: p.descripcion ?? "",
     price: p.precio,
-    stock: p.stock_sucursales?.length ? storeTotal : Math.max(0, p.stock ?? 0),
+    stock: p.stock_sucursales?.length ? onlineStock : Math.max(0, p.stock ?? 0),
     stockByStore,
     saleMode: p.tipo_venta === "a_medida" ? "a-medida" : "stock",
     categorySlug: slugify(p.categoria),

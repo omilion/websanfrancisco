@@ -3,7 +3,8 @@ import type { ErpProduct } from "./types";
 // Datos de prueba con el mismo formato que el ERP, usados mientras no exista ERP_API_URL.
 // Categorías tomadas del sitio actual de San Francisco Muebles.
 
-type StockPorSucursal = Partial<Record<"Ancud" | "Castro" | "Quellón" | "Quemchi", number>>;
+// "Internet" es la bodega del ERP con el stock reservado para la venta web.
+type StockPorSucursal = Partial<Record<"Internet" | "Ancud" | "Castro" | "Quellón" | "Quemchi", number>>;
 
 function producto(
   id: number,
@@ -35,7 +36,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion:
       "Mesa de comedor fabricada en encina maciza en nuestro taller de Ancud. Terminación en aceite natural que resalta la veta de la madera.",
     precio: 489990,
-    stock: { Ancud: 2, Castro: 1 },
+    stock: { Internet: 2, Ancud: 2, Castro: 1 },
     categoria: "Comedor",
     subcategoria: "Mesas",
     ancho: 160,
@@ -48,7 +49,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Mesa extensa de roble para 8 personas.",
     descripcion: "Mesa de roble Chiloé para 8 personas, cubierta de 4 cm y patas torneadas.",
     precio: 689990,
-    stock: { Ancud: 1 },
+    stock: { Internet: 1, Ancud: 1 },
     categoria: "Comedor",
     subcategoria: "Mesas",
     ancho: 200,
@@ -61,7 +62,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Silla de roble con asiento tapizado.",
     descripcion: "Silla de roble con asiento tapizado en tela de alto tráfico.",
     precio: 89990,
-    stock: { Ancud: 12, Castro: 8, Quellón: 4, Quemchi: 6 },
+    stock: { Internet: 10, Ancud: 12, Castro: 8, Quellón: 4, Quemchi: 6 },
     categoria: "Comedor",
     subcategoria: "Sillas",
     ancho: 45,
@@ -74,7 +75,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Banca maciza para mesa de comedor.",
     descripcion: "Banca de encina maciza de 140 cm, ideal para acompañar mesas de 160 cm.",
     precio: 159990,
-    stock: { Castro: 2, Quemchi: 1 },
+    stock: { Internet: 0, Castro: 2, Quemchi: 1 },
     categoria: "Comedor",
     subcategoria: "Sillas",
     ancho: 140,
@@ -89,7 +90,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Base de cama con respaldo de madera.",
     descripcion: "Base de cama de 2 plazas con respaldo de madera nativa y listones reforzados.",
     precio: 369990,
-    stock: { Ancud: 1, Castro: 1 },
+    stock: { Internet: 1, Ancud: 1, Castro: 1 },
     categoria: "Dormitorio",
     subcategoria: "Camas",
     ancho: 150,
@@ -102,7 +103,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Cama de plaza y media en roble.",
     descripcion: "Cama de plaza y media en roble, con respaldo de listones verticales.",
     precio: 249990,
-    stock: { Quemchi: 2, Quellón: 1 },
+    stock: { Internet: 2, Quemchi: 2, Quellón: 1 },
     categoria: "Dormitorio",
     subcategoria: "Camas",
     ancho: 105,
@@ -115,7 +116,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Velador con dos cajones y correderas metálicas.",
     descripcion: "Velador de encina con dos cajones, correderas metálicas y tiradores de madera.",
     precio: 119990,
-    stock: { Ancud: 4, Castro: 3, Quellón: 2 },
+    stock: { Internet: 5, Ancud: 4, Castro: 3, Quellón: 2 },
     categoria: "Dormitorio",
     subcategoria: "Veladores",
     ancho: 50,
@@ -143,7 +144,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Mesa de centro con repisa inferior.",
     descripcion: "Mesa de centro de encina maciza con repisa inferior para revistas y mantas.",
     precio: 179990,
-    stock: { Ancud: 3, Quellón: 1 },
+    stock: { Internet: 3, Ancud: 3, Quellón: 1 },
     categoria: "Living",
     subcategoria: "Mesas de centro",
     ancho: 110,
@@ -156,7 +157,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Mueble de TV con puertas y cajón.",
     descripcion: "Rack de TV de roble de 180 cm con dos puertas, cajón central y pasacables.",
     precio: 299990,
-    stock: { Castro: 2 },
+    stock: { Internet: 1, Castro: 2 },
     categoria: "Living",
     subcategoria: "Muebles de TV",
     ancho: 180,
@@ -184,7 +185,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Seccional amplio con chaise longue.",
     descripcion: "Sofá seccional en L con chaise longue reversible, tapiz de alto tráfico.",
     precio: 899990,
-    stock: { Ancud: 1 },
+    stock: { Internet: 1, Ancud: 1 },
     categoria: "Sofás",
     subcategoria: null,
     ancho: 280,
@@ -197,7 +198,7 @@ export const mockErpProducts: ErpProduct[] = [
     descripcion_corta: "Sofá compacto tapizado en cuero.",
     descripcion: "Sofá de dos cuerpos tapizado en cuero, con patas de roble.",
     precio: 579990,
-    stock: { Castro: 1, Quemchi: 1 },
+    stock: { Internet: 1, Castro: 1, Quemchi: 1 },
     categoria: "Sofás",
     subcategoria: null,
     ancho: 160,

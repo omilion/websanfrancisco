@@ -8,7 +8,6 @@ export interface CartProductInfo {
   slug: string;
   price: number | null;
   stock: number;
-  stockByStore: Record<string, number>;
   image: string;
 }
 
@@ -27,7 +26,6 @@ export async function getCartCatalogInfo(): Promise<CartCatalogInfo> {
           slug: p.slug,
           price: p.price,
           stock: p.stock,
-          stockByStore: p.stockByStore,
           image: p.images[0]?.url ?? placeholderFor(p),
         },
       ]),

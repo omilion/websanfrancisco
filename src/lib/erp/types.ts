@@ -9,7 +9,10 @@ export interface ErpProduct {
   descripcion: string | null;
   precio: number | null;
   stock: number | null;
-  /** Stock por sucursal. Si el ERP no lo entrega, se usa `stock` como total. */
+  /**
+   * Stock por sucursal/bodega. La bodega "Internet" es el stock reservado para la venta web;
+   * las demás son tiendas físicas. Si el ERP no entrega este detalle, `stock` se toma como stock web.
+   */
   stock_sucursales?: { sucursal: string; stock: number }[] | null;
   /** Marca del ERP que separa productos de stock y a medida. */
   tipo_venta: "stock" | "a_medida";

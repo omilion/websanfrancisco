@@ -23,13 +23,6 @@ export function CheckoutForm({ catalog }: { catalog: CartCatalogInfo }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  // Tiendas que tienen todo el pedido en stock (para retiro).
-  const pickupStores = stores.map((store) => ({
-    ...store,
-    hasAll: lines.every((l) => (l.stockByStore[store.slug] ?? 0) >= l.purchasable),
-  }));
-  const anyStoreHasAll = pickupStores.some((s) => s.hasAll);
-
   if (lines.length === 0) {
     return (
       <div className="rounded-lg border-2 border-dashed border-sand bg-white px-6 py-14 text-center">
@@ -150,22 +143,17 @@ export function CheckoutForm({ catalog }: { catalog: CartCatalogInfo }) {
                   <option value="" disabled>
                     Elige una tienda
                   </option>
-                  {pickupStores
-                    .filter((s) => s.hasAll || !anyStoreHasAll)
-                    .map((s) => (
-                      <option key={s.slug} value={s.slug}>
-                        {s.city}
-                        {s.hasAll ? " · tiene todo tu pedido" : ""}
-                      </option>
-                    ))}
+                  {stores.map((s) => (
+                    <option key={s.slug} value={s.slug}>
+                      {s.city}
+                    </option>
+                  ))}
                 </select>
               </Field>
-              {!anyStoreHasAll && (
-                <p className="mt-3 text-sm text-ink-muted">
-                  Ninguna tienda tiene todo tu pedido hoy: coordinamos el traslado y te avisamos cuando esté
-                  listo para retirar.
-                </p>
-              )}
+              <p className="mt-3 text-sm text-ink-muted">
+                Tu pedido sale de nuestra bodega online: te avisamos cuando esté listo para retirar en la
+                tienda que elijas.
+              </p>
             </div>
           )}
         </Step>

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import {
   ArrowRight,
   ChevronRight,
+  Globe,
   MessageCircle,
   Ruler,
   Store as StoreIcon,
@@ -69,6 +70,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
   const placeholder = { url: placeholderFor(product), alt: `${product.name} (foto próximamente)` };
   const headquarters = stores.find((s) => s.isHeadquarters) ?? stores[0];
   const productRef = `${product.name} (${product.sku})`;
+  const storesWithStock = stores.filter((s) => (product.stockByStore[s.slug] ?? 0) > 0);
 
   return (
     <>
@@ -166,7 +168,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
               {inStock ? (
                 <>
                   <p className="mb-4 text-sm font-semibold text-brand-blue">
-                    ● Disponible · {product.stock} {product.stock === 1 ? "unidad" : "unidades"} en tiendas
+                    ● Disponible para compra online
                   </p>
                   <AddToCart
                     sku={product.sku}
@@ -179,22 +181,36 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 </>
               ) : isStock ? (
                 <>
-                  <p className="text-sm font-semibold text-ink">Agotado por ahora</p>
-                  <p className="mt-1 text-sm text-ink-muted">
-                    Escríbenos para saber cuándo vuelve, o te lo fabricamos a medida.
-                  </p>
+                  {storesWithStock.length > 0 ? (
+                    <>
+                      <p className="text-sm font-semibold text-ink">No disponible para compra online</p>
+                      <p className="mt-1 text-sm text-ink-muted">
+                        Hay unidades en {storesWithStock.map((s) => s.city).join(", ")}. Escríbenos para
+                        reservarlo o visítanos en la tienda.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-semibold text-ink">Agotado por ahora</p>
+                      <p className="mt-1 text-sm text-ink-muted">
+                        Escríbenos para saber cuándo vuelve, o te lo fabricamos a medida.
+                      </p>
+                    </>
+                  )}
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <a
                       href={whatsappUrl(
                         headquarters.phone,
-                        `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
+                        storesWithStock.length > 0
+                          ? `Hola, quiero reservar ${productRef}.`
+                          : `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-brand-blue px-5 py-3 font-semibold text-white hover:bg-brand-blue-dark"
                     >
                       <MessageCircle className="size-5" aria-hidden />
-                      Consultar reposición
+                      {storesWithStock.length > 0 ? "Consultar por WhatsApp" : "Consultar reposición"}
                     </a>
                     <Link
                       href="/cotizar"
@@ -235,10 +251,26 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             {/* Stock por tienda */}
             {isStock && (
               <div className="mt-6">
-                <h2 className="text-sm font-bold uppercase tracking-wide text-ink">
-                  Disponibilidad por tienda
-                </h2>
-                <ul className="mt-3 divide-y divide-sand rounded-lg bg-white ring-1 ring-sand">
+                <h2 className="text-sm font-bold uppercase tracking-wide text-ink">Disponibilidad</h2>
+                {/* Bodega Internet: stock que se vende en la web */}
+                <div
+                  className={`mt-3 flex items-center gap-3 rounded-lg px-4 py-3.5 text-sm ${product.stock > 0 ? "bg-brand-blue text-white" : "bg-sand/60 text-ink"}`}
+                >
+                  <Globe
+                    className={`size-5 shrink-0 ${product.stock > 0 ? "text-brand-orange" : "text-ink-muted"}`}
+                    aria-hidden
+                  />
+                  <span className="font-semibold">Compra online</span>
+                  <span className={`ml-auto font-semibold ${product.stock > 0 ? "" : "text-ink-muted"}`}>
+                    {product.stock > 0
+                      ? `${product.stock} ${product.stock === 1 ? "disponible" : "disponibles"}`
+                      : "Sin stock"}
+                  </span>
+                </div>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+                  En tiendas
+                </p>
+                <ul className="mt-2 divide-y divide-sand rounded-lg bg-white ring-1 ring-sand">
                   {stores.map((store) => {
                     const n = product.stockByStore[store.slug] ?? 0;
                     return (
@@ -284,7 +316,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 <li className="flex gap-3">
                   <StoreIcon className="size-5 shrink-0 text-brand-orange-dark" aria-hidden />
                   <span>
-                    <strong>Retiro en tienda</strong> en la sucursal que tenga stock.
+                    <strong>Retiro en tienda</strong> en cualquiera de nuestras 4 tiendas.
                   </span>
                 </li>
               )}
