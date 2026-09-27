@@ -72,19 +72,19 @@ export default function ContactoPage() {
           </ul>
           <div className="mt-6">
             <PendingText>
-              horarios de atención y direcciones de las tiendas de Castro, Quellón y Quemchi.
+              horarios de atención de cada tienda (no están publicados en su sitio actual).
             </PendingText>
           </div>
         </div>
       </section>
 
-      {/* ── Mapa casa matriz ─────────────────────────────── */}
+      {/* ── Mapa casa central ─────────────────────────────── */}
       {headquarters.address && (
         <section className="mx-auto max-w-7xl px-4 pb-16 md:pb-24" aria-label={`Mapa ${headquarters.name}`}>
           <div className="overflow-hidden rounded-lg ring-1 ring-sand">
             <iframe
               title={`Mapa de ${headquarters.name}: ${headquarters.address}`}
-              src={`https://www.google.com/maps?q=${encodeURIComponent(headquarters.address + ", Chiloé, Chile")}&output=embed`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(`${headquarters.address}, ${headquarters.city}, Chiloé, Chile`)}&output=embed`}
               className="h-80 w-full md:h-96"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

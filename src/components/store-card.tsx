@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Camera, MapPin, MessageCircle, Phone } from "lucide-react";
-import { formatPhone, whatsappUrl, type Store } from "@/config/site";
+import { ArrowUpRight, Camera, MapPin, MessageCircle, Phone } from "lucide-react";
+import { formatPhone, mapsUrl, whatsappUrl, type Store } from "@/config/site";
 
 /** Tarjeta de tienda con foto del local. "dark" sobre fondo azul, "light" sobre fondo claro. */
 export function StoreCard({ store, tone = "dark" }: { store: Store; tone?: "light" | "dark" }) {
@@ -28,7 +28,7 @@ export function StoreCard({ store, tone = "dark" }: { store: Store; tone?: "ligh
         )}
         {store.isHeadquarters && (
           <span className="absolute left-3 top-3 rounded bg-brand-orange px-2 py-0.5 text-xs font-bold uppercase text-ink shadow">
-            Casa matriz
+            Casa central
           </span>
         )}
       </div>
@@ -41,7 +41,18 @@ export function StoreCard({ store, tone = "dark" }: { store: Store; tone?: "ligh
         {store.address && (
           <p className={`mt-3 flex gap-2 text-sm ${dark ? "text-white/80" : "text-ink-muted"}`}>
             <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
-            {store.address}
+            <span>
+              {store.address}
+              <a
+                href={mapsUrl(store) ?? undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Cómo llegar a ${store.name} en Google Maps`}
+                className={`mt-0.5 flex w-fit items-center gap-0.5 py-1 text-xs font-semibold underline-offset-4 hover:underline ${dark ? "text-brand-orange" : "text-brand-blue"}`}
+              >
+                Cómo llegar <ArrowUpRight className="size-3.5" aria-hidden />
+              </a>
+            </span>
           </p>
         )}
         <p className={`mt-2 flex gap-2 text-sm tabular-nums ${dark ? "text-white/80" : "text-ink-muted"}`}>

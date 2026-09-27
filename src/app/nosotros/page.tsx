@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Hammer, HeartHandshake, MapPin, Trees } from "lucide-react";
 import { CtaBand } from "@/components/cta-band";
 import Image from "next/image";
 import { PageHero } from "@/components/page-hero";
@@ -16,8 +15,16 @@ export const metadata: Metadata = {
 };
 
 const milestones = [
-  { year: "1999", title: "Los comienzos", text: "Damos nuestros primeros pasos en el rubro del mueble en Ancud." },
-  { year: "2000", title: "Inicio formal", text: "Iniciamos formalmente nuestras actividades en Ancud, Chiloé." },
+  {
+    year: "1999",
+    title: "Los comienzos",
+    text: "Damos nuestros primeros pasos en el rubro del mueble en Ancud.",
+  },
+  {
+    year: "2000",
+    title: "Inicio formal",
+    text: "Iniciamos formalmente nuestras actividades en Ancud, Chiloé.",
+  },
   {
     year: "2002",
     title: "Nuestros primeros muebles",
@@ -36,34 +43,31 @@ const stats = [
   { value: "4", label: "tiendas en Chiloé" },
 ];
 
-const values = [
+// Identidad oficial de la empresa (texto entregado por el cliente).
+const identity = [
   {
-    icon: Hammer,
-    title: "Precisión artesanal",
-    text: "Cada mueble se fabrica en nuestro taller de Ancud, cuidando cada unión y cada terminación.",
+    number: "01",
+    title: "Misión",
+    text: "Transformar espacios a través de la excelencia artesanal, entregando soluciones que combinan funcionalidad moderna con la identidad única de nuestra tradición.",
   },
   {
-    icon: Trees,
-    title: "Maderas nobles",
-    text: "Trabajamos con encina y roble, maderas firmes que duran por años.",
+    number: "02",
+    title: "Visión",
+    text: "Consolidarnos como el referente líder en mobiliario de autor, siendo reconocidos por nuestra innovación constante y el respeto por la sostenibilidad ambiental.",
   },
-  {
-    icon: HeartHandshake,
-    title: "Simplicidad en cada detalle",
-    text: "Diseños honestos y funcionales, pensados para la vida diaria en el sur.",
-  },
-  {
-    icon: MapPin,
-    title: "Compromiso con Chiloé",
-    text: "Cuatro tiendas en la isla y el mayor compromiso con nuestra comunidad.",
-  },
+];
+
+const pillars = [
+  "Excelencia en el acabado",
+  "Compromiso inquebrantable con el cliente",
+  "Un profundo amor por nuestra tradición y geografía del sur",
 ];
 
 export default function NosotrosPage() {
   return (
     <>
       <PageHero
-        eyebrow={`Desde ${site.since} en Ancud`}
+        eyebrow={`Mueblería familiar · Desde ${site.since} en Ancud`}
         title="Un taller del corazón de Chiloé"
         description="Somos una empresa chilota del rubro del hogar y los muebles: fabricamos nuestra propia línea y proyectos a medida para las casas de la isla."
         background={woodBackground}
@@ -76,13 +80,13 @@ export default function NosotrosPage() {
             <div className="relative aspect-[16/10] overflow-hidden rounded-lg">
               <Image
                 src="/images/tiendas/ancud.jpg"
-                alt="Casa matriz de San Francisco Muebles en Ancud, esquina de Prat con Baquedano"
+                alt="Casa central de San Francisco Muebles en Ancud, esquina de Prat con Baquedano"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
               />
               <span className="absolute bottom-3 left-3 rounded bg-white/90 px-2.5 py-1 text-xs font-semibold text-ink">
-                Casa matriz · Ancud
+                Casa central · Ancud
               </span>
             </div>
             <dl className="mt-6 grid grid-cols-3 divide-x divide-sand rounded-lg bg-white ring-1 ring-sand">
@@ -124,7 +128,9 @@ export default function NosotrosPage() {
                   <span className="absolute -left-[2.6rem] top-0.5 flex size-5 items-center justify-center rounded-full bg-cream ring-2 ring-brand-orange">
                     <span className="size-2 rounded-full bg-brand-orange" />
                   </span>
-                  <p className="font-display text-3xl font-bold leading-none text-brand-orange-dark">{m.year}</p>
+                  <p className="font-display text-3xl font-bold leading-none text-brand-orange-dark">
+                    {m.year}
+                  </p>
                   <h3 className="mt-1 font-semibold text-ink">{m.title}</h3>
                   <p className="text-sm text-ink-muted">{m.text}</p>
                 </li>
@@ -132,28 +138,74 @@ export default function NosotrosPage() {
             </ol>
 
             <div className="mt-10 flex items-center gap-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-orange-dark">Síguenos</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-orange-dark">
+                Síguenos
+              </span>
               <SocialLinks tone="light" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Valores ──────────────────────────────────────── */}
-      <section className="bg-sand/50" aria-labelledby="valores">
-        <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
-          <SectionTitle id="valores" eyebrow="Lo que nos mueve" title="Cómo hacemos las cosas" />
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="rounded-lg bg-white p-6 ring-1 ring-sand">
-                <Icon className="size-8 text-brand-orange-dark" strokeWidth={1.75} aria-hidden />
-                <h3 className="mt-4 font-display text-2xl font-bold uppercase leading-tight text-brand-blue">
-                  {title}
-                </h3>
-                <p className="mt-2 text-sm text-ink-muted">{text}</p>
+      {/* ── Identidad: misión, visión y valores ─────────── */}
+      <section
+        className="relative isolate overflow-hidden bg-brand-navy text-cream/80"
+        aria-labelledby="identidad"
+      >
+        <p
+          aria-hidden
+          className="pointer-events-none absolute -right-[0.05em] -top-[0.12em] -z-10 select-none font-display text-[22vw] font-bold uppercase leading-none text-white/[0.03] lg:text-[16vw]"
+        >
+          {site.since}
+        </p>
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:py-24 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <SectionTitle
+              id="identidad"
+              eyebrow="Nuestra identidad"
+              title="Artesanía, diseño y tradición"
+              tone="dark"
+            />
+            <p className="mt-6 text-lg leading-relaxed">
+              Desde el corazón de la Región de Los Lagos, esculpimos piezas que trascienden generaciones. No
+              creamos muebles en serie: diseñamos mobiliario de autor con maderas seleccionadas, respetando el
+              tiempo de la manufactura noble y coordinando entregas dedicadas a cada rincón del sur.
+            </p>
+          </div>
+
+          <ol className="grid gap-4 lg:col-span-7">
+            {identity.map((item) => (
+              <li key={item.number} className="rounded-xl bg-white/[0.05] p-6 ring-1 ring-white/10 md:p-8">
+                <div className="flex items-baseline gap-4">
+                  <span className="font-display text-4xl font-bold leading-none text-brand-orange">
+                    {item.number}
+                  </span>
+                  <h3 className="font-display text-3xl font-bold uppercase leading-none text-cream">
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="mt-4 leading-relaxed">{item.text}</p>
               </li>
             ))}
-          </ul>
+            <li className="rounded-xl bg-white/[0.05] p-6 ring-1 ring-white/10 md:p-8">
+              <div className="flex items-baseline gap-4">
+                <span className="font-display text-4xl font-bold leading-none text-brand-orange">03</span>
+                <h3 className="font-display text-3xl font-bold uppercase leading-none text-cream">Valores</h3>
+              </div>
+              <p className="mt-4 leading-relaxed">Nuestra cultura se sostiene sobre tres pilares:</p>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+                {pillars.map((pillar) => (
+                  <li
+                    key={pillar}
+                    className="rounded-lg border border-white/10 bg-brand-navy/60 p-4 text-sm font-semibold text-cream"
+                  >
+                    <span className="mb-2 block h-1 w-8 -skew-x-12 bg-brand-orange" aria-hidden />
+                    {pillar}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ol>
         </div>
       </section>
 

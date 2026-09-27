@@ -1,5 +1,5 @@
-// Datos de contacto de las tiendas. Fuente: historia destacada "Contactanos" de Instagram
-// (sep. 2026). Direcciones y horarios de Castro, Quellón y Quemchi pendientes de confirmar.
+// Datos de contacto de las tiendas. Fuente: sanfranciscomuebles.cl/contacto y la historia
+// "Contactanos" de Instagram (sep. 2026). Horarios de atención: pendientes (no están publicados).
 
 export interface Store {
   slug: string;
@@ -13,13 +13,20 @@ export interface Store {
   image: string | null;
 }
 
+/** Link de Google Maps con la dirección de la tienda. */
+export function mapsUrl(store: Store): string | null {
+  if (!store.address) return null;
+  const query = `${store.address}, ${store.city}, Chiloé, Chile`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export const stores: Store[] = [
   {
     slug: "ancud",
     name: "Tienda Ancud",
     city: "Ancud",
     phone: "+56982735261",
-    address: "Arturo Prat 130, esquina Baquedano, Ancud",
+    address: "Arturo Prat 130, esquina Baquedano",
     isHeadquarters: true,
     image: "/images/tiendas/ancud.jpg",
   },
@@ -28,7 +35,7 @@ export const stores: Store[] = [
     name: "Tienda Castro",
     city: "Castro",
     phone: "+56956901262",
-    address: null,
+    address: "Galvarino Riveros 1663",
     isHeadquarters: false,
     image: "/images/tiendas/castro.jpg",
   },
@@ -37,7 +44,7 @@ export const stores: Store[] = [
     name: "Tienda Quellón",
     city: "Quellón",
     phone: "+56940975021",
-    address: null,
+    address: "Avenida La Paz 416",
     isHeadquarters: false,
     image: "/images/tiendas/quellon.jpg",
   },
@@ -46,7 +53,7 @@ export const stores: Store[] = [
     name: "Tienda Quemchi",
     city: "Quemchi",
     phone: "+56956233768",
-    address: null,
+    address: "Pedro Montt 135, local 2",
     isHeadquarters: false,
     image: null, // falta foto de la tienda
   },

@@ -167,7 +167,7 @@ export async function SiteFooter() {
                   </div>
                   {store.isHeadquarters && (
                     <span className="mt-1 block text-xs font-semibold uppercase tracking-wider text-brand-orange">
-                      Casa matriz
+                      Casa central
                     </span>
                   )}
                   <a
@@ -185,7 +185,7 @@ export async function SiteFooter() {
                 .map((s) => (
                   <li key={s.slug} className="flex gap-2">
                     <MapPin className="mt-0.5 size-4 shrink-0 text-brand-orange" aria-hidden />
-                    {s.address}
+                    {s.address}, {s.city}
                   </li>
                 ))}
               <li>
