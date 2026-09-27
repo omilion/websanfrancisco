@@ -3,12 +3,12 @@ import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { ImageSlot } from "@/components/image-slot";
 import { Plank } from "@/components/plank";
-import { ProcessPhotos, ProcessStepsGrid } from "@/components/process-steps";
+import { ProcessStepsGrid } from "@/components/process-steps";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
 import { StoreCard } from "@/components/store-card";
-import { categoryImages, landingImages } from "@/config/images";
+import { categoryImages, homeCustomImage, landingImages } from "@/config/images";
 import { fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 
@@ -178,7 +178,7 @@ export default async function Home() {
             <Link
               href="/categoria/sofas"
               aria-label="Sofás y sillones: ver categoría"
-              className="group mt-12 block overflow-hidden rounded-xl shadow-[0_20px_40px_-24px_rgba(1,42,72,0.45)] ring-1 ring-sand md:mt-16"
+              className="group mt-12 block overflow-hidden rounded-xl ring-1 ring-sand md:mt-16"
             >
               <Image
                 src="/images/banners/sofas-desktop.jpg"
@@ -204,12 +204,13 @@ export default async function Home() {
       {/* ── A medida ─────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24" aria-labelledby="a-medida-title">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:aspect-[4/3] lg:aspect-[4/5]">
-            <ImageSlot
-              src={landingImages.aMedida.mobile}
-              alt={landingImages.aMedida.alt}
-              pending="a-medida-movil.jpg"
-              sizes="(min-width: 1024px) 50vw, 100vw"
+          <div className="relative aspect-[3/4] overflow-hidden rounded-lg sm:mx-auto sm:w-full sm:max-w-md lg:max-w-none">
+            <Image
+              src={homeCustomImage.src}
+              alt={homeCustomImage.alt}
+              fill
+              sizes="(min-width: 1024px) 50vw, (min-width: 640px) 448px, 100vw"
+              className="object-cover"
             />
           </div>
           <div>
@@ -246,9 +247,6 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mt-12">
-          <ProcessPhotos />
-        </div>
       </section>
 
       {/* ── Tiendas ──────────────────────────────────────── */}

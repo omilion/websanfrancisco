@@ -22,6 +22,12 @@ export const landingImages = {
   },
 } satisfies Record<string, ResponsiveImage>;
 
+/** Foto de la sección "Hecho a medida" de la portada (cocina a medida real, vertical 3:4). */
+export const homeCustomImage = {
+  src: "/images/landing/cocina-a-medida.jpg",
+  alt: "Cocina a medida San Francisco Muebles: muebles negros, isla con cubierta de madera y vigas a la vista",
+};
+
 /** Banners de páginas internas. */
 export const pageImages = {
   contacto: {
