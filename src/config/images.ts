@@ -29,7 +29,8 @@ export const heroSlides: HeroSlide[] = [
   {
     src: "/images/tiendas/ancud.jpg",
     alt: "Casa central de San Francisco Muebles en Ancud",
-    mobilePosition: "82% center",
+    // En celular se alinea a la izquierda; las demás imágenes van centradas.
+    mobilePosition: "left center",
   },
   // 2 · Título de la página a la izquierda (foto provisoria: living).
   {

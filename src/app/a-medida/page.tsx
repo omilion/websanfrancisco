@@ -40,9 +40,18 @@ export default function AMedidaPage() {
         <SectionTitle id="que-hacemos" eyebrow="Qué hacemos" title="Proyectos para toda la casa" />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {customProjectTypes.map((type) => (
-            <li key={type.slug} className="rounded-lg bg-white p-6 ring-1 ring-sand">
-              <h3 className="font-display text-2xl font-bold uppercase text-brand-blue">{type.name}</h3>
-              <p className="mt-2 text-ink-muted">{type.text}</p>
+            <li key={type.slug}>
+              <Link
+                href={`/cotizar?tipo=${type.slug}`}
+                className="group flex h-full flex-col rounded-lg bg-white p-6 ring-1 ring-sand transition hover:ring-brand-blue"
+              >
+                <h3 className="font-display text-2xl font-bold uppercase text-brand-blue">{type.name}</h3>
+                <p className="mt-2 text-ink-muted">{type.text}</p>
+                <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-semibold text-brand-blue">
+                  Cotizar {type.name.toLowerCase()}
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                </span>
+              </Link>
             </li>
           ))}
         </ul>

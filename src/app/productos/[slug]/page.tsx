@@ -22,6 +22,7 @@ import { fulfillment, stores, whatsappUrl } from "@/config/site";
 import { getCatalog, getCategory, getProductBySlug } from "@/lib/catalog";
 import type { Product } from "@/lib/catalog/types";
 import { formatPrice } from "@/lib/format";
+import { quoteTypeForCategory } from "@/lib/quotes/schema";
 
 export async function generateStaticParams() {
   const { products } = await getCatalog();
@@ -96,7 +97,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                     `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
                   ),
                 }
-              : { kind: "cotizar", href: "/cotizar" }
+              : { kind: "cotizar", href: `/cotizar?tipo=${quoteTypeForCategory(product.categorySlug)}` }
         }
       />
 
@@ -213,7 +214,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                       {storesWithStock.length > 0 ? "Consultar por WhatsApp" : "Consultar reposición"}
                     </a>
                     <Link
-                      href="/cotizar"
+                      href={`/cotizar?tipo=${quoteTypeForCategory(product.categorySlug)}`}
                       className="inline-flex flex-1 items-center justify-center rounded-md border-2 border-brand-blue px-5 py-2.5 font-semibold text-brand-blue hover:bg-cream"
                     >
                       Cotizar a medida
@@ -228,7 +229,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                   </p>
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <Link
-                      href="/cotizar"
+                      href={`/cotizar?tipo=${quoteTypeForCategory(product.categorySlug)}`}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-brand-blue px-5 py-3.5 font-semibold text-white hover:bg-brand-blue-dark"
                     >
                       Cotizar sin costo

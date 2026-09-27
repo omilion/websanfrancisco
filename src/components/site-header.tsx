@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { categoryImages, landingImages } from "@/config/images";
 import { fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
@@ -70,7 +71,10 @@ export async function SiteHeader() {
           </Link>
 
           <div className="hidden h-full lg:block">
-            <MegaMenu categories={menuCategories} customImage={landingImages.aMedida.desktop} />
+            {/* Suspense: el menú lee la ruta actual (usePathname), que en páginas dinámicas llega al pedir la página. */}
+            <Suspense fallback={null}>
+              <MegaMenu categories={menuCategories} customImage={landingImages.aMedida.desktop} />
+            </Suspense>
           </div>
 
           <div className="ml-auto hidden min-w-0 flex-1 md:block lg:max-w-xs xl:max-w-sm">
