@@ -4,7 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, ArrowRight, CheckCircle2, Lock, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Lock,
+  Minus,
+  Plus,
+  Send,
+  ShoppingBag,
+  Trash2,
+  X,
+} from "lucide-react";
 import type { CartCatalogInfo } from "@/lib/cart/catalog-info";
 import { cartSubtotal, reconcileCart, type CartLine } from "@/lib/cart/reconcile";
 import {
@@ -15,6 +26,7 @@ import {
   useCart,
   useCartDrawer,
 } from "@/lib/cart/store";
+import { checkoutPath, commerce } from "@/config/site";
 import { formatPrice } from "@/lib/format";
 
 const noopSubscribe = () => () => {};
@@ -26,7 +38,11 @@ const noopSubscribe = () => () => {};
  */
 export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
   const { open, highlight } = useCartDrawer();
-  const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
   const items = useCart();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -124,7 +140,10 @@ export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
         </div>
 
         {added && (
-          <p role="status" className="flex items-center gap-2 bg-brand-blue px-5 py-2.5 text-sm font-medium text-white">
+          <p
+            role="status"
+            className="flex items-center gap-2 bg-brand-blue px-5 py-2.5 text-sm font-medium text-white"
+          >
             <CheckCircle2 className="size-4 shrink-0 text-brand-orange" aria-hidden />
             <span className="truncate">Agregaste {added.name}</span>
           </p>
@@ -135,8 +154,12 @@ export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
             <span className="flex size-20 items-center justify-center rounded-full bg-sand">
               <ShoppingBag className="size-9 text-brand-blue" strokeWidth={1.5} aria-hidden />
             </span>
-            <p className="mt-5 font-display text-2xl font-bold uppercase text-brand-blue">Tu carrito está vacío</p>
-            <p className="mt-2 text-sm text-ink-muted">Descubre nuestros muebles en stock o cotiza uno a tu medida.</p>
+            <p className="mt-5 font-display text-2xl font-bold uppercase text-brand-blue">
+              Tu carrito está vacío
+            </p>
+            <p className="mt-2 text-sm text-ink-muted">
+              Descubre nuestros muebles en stock o cotiza uno a tu medida.
+            </p>
             <Link
               href="/productos"
               onClick={closeCartDrawer}
@@ -144,13 +167,20 @@ export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
             >
               Ver catálogo
             </Link>
-            <Link href="/cotizar" onClick={closeCartDrawer} className="mt-3 text-sm font-semibold text-brand-blue hover:underline">
+            <Link
+              href="/cotizar"
+              onClick={closeCartDrawer}
+              className="mt-3 text-sm font-semibold text-brand-blue hover:underline"
+            >
               Cotizar a medida
             </Link>
           </div>
         ) : (
           <>
-            <ul className="min-h-0 flex-1 divide-y divide-sand overflow-y-auto overscroll-contain px-5" aria-label="Productos en el carrito">
+            <ul
+              className="min-h-0 flex-1 divide-y divide-sand overflow-y-auto overscroll-contain px-5"
+              aria-label="Productos en el carrito"
+            >
               {lines.map((line) => (
                 <DrawerLine key={line.sku} line={line} highlighted={line.sku === highlight} />
               ))}
@@ -163,7 +193,9 @@ export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
                 <span className="text-2xl font-bold">{formatPrice(subtotal)}</span>
               </div>
               <p className="mt-1 text-xs text-ink-muted">
-                IVA incluido. Despacho y armado se coordinan aparte, sin cobro en este pago.
+                {commerce.onlinePayments
+                  ? "IVA incluido. Despacho y armado se coordinan aparte, sin cobro en este pago."
+                  : "IVA incluido. Te confirmamos disponibilidad, despacho y armado."}
               </p>
 
               {hasIssues && (
@@ -174,16 +206,24 @@ export function CartDrawer({ catalog }: { catalog: CartCatalogInfo }) {
               )}
 
               <Link
-                href="/checkout"
+                href={checkoutPath}
                 onClick={closeCartDrawer}
                 aria-disabled={hasIssues}
                 className={`mt-4 flex items-center justify-center gap-2 rounded-md px-5 py-3.5 font-semibold text-white transition ${hasIssues ? "pointer-events-none bg-ink-muted" : "bg-brand-blue hover:bg-brand-blue-dark"}`}
               >
-                <Lock className="size-4" aria-hidden />
-                Ir a pagar
+                {commerce.onlinePayments ? (
+                  <Lock className="size-4" aria-hidden />
+                ) : (
+                  <Send className="size-4" aria-hidden />
+                )}
+                {commerce.onlinePayments ? "Ir a pagar" : "Solicitar cotización"}
               </Link>
               <div className="mt-3 flex items-center justify-between text-sm">
-                <button type="button" onClick={closeCartDrawer} className="font-medium text-ink-muted hover:text-ink">
+                <button
+                  type="button"
+                  onClick={closeCartDrawer}
+                  className="font-medium text-ink-muted hover:text-ink"
+                >
                   Seguir comprando
                 </button>
                 <Link
@@ -241,7 +281,11 @@ function DrawerLine({ line, highlighted }: { line: CartLine; highlighted: boolea
               <p className="mt-1 text-xs font-medium text-brand-orange-dark">Solo quedan {line.adjustedTo}</p>
             )}
             <div className="mt-auto flex items-center justify-between pt-2">
-              <div className="flex items-center rounded-full border border-sand bg-white" role="group" aria-label="Cantidad">
+              <div
+                className="flex items-center rounded-full border border-sand bg-white"
+                role="group"
+                aria-label="Cantidad"
+              >
                 <button
                   type="button"
                   onClick={() => setQuantity(line.sku, line.purchasable - 1)}

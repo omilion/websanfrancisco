@@ -8,20 +8,8 @@ import {
   quoteMaterials,
   type QuoteRequest,
 } from "@/lib/quotes/schema";
+import { rateLimited } from "@/lib/quotes/rate-limit";
 import { newQuoteIds, saveQuote } from "@/lib/quotes/storage";
-
-// Límite simple por IP para evitar abuso (se reinicia con el servidor).
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 6;
-const hits = new Map<string, number[]>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > MAX_PER_WINDOW;
-}
 
 /** Detecta el tipo real del archivo por sus primeros bytes (no confía en el nombre ni en el navegador). */
 function sniff(buf: Buffer): { ext: string; type: string } | null {
@@ -47,8 +35,7 @@ function error(message: string, status = 400) {
 }
 
 export async function POST(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
-  if (rateLimited(ip))
+  if (rateLimited(request))
     return error("Enviaste varias solicitudes seguidas. Intenta de nuevo en unos minutos.", 429);
 
   const length = Number(request.headers.get("content-length") ?? 0);

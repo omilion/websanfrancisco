@@ -220,4 +220,8 @@ export interface QuoteRequest {
   contact: { name: string; phone: string; email: string; commune: string };
   store: string;
   attachments: { file: string; name: string; type: string; size: number }[];
+  /** "productos": cotización de productos del catálogo desde el carrito. Sin valor: proyecto a medida. */
+  kind?: "a-medida" | "productos";
+  /** Productos cotizados (solo kind "productos"). Precios del catálogo al momento de la solicitud. */
+  items?: { sku: string; name: string; quantity: number; unitPrice: number }[];
 }

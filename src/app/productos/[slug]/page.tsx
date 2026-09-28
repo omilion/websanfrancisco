@@ -168,9 +168,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             <div id="comprar" className="mt-8 scroll-mt-28 rounded-lg bg-white p-5 ring-1 ring-sand">
               {inStock ? (
                 <>
-                  <p className="mb-4 text-sm font-semibold text-brand-blue">
-                    ● Disponible para compra online
-                  </p>
+                  <p className="mb-4 text-sm font-semibold text-brand-blue">● Disponible</p>
                   <AddToCart
                     sku={product.sku}
                     slug={product.slug}
@@ -184,7 +182,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 <>
                   {storesWithStock.length > 0 ? (
                     <>
-                      <p className="text-sm font-semibold text-ink">No disponible para compra online</p>
+                      <p className="text-sm font-semibold text-ink">Sin stock online</p>
                       <p className="mt-1 text-sm text-ink-muted">
                         Hay unidades en {storesWithStock.map((s) => s.city).join(", ")}. Escríbenos para
                         reservarlo o visítanos en la tienda.
@@ -261,7 +259,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                     className={`size-5 shrink-0 ${product.stock > 0 ? "text-brand-orange" : "text-ink-muted"}`}
                     aria-hidden
                   />
-                  <span className="font-semibold">Compra online</span>
+                  <span className="font-semibold">Stock online</span>
                   <span className={`ml-auto font-semibold ${product.stock > 0 ? "" : "text-ink-muted"}`}>
                     {product.stock > 0
                       ? `${product.stock} ${product.stock === 1 ? "disponible" : "disponibles"}`

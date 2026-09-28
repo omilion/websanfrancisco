@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { Plank } from "@/components/plank";
+import { checkoutPath, commerce } from "@/config/site";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 
 export const metadata: Metadata = {
@@ -9,6 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function CheckoutPage() {
+  // Sin pago en línea, el carrito termina en la solicitud de cotización.
+  if (!commerce.onlinePayments) redirect(checkoutPath);
   const catalog = await getCartCatalogInfo();
 
   return (

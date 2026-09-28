@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { categoryImages, landingImages } from "@/config/images";
-import { fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
+import { commerce, fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { getCatalog } from "@/lib/catalog";
 import { CartButton } from "./cart/cart-button";
@@ -43,10 +43,12 @@ export async function SiteHeader() {
             <Truck className="size-3.5 text-brand-orange" aria-hidden />
             Despacho en toda la {fulfillment.shippingArea}
           </li>
-          <li className="hidden items-center gap-2 md:flex">
-            <ShieldCheck className="size-3.5 text-brand-orange" aria-hidden />
-            Pago seguro con Webpay
-          </li>
+          {commerce.onlinePayments && (
+            <li className="hidden items-center gap-2 md:flex">
+              <ShieldCheck className="size-3.5 text-brand-orange" aria-hidden />
+              Pago seguro con Webpay
+            </li>
+          )}
           <li className="hidden items-center gap-2 lg:flex">
             <span className="font-bold text-brand-orange">✦</span>
             Cotización sin costo en proyectos a medida

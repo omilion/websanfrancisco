@@ -20,7 +20,8 @@ npm run dev                  # http://localhost:3000
 | Catálogo con filtros (sucursal, tipo, categoría, precio, stock, búsqueda) | `/productos`, `/categoria/[slug]` | Lista |
 | Ficha de producto | `/productos/[slug]` | Lista |
 | A medida, Nosotros, Contacto, Cotizar | `/a-medida`, `/nosotros`, `/contacto`, `/cotizar` | Listas (formularios envían por WhatsApp) |
-| Carrito y checkout | `/carrito`, `/checkout` | Front listo, **pago Webpay pendiente** |
+| Carrito y solicitud de cotización | `/carrito`, `/solicitar-cotizacion` | Listo. Sin pago en línea por ahora (ver abajo) |
+| Cotizador a medida con fotos y planos | `/cotizar`, `/cotizacion/[id]` | Listo (solicitudes en `data/cotizaciones`) |
 
 ## Integración con el ERP
 
@@ -33,6 +34,13 @@ El catálogo se lee del endpoint REST del ERP (API key) y se guarda en caché un
 - **Webhook de cambios:** `POST /api/erp/revalidate` con el header `x-webhook-secret: <ERP_WEBHOOK_SECRET>`. Hace que la tienda vuelva a descargar el catálogo al instante.
 
 Para el filtro por sucursal, el ERP debe entregar el stock de cada sucursal (`stock_sucursales`).
+
+## Modo de venta
+
+`commerce.onlinePayments` en `src/config/site.ts`:
+
+- `false` (actual): se muestran los precios, pero el carrito termina en una **solicitud de cotización** (`/solicitar-cotizacion`) y no aparece Webpay en el sitio.
+- `true`: vuelve el checkout con pago (`/checkout`). Falta integrar Transbank.
 
 ## Configuración del negocio
 

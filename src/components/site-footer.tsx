@@ -10,9 +10,10 @@ import {
   MapPin,
   MessageCircle,
   ShieldCheck,
+  Store as StoreIcon,
   Truck,
 } from "lucide-react";
-import { fulfillment, formatPhone, site, stores, whatsappUrl } from "@/config/site";
+import { commerce, fulfillment, formatPhone, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories } from "@/lib/catalog";
 import { Plank } from "./plank";
 import { SocialLinks } from "./social-links";
@@ -20,7 +21,9 @@ import { SocialLinks } from "./social-links";
 const promises = [
   { icon: Hammer, title: "Fabricado en Ancud", text: "Taller propio en el corazón de Chiloé" },
   { icon: Truck, title: "Despacho en toda la isla", text: fulfillment.shippingArea },
-  { icon: ShieldCheck, title: "Pago seguro", text: "Webpay: débito, crédito y prepago" },
+  commerce.onlinePayments
+    ? { icon: ShieldCheck, title: "Pago seguro", text: "Webpay: débito, crédito y prepago" }
+    : { icon: StoreIcon, title: "Retiro en tienda", text: "Ancud, Castro, Quellón y Quemchi" },
   { icon: ClipboardList, title: "Cotización sin costo", text: "Proyectos a tu medida" },
 ];
 
@@ -32,7 +35,7 @@ const helpLinks = [
   { href: "/carrito", label: "Mi carrito" },
 ];
 
-const paymentMethods = ["Webpay", "Débito", "Crédito", "Prepago"];
+const paymentMethods = commerce.onlinePayments ? ["Webpay", "Débito", "Crédito", "Prepago"] : [];
 
 export async function SiteFooter() {
   const categories = await getCategories();
@@ -85,8 +88,8 @@ export async function SiteFooter() {
               Precisión artesanal desde el corazón de Chiloé
             </p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
-              Desde {site.since} en Ancud. Fabricamos nuestra propia línea de muebles y proyectos a medida, con
-              cuatro tiendas en la isla de Chiloé.
+              Desde {site.since} en Ancud. Fabricamos nuestra propia línea de muebles y proyectos a medida,
+              con cuatro tiendas en la isla de Chiloé.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link

@@ -119,6 +119,17 @@ export const services: Service[] = [
   },
 ];
 
+/**
+ * Venta en línea. Con `onlinePayments: false` los precios se muestran, pero el carrito termina en
+ * una solicitud de cotización (sin Webpay). Cambiar a `true` cuando el cliente esté listo para cobrar.
+ */
+export const commerce = {
+  onlinePayments: false,
+};
+
+/** Paso final del carrito según el modo de venta. */
+export const checkoutPath = commerce.onlinePayments ? "/checkout" : "/solicitar-cotizacion";
+
 // Reglas de entrega (confirmadas por el cliente, sep. 2026).
 export const fulfillment = {
   /** Cobertura de despacho a domicilio. */

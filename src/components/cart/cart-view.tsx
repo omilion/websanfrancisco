@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { AlertTriangle, ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { fulfillment } from "@/config/site";
+import { checkoutPath, commerce, fulfillment } from "@/config/site";
 import type { CartCatalogInfo } from "@/lib/cart/catalog-info";
 import { cartSubtotal, reconcileCart } from "@/lib/cart/reconcile";
 import { clampToStock, removeFromCart, setQuantity, useCart } from "@/lib/cart/store";
@@ -26,15 +26,23 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
     return (
       <div className="rounded-lg border-2 border-dashed border-sand bg-white px-6 py-16 text-center">
         <ShoppingBag className="mx-auto size-12 text-ink-muted" aria-hidden />
-        <h2 className="mt-4 font-display text-3xl font-bold uppercase text-brand-blue">Tu carrito está vacío</h2>
+        <h2 className="mt-4 font-display text-3xl font-bold uppercase text-brand-blue">
+          Tu carrito está vacío
+        </h2>
         <p className="mx-auto mt-2 max-w-md text-ink-muted">
           Revisa nuestros muebles en stock o cotiza un proyecto a tu medida.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link href="/productos" className="rounded-md bg-brand-blue px-6 py-3 font-semibold text-white hover:bg-brand-blue-dark">
+          <Link
+            href="/productos"
+            className="rounded-md bg-brand-blue px-6 py-3 font-semibold text-white hover:bg-brand-blue-dark"
+          >
             Ver catálogo
           </Link>
-          <Link href="/cotizar" className="rounded-md border-2 border-brand-blue px-6 py-2.5 font-semibold text-brand-blue hover:bg-cream">
+          <Link
+            href="/cotizar"
+            className="rounded-md border-2 border-brand-blue px-6 py-2.5 font-semibold text-brand-blue hover:bg-cream"
+          >
             Cotizar a medida
           </Link>
         </div>
@@ -44,7 +52,10 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-12">
-      <ul className="divide-y divide-sand rounded-lg bg-white ring-1 ring-sand" aria-label="Productos en el carrito">
+      <ul
+        className="divide-y divide-sand rounded-lg bg-white ring-1 ring-sand"
+        aria-label="Productos en el carrito"
+      >
         {lines.map((line) => (
           <li key={line.sku} className="flex gap-4 p-4 md:p-5">
             <Link
@@ -74,7 +85,8 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
 
               {line.unavailable ? (
                 <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-brand-orange-dark">
-                  <AlertTriangle className="size-4" aria-hidden /> Ya no está disponible. Quítalo para continuar.
+                  <AlertTriangle className="size-4" aria-hidden /> Ya no está disponible. Quítalo para
+                  continuar.
                 </p>
               ) : (
                 <>
@@ -89,7 +101,11 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
                     </p>
                   )}
                   <div className="mt-auto flex items-end justify-between gap-3 pt-3">
-                    <div className="flex items-center rounded-md border border-sand" role="group" aria-label="Cantidad">
+                    <div
+                      className="flex items-center rounded-md border border-sand"
+                      role="group"
+                      aria-label="Cantidad"
+                    >
                       <button
                         type="button"
                         onClick={() => setQuantity(line.sku, line.purchasable - 1)}
@@ -98,7 +114,9 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
                       >
                         <Minus className="size-4" aria-hidden />
                       </button>
-                      <span className="w-8 text-center text-sm font-semibold tabular-nums">{line.purchasable}</span>
+                      <span className="w-8 text-center text-sm font-semibold tabular-nums">
+                        {line.purchasable}
+                      </span>
                       <button
                         type="button"
                         onClick={() => setQuantity(line.sku, line.purchasable + 1)}
@@ -123,7 +141,10 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
         ))}
       </ul>
 
-      <aside className="h-fit rounded-lg bg-white p-6 ring-1 ring-sand lg:sticky lg:top-28" aria-label="Resumen">
+      <aside
+        className="h-fit rounded-lg bg-white p-6 ring-1 ring-sand lg:sticky lg:top-28"
+        aria-label="Resumen"
+      >
         <h2 className="font-display text-2xl font-bold uppercase text-brand-blue">Resumen</h2>
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between">
@@ -138,7 +159,9 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
           </div>
         </dl>
         <div className="mt-4 flex justify-between border-t border-sand pt-4">
-          <span className="font-semibold">Total a pagar</span>
+          <span className="font-semibold">
+            {commerce.onlinePayments ? "Total a pagar" : "Total referencial"}
+          </span>
           <span className="text-xl font-bold">{formatPrice(subtotal)}</span>
         </div>
         <p className="mt-1 text-xs text-ink-muted">IVA incluido</p>
@@ -149,20 +172,23 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
           </p>
         ) : null}
         <Link
-          href="/checkout"
+          href={checkoutPath}
           aria-disabled={hasIssues || units === 0}
           className={`mt-6 flex items-center justify-center gap-2 rounded-md px-6 py-3.5 font-semibold text-white ${hasIssues || units === 0 ? "pointer-events-none bg-ink-muted" : "bg-brand-blue hover:bg-brand-blue-dark"}`}
         >
-          Continuar al pago
+          {commerce.onlinePayments ? "Continuar al pago" : "Solicitar cotización"}
           <ArrowRight className="size-4" aria-hidden />
         </Link>
-        <Link href="/productos" className="mt-1 block py-3 text-center text-sm font-medium text-brand-blue hover:underline">
+        <Link
+          href="/productos"
+          className="mt-1 block py-3 text-center text-sm font-medium text-brand-blue hover:underline"
+        >
           Seguir comprando
         </Link>
 
         <p className="mt-6 border-t border-sand pt-4 text-xs text-ink-muted">
-          Despacho en toda la {fulfillment.shippingArea}: el costo se coordina contigo según destino y no se
-          cobra en este pago. Pago seguro con Webpay.
+          Despacho en toda la {fulfillment.shippingArea}: el costo se coordina contigo según destino
+          {commerce.onlinePayments ? " y no se cobra en este pago. Pago seguro con Webpay." : "."}
         </p>
       </aside>
     </div>

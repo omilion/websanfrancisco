@@ -10,7 +10,7 @@ import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
 import { StoreCard } from "@/components/store-card";
 import { categoryImages, heroSlides, homeCustomImage } from "@/config/images";
-import { fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
+import { commerce, fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 
 export default async function Home() {
@@ -197,7 +197,6 @@ export default async function Home() {
             </div>
           </div>
         </div>
-
       </section>
 
       {/* ── Tiendas ──────────────────────────────────────── */}
@@ -212,7 +211,10 @@ export default async function Home() {
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-white/85">
             Visítanos para ver y tocar las maderas.
-            {fulfillment.storePickup && " Compra online y retira en la tienda que te acomode."}
+            {fulfillment.storePickup &&
+              (commerce.onlinePayments
+                ? " Compra online y retira en la tienda que te acomode."
+                : " Cotiza online y retira en la tienda que te acomode.")}
           </p>
 
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

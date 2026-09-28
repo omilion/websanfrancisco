@@ -40,7 +40,13 @@ export function WhatsAppFloat({ contacts }: { contacts: WhatsAppContact[] }) {
   }, [open]);
 
   // Oculto en checkout y cotizador (taparía sus botones) y con el carrito abierto.
-  if (pathname.startsWith("/checkout") || pathname.startsWith("/cotizar") || cartOpen) return null;
+  if (
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/cotizar") ||
+    pathname.startsWith("/solicitar-cotizacion") ||
+    cartOpen
+  )
+    return null;
   // En la ficha de producto hay una barra de compra fija abajo (celular): el botón sube.
   const onProductPage = /^\/productos\/[^/]+$/.test(pathname);
 
@@ -111,7 +117,11 @@ export function WhatsAppFloat({ contacts }: { contacts: WhatsAppContact[] }) {
             aria-hidden
           />
         )}
-        {open ? <X className="relative size-7" aria-hidden /> : <FaWhatsapp className="relative size-8" aria-hidden />}
+        {open ? (
+          <X className="relative size-7" aria-hidden />
+        ) : (
+          <FaWhatsapp className="relative size-8" aria-hidden />
+        )}
       </button>
     </div>
   );
