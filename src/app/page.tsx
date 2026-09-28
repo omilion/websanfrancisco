@@ -206,7 +206,7 @@ export default async function Home() {
           <Plank />
           <h2
             id="tiendas-title"
-            className="mt-4 font-display text-4xl font-bold uppercase leading-none md:text-5xl"
+            className="mt-4 font-display text-2xl font-bold uppercase leading-none sm:text-3xl md:text-4xl"
           >
             Cuatro tiendas en Chiloé
           </h2>

@@ -16,7 +16,7 @@ export function CtaBand({
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-14 md:flex-row md:items-center md:justify-between md:py-20">
         <div className="max-w-xl">
           <Plank />
-          <h2 className="mt-4 font-display text-4xl font-bold uppercase leading-none md:text-5xl">{title}</h2>
+          <h2 className="mt-4 font-display text-2xl font-bold uppercase leading-none sm:text-3xl md:text-4xl">{title}</h2>
           <p className="mt-3 text-lg text-white/85">{text}</p>
         </div>
         <div className="flex shrink-0 flex-col gap-3 sm:flex-row">

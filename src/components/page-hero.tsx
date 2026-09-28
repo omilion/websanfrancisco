@@ -57,17 +57,17 @@ export function PageHero({
         </div>
       )}
       <div
-        className={`mx-auto max-w-7xl px-4 ${compact ? "py-8 md:py-20" : image ? "py-16 md:py-28" : "py-12 md:py-16"}`}
+        className={`mx-auto max-w-7xl px-4 ${compact ? "py-8 md:py-12" : image ? "py-10 md:py-16" : "py-8 md:py-10"}`}
       >
         <div className="max-w-2xl">
-          <Plank className="w-16" />
-          <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
+          <Plank className="w-12" />
+          <p className="mt-3 text-xs font-semibold uppercase tracking-widest text-brand-orange-dark md:text-sm">
             {eyebrow}
           </p>
-          <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl">
+          <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-[0.95] text-brand-blue sm:text-4xl md:text-[2.75rem]">
             {title}
           </h1>
-          {description && <div className="mt-5 max-w-xl text-lg text-ink">{description}</div>}
+          {description && <div className="mt-3 max-w-xl text-base text-ink md:text-lg">{description}</div>}
           {children}
         </div>
       </div>

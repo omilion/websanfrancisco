@@ -13,8 +13,10 @@ export default async function CarritoPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
-      <Plank className="w-16" />
-      <h1 className="mt-4 font-display text-2xl font-bold sm:text-5xl uppercase leading-none text-brand-blue">Tu carrito</h1>
+      <Plank className="w-12" />
+      <h1 className="mt-4 font-display text-2xl font-bold sm:text-4xl md:text-[2.75rem] uppercase leading-none text-brand-blue">
+        Tu carrito
+      </h1>
       <div className="mt-8">
         <CartView catalog={catalog} />
       </div>

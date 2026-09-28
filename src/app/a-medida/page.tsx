@@ -28,7 +28,7 @@ export default function AMedidaPage() {
       >
         <Link
           href="/cotizar"
-          className="mt-8 inline-flex items-center gap-2 rounded-md bg-brand-blue px-6 py-3.5 font-semibold text-white transition-colors hover:bg-brand-blue-dark"
+          className="mt-6 inline-flex items-center gap-2 rounded-md bg-brand-blue px-6 py-3.5 font-semibold text-white transition-colors hover:bg-brand-blue-dark"
         >
           Cotizar sin costo
           <ArrowRight className="size-4" aria-hidden />

@@ -40,11 +40,11 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 md:py-14">
-      <Plank className="w-16" />
+      <Plank className="w-12" />
       <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
         Solicitud de cotización · {quote.code}
       </p>
-      <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-5xl">
+      <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-4xl md:text-[2.75rem]">
         {quote.typeName} a medida
       </h1>
       <p className="mt-2 text-sm text-ink-muted">Recibida el {date}</p>

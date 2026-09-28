@@ -20,7 +20,7 @@ export function SectionTitle({ eyebrow, title, id, tone = "light" }: SectionTitl
       </p>
       <h2
         id={id}
-        className={`mt-1 font-display text-4xl font-bold uppercase leading-none md:text-5xl ${dark ? "text-white" : "text-brand-blue"}`}
+        className={`mt-1 font-display text-2xl font-bold uppercase leading-none sm:text-3xl md:text-4xl ${dark ? "text-white" : "text-brand-blue"}`}
       >
         {title}
       </h2>

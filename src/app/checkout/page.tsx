@@ -13,8 +13,8 @@ export default async function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
-      <Plank className="w-16" />
-      <h1 className="mt-4 font-display text-2xl font-bold sm:text-5xl uppercase leading-none text-brand-blue">
+      <Plank className="w-12" />
+      <h1 className="mt-4 font-display text-2xl font-bold sm:text-4xl md:text-[2.75rem] uppercase leading-none text-brand-blue">
         Finalizar compra
       </h1>
       <div className="mt-8">

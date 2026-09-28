@@ -44,7 +44,7 @@ async function CategoryContent({
   return (
     <>
       <section className="border-b border-sand">
-        <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+        <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
           <nav aria-label="Ruta de navegación">
             <ol className="flex items-center gap-1 text-sm text-ink-muted">
               <li>
@@ -60,8 +60,8 @@ async function CategoryContent({
               </li>
             </ol>
           </nav>
-          <Plank className="mt-6 w-16" />
-          <h1 className="mt-4 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-5xl md:text-6xl">
+          <Plank className="mt-4 w-12" />
+          <h1 className="mt-4 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-4xl md:text-[2.75rem]">
             {category.name}
           </h1>
         </div>
