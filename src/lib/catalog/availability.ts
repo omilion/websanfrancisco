@@ -1,4 +1,4 @@
-import { commerce } from "@/config/site";
+import { commerce, stores } from "@/config/site";
 import type { Product } from "./types";
 
 /** Máximo por producto en una solicitud de cotización (sin pago en línea, el stock no limita). */
@@ -6,12 +6,13 @@ export const QUOTE_MAX_QUANTITY = 20;
 
 /**
  * Hay unidades del producto. Con pago en línea cuenta solo la bodega Internet (lo que se vende en la web);
- * en modo cotización cuenta cualquier tienda o bodega.
+ * en modo cotización cuenta cualquiera de las 4 tiendas.
  */
 export function isAvailable(p: Pick<Product, "saleMode" | "stock" | "stockByStore">): boolean {
   if (p.saleMode !== "stock") return false;
   if (p.stock > 0) return true;
-  return !commerce.onlinePayments && Object.values(p.stockByStore).some((n) => n > 0);
+  // Solo cuentan las tiendas que ve el cliente (no la Bodega Principal), para que coincida con la ficha.
+  return !commerce.onlinePayments && stores.some((s) => (p.stockByStore[s.slug] ?? 0) > 0);
 }
 
 /**

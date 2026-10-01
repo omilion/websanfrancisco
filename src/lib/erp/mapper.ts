@@ -1,3 +1,4 @@
+import { productMedia } from "@/config/product-media";
 import type { Catalog, Category, Product } from "@/lib/catalog/types";
 import type { ErpProduct } from "./types";
 
@@ -37,7 +38,23 @@ const ACCENTS: Record<string, string> = {
   grafico: "gráfico",
   living: "living",
 };
-const LOWER_WORDS = new Set(["de", "del", "la", "el", "y", "con", "para", "en", "x", "a", "+", "cm", "mt", "mts", "m"]);
+const LOWER_WORDS = new Set([
+  "de",
+  "del",
+  "la",
+  "el",
+  "y",
+  "con",
+  "para",
+  "en",
+  "x",
+  "a",
+  "+",
+  "cm",
+  "mt",
+  "mts",
+  "m",
+]);
 
 function cleanSpaces(text: string): string {
   return text.replace(/\s+/g, " ").trim();
@@ -114,9 +131,14 @@ export function mapErpProduct(p: ErpProduct): Product {
 
   const name = productName(p.nombreWeb || p.nombre);
   const description = cleanSpaces(p.descripcion ?? "");
-  const images = [p.foto, ...(p.galeria ?? [])]
+  const extra = productMedia[p.codigo];
+  const erpImages = [p.foto, ...(p.galeria ?? [])]
     .filter((url): url is string => Boolean(url))
-    .map((url) => ({ url: publicImageUrl(url), alt: name }));
+    .map(publicImageUrl);
+  const images = [...(extra?.antes ?? []), ...erpImages, ...(extra?.despues ?? [])].map((url) => ({
+    url,
+    alt: name,
+  }));
 
   return {
     id: p.codigo,
