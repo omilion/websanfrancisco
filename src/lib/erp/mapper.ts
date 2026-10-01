@@ -76,6 +76,25 @@ function warehouseSlug(bodega: string): string {
   return slugify(bodega.replace(/^bodega\s+/i, ""));
 }
 
+/**
+ * El ERP arma la URL de la foto con el host por el que se le consultó: si la tienda lo llama por la red
+ * interna (127.0.0.1), las fotos saldrían con esa dirección, que el optimizador de imágenes no acepta.
+ * Se reescriben al origen público ERP_IMAGES_ORIGIN.
+ */
+function publicImageUrl(url: string): string {
+  const origin = process.env.ERP_IMAGES_ORIGIN?.split(",")[0]?.trim();
+  if (!origin) return url;
+  try {
+    const u = new URL(url);
+    const target = new URL(origin);
+    u.protocol = target.protocol;
+    u.host = target.host;
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 function price(p: ErpProduct): number | null {
   if (p.precios.web > 0) return p.precios.web;
   if (p.precios.venta1Normal > 0) return p.precios.venta1Normal;
@@ -97,7 +116,7 @@ export function mapErpProduct(p: ErpProduct): Product {
   const description = cleanSpaces(p.descripcion ?? "");
   const images = [p.foto, ...(p.galeria ?? [])]
     .filter((url): url is string => Boolean(url))
-    .map((url) => ({ url, alt: name }));
+    .map((url) => ({ url: publicImageUrl(url), alt: name }));
 
   return {
     id: p.codigo,
