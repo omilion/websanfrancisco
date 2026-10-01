@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { Plank } from "@/components/plank";
 import { checkoutPath, commerce } from "@/config/site";
-import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
+import { getLiveCartCatalogInfo } from "@/lib/cart/catalog-info";
 
 export const metadata: Metadata = {
   title: "Finalizar compra",
   robots: { index: false },
 };
 
-export default async function CheckoutPage() {
+export default function CheckoutPage() {
   // Sin pago en línea, el carrito termina en la solicitud de cotización.
   if (!commerce.onlinePayments) redirect(checkoutPath);
-  const catalog = await getCartCatalogInfo();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
@@ -22,8 +23,17 @@ export default async function CheckoutPage() {
         Finalizar compra
       </h1>
       <div className="mt-8">
-        <CheckoutForm catalog={catalog} />
+        <Suspense fallback={<div className="h-96 animate-pulse rounded-lg bg-sand/50" aria-busy />}>
+          <CheckoutContent />
+        </Suspense>
       </div>
     </div>
   );
+}
+
+/** El stock y el precio se leen del ERP en cada visita: lo que se cobra tiene que ser lo vigente. */
+async function CheckoutContent() {
+  await connection();
+  const catalog = await getLiveCartCatalogInfo();
+  return <CheckoutForm catalog={catalog} />;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, type FormEvent, type ReactNode } from "react";
-import { CheckCircle2, Loader2, Paintbrush, Send } from "lucide-react";
+import { CheckCircle2, ChevronDown, Loader2, Paintbrush, Send } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { shippingCommunes, stores, whatsappUrl } from "@/config/site";
 import { attachmentRules } from "@/lib/quotes/schema";
@@ -112,16 +112,24 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
   }
 
   return (
-    <section id="personalizar" className="mt-8 scroll-mt-28 rounded-lg bg-white p-5 ring-1 ring-sand md:p-6" aria-labelledby="personalizar-titulo">
-      <h2 id="personalizar-titulo" className="flex items-center gap-2 font-display text-2xl font-bold uppercase text-brand-blue">
-        <Paintbrush className="size-5 text-brand-orange-dark" aria-hidden />
-        Cotización personalizada
-      </h2>
-      <p className="mt-1 text-sm text-ink-muted">
-        ¿Te gusta este mueble pero lo quieres en otro color o tamaño? Cuéntanos y te enviamos el precio de tu versión.
+    <details id="personalizar" className="group mt-8 scroll-mt-28 rounded-lg bg-white ring-1 ring-sand">
+      <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 md:px-6 [&::-webkit-details-marker]:hidden">
+        <Paintbrush className="size-5 shrink-0 text-brand-orange-dark" aria-hidden />
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-xl font-bold uppercase leading-tight text-brand-blue">
+            Cotización personalizada
+          </span>
+          <span className="block text-sm text-ink-muted">¿Lo quieres en otro color o tamaño? Cotiza tu versión.</span>
+        </span>
+        <ChevronDown className="size-5 shrink-0 text-brand-blue transition-transform group-open:rotate-180" aria-hidden />
+      </summary>
+
+      <div className="border-t border-sand p-5 md:p-6">
+      <p className="text-sm text-ink-muted">
+        Cuéntanos qué cambios necesitas y te enviamos el precio y el plazo de tu versión del mueble.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-5 grid gap-4 sm:grid-cols-2">
+      <form onSubmit={handleSubmit} className="mt-4 grid gap-4 sm:grid-cols-2">
         <Field label="Color o terminación" hint="Ej: blanco, roble natural">
           <input name="color" list="colores-personalizado" maxLength={80} className={inputClass} />
           <datalist id="colores-personalizado">
@@ -217,7 +225,8 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
           )}
         </div>
       </form>
-    </section>
+      </div>
+    </details>
   );
 }
 

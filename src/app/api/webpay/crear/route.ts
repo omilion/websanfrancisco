@@ -1,5 +1,5 @@
 import { shippingCommunes, stores } from "@/config/site";
-import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
+import { getLiveCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { newAccessKey, newBuyOrder, saveOrder, type OrderLine, type StoredOrder } from "@/lib/orders/storage";
 import { rateLimited } from "@/lib/quotes/rate-limit";
 import { isValidRut, formatRut } from "@/lib/rut";
@@ -31,7 +31,12 @@ export async function POST(request: Request) {
   }
 
   // ── Productos: precio y stock vigentes ──
-  const catalog = await getCartCatalogInfo();
+  let catalog;
+  try {
+    catalog = await getLiveCartCatalogInfo({ strict: true });
+  } catch {
+    return error("No pudimos confirmar el stock en este momento. Intenta de nuevo en unos minutos.", 503);
+  }
   const requested = Array.isArray(raw.items) ? raw.items.slice(0, 50) : [];
   const lines: OrderLine[] = [];
   for (const entry of requested as { sku?: unknown; quantity?: unknown }[]) {

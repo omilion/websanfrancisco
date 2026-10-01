@@ -8,13 +8,13 @@ import type { Catalog, Category, Product } from "./types";
 export const CATALOG_TAG = "catalog";
 
 /**
- * Catálogo completo cacheado. Se refresca solo cada hora y al instante cuando
- * el ERP llama a POST /api/erp/revalidate. Si el ERP falla, Next sigue sirviendo
+ * Catálogo completo cacheado. Se refresca solo cada minuto (el stock cambia con cada venta) y al instante
+ * cuando el ERP llama a POST /api/erp/revalidate. El carrito y el pago leen el stock en vivo, sin esta caché. Si el ERP falla, Next sigue sirviendo
  * la última versión cacheada.
  */
 export async function getCatalog(): Promise<Catalog> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag(CATALOG_TAG);
 
   const erpProducts = isErpConfigured() ? await fetchErpProducts() : mockErpProducts;
