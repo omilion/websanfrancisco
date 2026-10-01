@@ -21,6 +21,8 @@ import { categoryImages, placeholderFor } from "@/config/images";
 import { fulfillment, stores, whatsappUrl } from "@/config/site";
 import { getCatalog, getCategory, getProductBySlug } from "@/lib/catalog";
 import type { Product } from "@/lib/catalog/types";
+import { commerce } from "@/config/site";
+import { isAvailable, orderLimit } from "@/lib/catalog/availability";
 import { formatPrice } from "@/lib/format";
 import { quoteTypeForCategory } from "@/lib/quotes/schema";
 
@@ -67,7 +69,10 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
     .slice(0, 4);
 
   const isStock = product.saleMode === "stock";
-  const inStock = isStock && product.stock > 0 && product.price !== null;
+  const limit = orderLimit(product);
+  const inStock = limit > 0;
+  const available = isAvailable(product);
+  const noPrice = isStock && product.price === null;
   const placeholder = { url: placeholderFor(product), alt: `${product.name} (foto próximamente)` };
   const headquarters = stores.find((s) => s.isHeadquarters) ?? stores[0];
   const productRef = `${product.name} (${product.sku})`;
@@ -87,14 +92,16 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 sku: product.sku,
                 slug: product.slug,
                 image: product.images[0]?.url ?? placeholder.url,
-                stock: product.stock,
+                stock: limit,
               }
             : isStock
               ? {
                   kind: "consultar",
                   href: whatsappUrl(
                     headquarters.phone,
-                    `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
+                    noPrice
+                      ? `Hola, quiero saber el precio de ${productRef}.`
+                      : `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
                   ),
                 }
               : { kind: "cotizar", href: `/cotizar?tipo=${quoteTypeForCategory(product.categorySlug)}` }
@@ -143,7 +150,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
               {subcategory?.name ?? category?.name}
               {!isStock && " · A medida"}
             </p>
-            <h1 className="mt-2 font-display text-4xl font-bold uppercase leading-none text-brand-blue md:text-5xl">
+            <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-3xl md:text-4xl">
               {product.name}
             </h1>
             <p className="mt-2 text-xs text-ink-muted">SKU: {product.sku}</p>
@@ -156,8 +163,12 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 </>
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-ink">Precio según medidas</p>
-                  <p className="text-sm text-ink-muted">Te enviamos la cotización sin costo</p>
+                  <p className="text-2xl font-bold text-ink">
+                    {isStock ? "Precio a consultar" : "Precio según medidas"}
+                  </p>
+                  <p className="text-sm text-ink-muted">
+                    {isStock ? "Escríbenos y te lo enviamos" : "Te enviamos la cotización sin costo"}
+                  </p>
                 </>
               )}
             </div>
@@ -168,19 +179,32 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             <div id="comprar" className="mt-8 scroll-mt-28 rounded-lg bg-white p-5 ring-1 ring-sand">
               {inStock ? (
                 <>
-                  <p className="mb-4 text-sm font-semibold text-brand-blue">● Disponible</p>
+                  {available ? (
+                    <p className="mb-4 text-sm font-semibold text-brand-blue">● Disponible</p>
+                  ) : (
+                    <p className="mb-4 text-sm text-ink-muted">
+                      Te confirmamos la disponibilidad al cotizar.
+                    </p>
+                  )}
                   <AddToCart
                     sku={product.sku}
                     slug={product.slug}
                     name={product.name}
                     price={product.price!}
                     image={product.images[0]?.url ?? placeholder.url}
-                    stock={product.stock}
+                    stock={limit}
                   />
                 </>
               ) : isStock ? (
                 <>
-                  {storesWithStock.length > 0 ? (
+                  {noPrice ? (
+                    <>
+                      <p className="text-sm font-semibold text-ink">Precio a consultar</p>
+                      <p className="mt-1 text-sm text-ink-muted">
+                        Escríbenos y te enviamos el precio y la disponibilidad.
+                      </p>
+                    </>
+                  ) : storesWithStock.length > 0 ? (
                     <>
                       <p className="text-sm font-semibold text-ink">Sin stock online</p>
                       <p className="mt-1 text-sm text-ink-muted">
@@ -200,16 +224,20 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                     <a
                       href={whatsappUrl(
                         headquarters.phone,
-                        storesWithStock.length > 0
-                          ? `Hola, quiero reservar ${productRef}.`
-                          : `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
+                        noPrice
+                          ? `Hola, quiero saber el precio de ${productRef}.`
+                          : storesWithStock.length > 0
+                            ? `Hola, quiero reservar ${productRef}.`
+                            : `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-brand-blue px-5 py-3 font-semibold text-white hover:bg-brand-blue-dark"
                     >
                       <MessageCircle className="size-5" aria-hidden />
-                      {storesWithStock.length > 0 ? "Consultar por WhatsApp" : "Consultar reposición"}
+                      {noPrice || storesWithStock.length > 0
+                        ? "Consultar por WhatsApp"
+                        : "Consultar reposición"}
                     </a>
                     <Link
                       href={`/cotizar?tipo=${quoteTypeForCategory(product.categorySlug)}`}
@@ -251,21 +279,25 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             {isStock && (
               <div className="mt-6">
                 <h2 className="text-sm font-bold uppercase tracking-wide text-ink">Disponibilidad</h2>
-                {/* Bodega Internet: stock que se vende en la web */}
-                <div
-                  className={`mt-3 flex items-center gap-3 rounded-lg px-4 py-3.5 text-sm ${product.stock > 0 ? "bg-brand-blue text-white" : "bg-sand/60 text-ink"}`}
-                >
-                  <Globe
-                    className={`size-5 shrink-0 ${product.stock > 0 ? "text-brand-orange" : "text-ink-muted"}`}
-                    aria-hidden
-                  />
-                  <span className="font-semibold">Stock online</span>
-                  <span className={`ml-auto font-semibold ${product.stock > 0 ? "" : "text-ink-muted"}`}>
-                    {product.stock > 0
-                      ? `${product.stock} ${product.stock === 1 ? "disponible" : "disponibles"}`
-                      : "Sin stock"}
-                  </span>
-                </div>
+                {(commerce.onlinePayments || product.stock > 0) && (
+                  <>
+                    {/* Bodega Internet: stock que se vende en la web */}
+                    <div
+                      className={`mt-3 flex items-center gap-3 rounded-lg px-4 py-3.5 text-sm ${product.stock > 0 ? "bg-brand-blue text-white" : "bg-sand/60 text-ink"}`}
+                    >
+                      <Globe
+                        className={`size-5 shrink-0 ${product.stock > 0 ? "text-brand-orange" : "text-ink-muted"}`}
+                        aria-hidden
+                      />
+                      <span className="font-semibold">Stock online</span>
+                      <span className={`ml-auto font-semibold ${product.stock > 0 ? "" : "text-ink-muted"}`}>
+                        {product.stock > 0
+                          ? `${product.stock} ${product.stock === 1 ? "disponible" : "disponibles"}`
+                          : "Sin stock"}
+                      </span>
+                    </div>
+                  </>
+                )}
                 <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-muted">
                   En tiendas
                 </p>
@@ -425,7 +457,9 @@ function ProductJsonLd({ product, image }: { product: Product; image?: string })
             "@type": "Offer",
             priceCurrency: "CLP",
             price: product.price,
-            availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            availability: isAvailable(product)
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
           }
         : undefined,
   };

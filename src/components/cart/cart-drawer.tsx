@@ -251,7 +251,7 @@ function DrawerLine({ line, highlighted }: { line: CartLine; highlighted: boolea
         onClick={closeCartDrawer}
         className="relative size-20 shrink-0 overflow-hidden rounded-md bg-white ring-1 ring-sand"
       >
-        <Image src={line.image} alt={line.name} fill sizes="80px" className="object-cover" />
+        <Image src={line.image} alt={line.name} fill sizes="80px" className="object-contain" />
       </Link>
 
       <div className="flex min-w-0 flex-1 flex-col">

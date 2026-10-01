@@ -12,13 +12,22 @@ import { StoreCard } from "@/components/store-card";
 import { categoryImages, heroSlides, homeCustomImage } from "@/config/images";
 import { commerce, fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
+import { isAvailable } from "@/lib/catalog/availability";
 
 export default async function Home() {
   const [categories, stockProducts] = await Promise.all([
     getCategories(),
     getProducts({ saleMode: "stock" }),
   ]);
-  const featured = [...stockProducts].sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0)).slice(0, 8);
+  // Portada: las 6 categorías con más productos, para que quepan en una fila.
+  const homeCategories = [...categories]
+    .sort(
+      (a, b) =>
+        stockProducts.filter((p) => p.categorySlug === b.slug).length -
+        stockProducts.filter((p) => p.categorySlug === a.slug).length,
+    )
+    .slice(0, 6);
+  const featured = [...stockProducts].sort((a, b) => Number(isAvailable(b)) - Number(isAvailable(a))).slice(0, 8);
 
   // Datos estructurados para Google: mueblería con sus sucursales, año de fundación y redes.
   const businessJsonLd = {
@@ -85,7 +94,7 @@ export default async function Home() {
         </div>
 
         <ul className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:mt-8 lg:grid-cols-6 lg:gap-4">
-          {categories.map((category) => (
+          {homeCategories.map((category) => (
             <li key={category.slug}>
               <Link
                 href={`/categoria/${category.slug}`}

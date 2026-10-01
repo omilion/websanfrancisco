@@ -1,6 +1,7 @@
 import "server-only";
 import { placeholderFor } from "@/config/images";
 import { getCatalog } from "@/lib/catalog";
+import { orderLimit } from "@/lib/catalog/availability";
 
 /** Datos actuales del catálogo que el carrito necesita para validar lo guardado en el navegador. */
 export interface CartProductInfo {
@@ -25,7 +26,8 @@ export async function getCartCatalogInfo(): Promise<CartCatalogInfo> {
           name: p.name,
           slug: p.slug,
           price: p.price,
-          stock: p.stock,
+          // Tope de unidades: stock web con pago en línea; en modo cotización, un máximo fijo.
+          stock: orderLimit(p),
           image: p.images[0]?.url ?? placeholderFor(p),
         },
       ]),

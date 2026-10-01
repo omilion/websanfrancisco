@@ -252,7 +252,7 @@ export function SearchBox({ categories, onNavigate, autoFocus }: SearchBoxProps)
                       className={`flex w-full items-center gap-3 rounded-lg p-2 text-left transition ${active === i ? "bg-cream" : ""}`}
                     >
                       <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-cream ring-1 ring-sand">
-                        <Image src={p.image} alt="" fill sizes="56px" className="object-cover" />
+                        <Image src={p.image} alt="" fill sizes="56px" className="object-contain" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-medium">

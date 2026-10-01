@@ -1,10 +1,9 @@
 import "server-only";
-import type { ErpOrder, ErpPage, ErpProduct } from "./types";
+import type { ErpOrder, ErpProduct, ErpProductsResponse } from "./types";
 
-// Rutas provisorias: se ajustan cuando Seba confirme el endpoint.
-const PRODUCTS_PATH = "/productos";
-const ORDERS_PATH = "/pedidos";
-const MAX_PAGES = 100;
+const PRODUCTS_PATH = "/api/ecommerce/productos";
+// Provisoria: Seba aún no entrega el endpoint de pedidos.
+const ORDERS_PATH = "/api/ecommerce/pedidos";
 
 export function isErpConfigured(): boolean {
   return Boolean(process.env.ERP_API_URL && process.env.ERP_API_KEY);
@@ -22,7 +21,7 @@ async function erpFetch(path: string, init: RequestInit = {}): Promise<Response>
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      [process.env.ERP_API_KEY_HEADER || "x-api-key"]: apiKey,
+      [process.env.ERP_API_KEY_HEADER || "X-API-Key"]: apiKey,
       ...init.headers,
     },
   });
@@ -34,20 +33,12 @@ async function erpFetch(path: string, init: RequestInit = {}): Promise<Response>
   return res;
 }
 
-/** Descarga todos los productos, recorriendo páginas si el ERP pagina. */
+/** Descarga todos los productos del ERP (el endpoint devuelve el catálogo completo, sin paginar). */
 export async function fetchErpProducts(): Promise<ErpProduct[]> {
-  const products: ErpProduct[] = [];
-
-  for (let page = 1; page <= MAX_PAGES; page++) {
-    const res = await erpFetch(`${PRODUCTS_PATH}?page=${page}`);
-    const json = (await res.json()) as ErpPage<ErpProduct> | ErpProduct[];
-
-    if (Array.isArray(json)) return json; // sin paginación
-    products.push(...json.data);
-    if (!json.total_pages || page >= json.total_pages) break;
-  }
-
-  return products;
+  const res = await erpFetch(PRODUCTS_PATH, { signal: AbortSignal.timeout(20_000) });
+  const json = (await res.json()) as ErpProductsResponse;
+  if (!Array.isArray(json?.productos)) throw new Error("ERP: respuesta sin lista de productos");
+  return json.productos;
 }
 
 /** Registra en el ERP un pedido pagado con Webpay. */

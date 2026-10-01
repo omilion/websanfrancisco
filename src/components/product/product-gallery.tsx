@@ -17,14 +17,14 @@ export function ProductGallery({ images, placeholder }: ProductGalleryProps) {
 
   return (
     <div>
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-cream ring-1 ring-sand">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-white ring-1 ring-sand">
         <Image
           src={current.url}
           alt={current.alt}
           fill
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-cover"
+          className="object-contain"
         />
         {images.length === 0 && (
           <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-ink-muted">
@@ -44,7 +44,7 @@ export function ProductGallery({ images, placeholder }: ProductGalleryProps) {
                 aria-current={i === active}
                 className={`relative block aspect-square w-full overflow-hidden rounded-md ring-2 transition ${i === active ? "ring-brand-blue" : "ring-transparent hover:ring-sand"}`}
               >
-                <Image src={image.url} alt="" fill sizes="20vw" className="object-cover" />
+                <Image src={image.url} alt="" fill sizes="20vw" className="object-contain" />
               </button>
             </li>
           ))}

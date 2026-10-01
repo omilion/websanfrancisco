@@ -11,6 +11,7 @@ import { MegaMenu, type MenuCategory } from "./header/mega-menu";
 import { MobileMenu } from "./header/mobile-menu";
 import { MobileSearch } from "./header/mobile-search";
 import { SearchBox } from "./header/search-box";
+import { isAvailable } from "@/lib/catalog/availability";
 
 export async function SiteHeader() {
   const [{ categories, products }, cartCatalog] = await Promise.all([getCatalog(), getCartCatalogInfo()]);
@@ -21,7 +22,7 @@ export async function SiteHeader() {
       name: c.name,
       image: categoryImages[c.slug] ?? null,
       count: inCategory.length,
-      inStock: inCategory.filter((p) => p.saleMode === "stock" && p.stock > 0).length,
+      inStock: inCategory.filter(isAvailable).length,
       subcategories: c.subcategories,
     };
   });

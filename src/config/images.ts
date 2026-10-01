@@ -102,8 +102,26 @@ export const processPhotos = [
 ];
 
 /** Imagen por slug de categoría del ERP. Las que falten muestran el bloque provisorio. */
+// Incluye los grupos reales del ERP (bases, cómodas, sofás seccionales, etc.) con la foto de ambiente más cercana.
 export const categoryImages: Record<string, string | null> = {
   sofas: "/images/landing/cat-living.jpg",
+  "sofas-seccionales": "/images/landing/cat-living.jpg",
+  "juegos-de-living": "/images/landing/cat-living.jpg",
+  modulares: "/images/landing/cat-a-medida.jpg",
+  repiseros: "/images/landing/cat-a-medida.jpg",
+  "juegos-de-comedor": "/images/landing/cat-comedor.jpg",
+  "mesas-de-arrimo": "/images/landing/cat-comedor.jpg",
+  comodas: "/images/landing/cat-dormitorio.jpg",
+  veladores: "/images/landing/cat-dormitorio.jpg",
+  marquezas: "/images/landing/cat-dormitorio.jpg",
+  "camas-americanas": "/images/landing/cat-dormitorio.jpg",
+  infantiles: "/images/landing/cat-dormitorio.jpg",
+  bases: "/images/landing/cat-cocina.jpg",
+  compactos: "/images/landing/cat-cocina.jpg",
+  lavaplatos: "/images/landing/cat-cocina.jpg",
+  aereos: "/images/landing/cat-cocina.jpg",
+  despensas: "/images/landing/cat-cocina.jpg",
+  "cocina-productos": "/images/landing/cat-cocina.jpg",
   living: "/images/landing/cat-a-medida.jpg", // mueble de TV a muro
   comedor: "/images/landing/cat-comedor.jpg",
   dormitorio: "/images/landing/cat-dormitorio.jpg",
@@ -127,6 +145,19 @@ const placeholderBySubcategory: Record<string, string> = {
 };
 const placeholderByCategory: Record<string, string> = {
   sofas: "sofa",
+  "sofas-seccionales": "sofa",
+  "juegos-de-living": "sofa",
+  "juegos-de-comedor": "mesa",
+  "mesas-de-arrimo": "mesa",
+  marquezas: "cama",
+  "camas-americanas": "cama",
+  bases: "cocina",
+  compactos: "cocina",
+  lavaplatos: "cocina",
+  aereos: "cocina",
+  despensas: "cocina",
+  comodas: "generico",
+  veladores: "generico",
   comedor: "mesa",
   dormitorio: "cama",
   closets: "closet",

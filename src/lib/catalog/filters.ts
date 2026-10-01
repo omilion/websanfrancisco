@@ -3,6 +3,7 @@
 // Módulo puro: lo usan tanto el servidor como el panel de filtros en el navegador.
 
 import type { Product, SaleMode } from "./types";
+import { isAvailable } from "./availability";
 
 export const PAGE_SIZE = 24;
 
@@ -106,7 +107,7 @@ export function applyFilters(products: Product[], f: CatalogFilters): Product[] 
     if (f.sub && p.subcategorySlug !== f.sub) return false;
     if (f.tipo && p.saleMode !== f.tipo) return false;
     if (f.tienda && !((p.stockByStore[f.tienda] ?? 0) > 0)) return false;
-    if (f.disponible && !(p.saleMode === "stock" && p.stock > 0)) return false;
+    if (f.disponible && !isAvailable(p)) return false;
     if (range && (p.price === null || p.price < range.min || p.price >= range.max)) return false;
     if (terms.length) {
       const haystack = normalize(
@@ -137,7 +138,7 @@ export function sortProducts(products: Product[], orden: SortValue): Product[] {
 }
 
 function rank(p: Product): number {
-  if (p.saleMode === "stock" && p.stock > 0) return 0;
+  if (isAvailable(p)) return 0;
   if (p.saleMode === "a-medida") return 1;
   return 2;
 }

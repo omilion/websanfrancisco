@@ -62,7 +62,7 @@ export function CartView({ catalog }: { catalog: CartCatalogInfo }) {
               href={`/productos/${line.slug}`}
               className="relative size-24 shrink-0 overflow-hidden rounded-md bg-cream md:size-28"
             >
-              <Image src={line.image} alt={line.name} fill sizes="112px" className="object-cover" />
+              <Image src={line.image} alt={line.name} fill sizes="112px" className="object-contain" />
             </Link>
 
             <div className="flex min-w-0 flex-1 flex-col">

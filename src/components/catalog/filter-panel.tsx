@@ -90,7 +90,11 @@ export function FilterPanel({
             </span>
           ) : (
             count > 0 && (
-              <button type="button" onClick={clearAll} className="text-sm font-medium text-brand-blue hover:underline">
+              <button
+                type="button"
+                onClick={clearAll}
+                className="text-sm font-medium text-brand-blue hover:underline"
+              >
                 Limpiar filtros
               </button>
             )
@@ -110,7 +114,11 @@ export function FilterPanel({
             placeholder="Buscar mesa, sofá, velador…"
             className="w-full rounded-md border border-sand bg-white py-2.5 pl-3 pr-10 outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
           />
-          <button type="submit" aria-label="Buscar" className="absolute inset-y-0 right-0 px-3 text-brand-blue">
+          <button
+            type="submit"
+            aria-label="Buscar"
+            className="absolute inset-y-0 right-0 px-3 text-brand-blue"
+          >
             <Search className="size-5" aria-hidden />
           </button>
         </form>
@@ -126,15 +134,17 @@ export function FilterPanel({
           <p className="mt-2 text-xs text-ink-muted">Muestra los muebles con stock en esa tienda.</p>
         </FilterGroup>
 
-        <FilterGroup title="Tipo">
-          <RadioList
-            name="tipo"
-            value={filters.tipo}
-            allLabel="Todos"
-            options={types}
-            onChange={(tipo) => navigate({ tipo: tipo as CatalogFilters["tipo"] })}
-          />
-        </FilterGroup>
+        {(filters.tipo || types.filter((t) => t.count > 0).length > 1) && (
+          <FilterGroup title="Tipo">
+            <RadioList
+              name="tipo"
+              value={filters.tipo}
+              allLabel="Todos"
+              options={types}
+              onChange={(tipo) => navigate({ tipo: tipo as CatalogFilters["tipo"] })}
+            />
+          </FilterGroup>
+        )}
 
         {!lockedCategory && (
           <FilterGroup title="Categoría">
@@ -198,7 +208,9 @@ export function FilterPanel({
 function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
     <fieldset className="mt-6 border-t border-sand pt-5">
-      <legend className="float-left mb-3 w-full text-sm font-bold uppercase tracking-wide text-ink">{title}</legend>
+      <legend className="float-left mb-3 w-full text-sm font-bold uppercase tracking-wide text-ink">
+        {title}
+      </legend>
       <div className="clear-both">{children}</div>
     </fieldset>
   );

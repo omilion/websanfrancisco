@@ -486,7 +486,7 @@ function SummaryLine({ line }: { line: CartLine }) {
   return (
     <li className="flex gap-3 py-3">
       <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-cream">
-        <Image src={line.image} alt="" fill sizes="56px" className="object-cover" />
+        <Image src={line.image} alt="" fill sizes="56px" className="object-contain" />
         <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-brand-blue text-[11px] font-bold text-white">
           {line.purchasable}
         </span>

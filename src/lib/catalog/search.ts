@@ -2,6 +2,7 @@ import "server-only";
 import { placeholderFor } from "@/config/images";
 import { getCatalog } from "./index";
 import { normalize } from "./filters";
+import { isAvailable } from "./availability";
 
 export interface SearchSuggestion {
   products: {
@@ -43,7 +44,7 @@ export async function searchCatalog(query: string, limit = 6): Promise<SearchSug
         else if (extra.includes(t)) score += 2;
         else return null; // todos los términos deben aparecer
       }
-      if (p.saleMode === "stock" && p.stock > 0) score += 1;
+      if (isAvailable(p)) score += 1;
       return { p, score };
     })
     .filter((x): x is { p: (typeof products)[number]; score: number } => x !== null)
@@ -65,7 +66,7 @@ export async function searchCatalog(query: string, limit = 6): Promise<SearchSug
       price: p.price,
       image: p.images[0]?.url ?? placeholderFor(p),
       saleMode: p.saleMode,
-      inStock: p.saleMode === "stock" && p.stock > 0,
+      inStock: isAvailable(p),
       category: categoryName.get(p.categorySlug) ?? "",
     })),
   };
