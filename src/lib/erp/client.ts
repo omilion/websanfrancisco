@@ -1,9 +1,9 @@
 import "server-only";
-import type { ErpOrder, ErpProduct, ErpProductsResponse } from "./types";
+import type { ErpOrder, ErpOrderResult, ErpProduct, ErpProductsResponse, ErpQuote } from "./types";
 
 const PRODUCTS_PATH = "/api/ecommerce/productos";
-// Provisoria: Seba aún no entrega el endpoint de pedidos.
 const ORDERS_PATH = "/api/ecommerce/pedidos";
+const QUOTES_PATH = "/api/ecommerce/cotizaciones";
 
 export function isErpConfigured(): boolean {
   return Boolean(process.env.ERP_API_URL && process.env.ERP_API_KEY);
@@ -41,11 +41,39 @@ export async function fetchErpProducts(): Promise<ErpProduct[]> {
   return json.productos;
 }
 
-/** Registra en el ERP un pedido pagado con Webpay. */
-export async function createErpOrder(order: ErpOrder): Promise<{ id: string }> {
+/** Registra en el ERP un pedido pagado con Webpay (idempotente por `orden_compra`). */
+export async function createErpOrder(order: ErpOrder): Promise<ErpOrderResult> {
   const res = await erpFetch(ORDERS_PATH, {
     method: "POST",
     body: JSON.stringify(order),
+    cache: "no-store",
+    signal: AbortSignal.timeout(20_000),
   });
+  return res.json();
+}
+
+export interface ErpQuoteFile {
+  name: string;
+  type: string;
+  data: Buffer;
+}
+
+/** Envía una cotización (personalizada o a medida) al módulo de cotizaciones del ERP. */
+export async function createErpQuote(quote: ErpQuote, files: ErpQuoteFile[] = []): Promise<{ id: number; codigo: string }> {
+  const form = new FormData();
+  form.set("datos", JSON.stringify(quote));
+  for (const f of files) form.append("archivos", new Blob([new Uint8Array(f.data)], { type: f.type }), f.name);
+
+  const baseUrl = process.env.ERP_API_URL;
+  const apiKey = process.env.ERP_API_KEY;
+  if (!baseUrl || !apiKey) throw new Error("ERP_API_URL y ERP_API_KEY deben estar definidos");
+  const res = await fetch(new URL(QUOTES_PATH, baseUrl), {
+    method: "POST",
+    headers: { Accept: "application/json", [process.env.ERP_API_KEY_HEADER || "X-API-Key"]: apiKey },
+    body: form,
+    cache: "no-store",
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) throw new Error(`ERP POST ${QUOTES_PATH} → ${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}`);
   return res.json();
 }

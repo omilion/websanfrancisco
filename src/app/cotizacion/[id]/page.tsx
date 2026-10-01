@@ -35,6 +35,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
     timeZone: "America/Santiago",
   }).format(new Date(quote.createdAt));
   const isProducts = quote.kind === "productos";
+  const isPersonalized = quote.kind === "personalizada";
   const items = quote.items ?? [];
   const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
   const dims = Object.entries(quote.dimensions);
@@ -49,12 +50,23 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
         Solicitud de cotización · {quote.code}
       </p>
       <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-4xl md:text-[2.75rem]">
-        {isProducts ? "Cotización de productos" : `${quote.typeName} a medida`}
+        {isProducts ? "Cotización de productos" : isPersonalized ? "Cotización personalizada" : `${quote.typeName} a medida`}
       </h1>
       <p className="mt-2 text-sm text-ink-muted">Recibida el {date}</p>
 
       <div className="mt-8 grid gap-6 md:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">
+          {isPersonalized && quote.product && (
+            <section className="rounded-lg bg-white p-6 ring-1 ring-sand">
+              <h2 className="font-display text-2xl font-bold uppercase text-brand-blue">Producto base</h2>
+              <p className="mt-3 font-semibold">{quote.product.name}</p>
+              <p className="text-xs text-ink-muted">
+                SKU {quote.product.sku}
+                {quote.product.price !== null && ` · precio publicado ${formatPrice(quote.product.price)}`}
+              </p>
+            </section>
+          )}
+
           {isProducts && (
             <section className="rounded-lg bg-white p-6 ring-1 ring-sand">
               <h2 className="font-display text-2xl font-bold uppercase text-brand-blue">Productos</h2>
@@ -86,7 +98,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
           {(dims.length > 0 || quote.details.length > 0) && (
             <section className="rounded-lg bg-white p-6 ring-1 ring-sand">
               <h2 className="font-display text-2xl font-bold uppercase text-brand-blue">
-                {isProducts ? "Entrega" : "Detalle del proyecto"}
+                {isProducts ? "Entrega" : isPersonalized ? "Cambios pedidos" : "Detalle del proyecto"}
               </h2>
               <dl className="mt-4 divide-y divide-sand text-sm">
                 {dims.map(([k, v]) => (
@@ -96,7 +108,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
                     value={`${v} cm`}
                   />
                 ))}
-                {dims.length === 0 && !isProducts && (
+                {dims.length === 0 && !isProducts && !isPersonalized && (
                   <Row label="Medidas" value="Sin medidas (a tomar en visita)" />
                 )}
                 {quote.details.map((d) => (
@@ -112,7 +124,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
           {quote.description && (
             <section className="rounded-lg bg-white p-6 ring-1 ring-sand">
               <h2 className="font-display text-2xl font-bold uppercase text-brand-blue">
-                {isProducts ? "Comentarios" : "Idea del cliente"}
+                {isProducts ? "Comentarios" : isPersonalized ? "Otros cambios" : "Idea del cliente"}
               </h2>
               <p className="mt-3 whitespace-pre-line text-ink">{quote.description}</p>
             </section>

@@ -60,13 +60,14 @@ export interface ErpProductsResponse {
 
 export interface ErpOrderLine {
   sku: string;
+  nombre?: string;
   cantidad: number;
   precio_unitario: number;
 }
 
-/** Pedido a registrar en el ERP (formato provisorio: falta el endpoint de Seba). */
+/** Pedido pagado con Webpay que la tienda registra en el ERP (POST /api/ecommerce/pedidos). */
 export interface ErpOrder {
-  /** buyOrder de Webpay: sirve para cruzar el pago con el pedido. */
+  /** buyOrder de Webpay: sirve para cruzar el pago con el pedido y evita registrarlo dos veces. */
   orden_compra: string;
   cliente: {
     nombre: string;
@@ -76,12 +77,45 @@ export interface ErpOrder {
     direccion?: string;
     comuna?: string;
   };
+  entrega: { tipo: "despacho" | "retiro"; tienda?: string; referencia?: string };
   lineas: ErpOrderLine[];
   total: number;
+  armado: boolean;
+  comentarios?: string;
   pago: {
     medio: "webpay";
     codigo_autorizacion: string;
     tarjeta_ultimos_digitos?: string;
+    tipo_pago?: string;
+    cuotas?: number;
+    codigo_respuesta?: number;
     fecha: string;
+  };
+}
+
+/** Respuesta del ERP al registrar un pedido. */
+export interface ErpOrderResult {
+  id: number;
+  numero: string;
+  orden_compra: string;
+  duplicado: boolean;
+}
+
+/** Cotización que la tienda envía al ERP (POST /api/ecommerce/cotizaciones, multipart). */
+export interface ErpQuote {
+  referencia: string;
+  codigo: string;
+  tipo: "PERSONALIZADA" | "A_MEDIDA";
+  titulo: string;
+  tienda: string;
+  cliente: { nombre: string; telefono: string; email?: string; comuna?: string; rut?: string; direccion?: string };
+  producto?: { sku: string; nombre: string; precio: number | null };
+  descripcion?: string;
+  detalle: {
+    medidas?: Record<string, number>;
+    campos?: { label: string; value: string }[];
+    material?: string;
+    terminacion?: string;
+    plazo?: string;
   };
 }

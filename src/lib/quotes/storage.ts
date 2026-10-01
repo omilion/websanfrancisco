@@ -1,6 +1,6 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { QuoteRequest } from "./schema";
 
@@ -55,5 +55,14 @@ export async function readAttachment(id: string, file: string): Promise<Buffer |
     return await readFile(path.join(/*turbopackIgnore: true*/ quoteDir(id), file));
   } catch {
     return null;
+  }
+}
+
+/** Ids de todas las solicitudes guardadas (para reintentar el envío al ERP). */
+export async function listQuoteIds(): Promise<string[]> {
+  try {
+    return (await readdir(QUOTES_DIR)).filter((id) => ID_PATTERN.test(id));
+  } catch {
+    return [];
   }
 }

@@ -42,7 +42,6 @@ export function CheckoutForm({
   const subtotal = cartSubtotal(lines);
   const [delivery, setDelivery] = useState<Delivery>("despacho");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
   const [result, setResult] = useState<{ id: string; code: string; store: string; message: string } | null>(
@@ -117,6 +116,49 @@ export function CheckoutForm({
     }
   }
 
+  async function startPayment(data: FormData) {
+    const payload = {
+      items: lines.map((l) => ({ sku: l.sku, quantity: l.purchasable })),
+      nombre: data.get("nombre"),
+      email: data.get("email"),
+      telefono: data.get("telefono"),
+      rut: data.get("rut"),
+      entrega: delivery,
+      direccion: data.get("direccion"),
+      comuna: data.get("comuna"),
+      referencia: data.get("referencia"),
+      tienda: data.get("tienda"),
+      armado: data.get("armado") === "on",
+      comentarios: data.get("comentarios"),
+      terminos: data.get("terminos") === "on",
+    };
+    setSending(true);
+    setSendError(null);
+    try {
+      const res = await fetch("/api/webpay/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = (await res.json()) as { ok: boolean; url?: string; token?: string; error?: string };
+      if (!json.ok || !json.url || !json.token) throw new Error(json.error || "No pudimos iniciar el pago.");
+      // Webpay exige llegar con un POST que lleve token_ws.
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = json.url;
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "token_ws";
+      input.value = json.token;
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    } catch (e) {
+      setSendError(e instanceof Error ? e.message : "No pudimos iniciar el pago. Intenta de nuevo.");
+      setSending(false);
+    }
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -131,9 +173,7 @@ export function CheckoutForm({
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // TODO(webpay): enviar datos + carrito a un Server Action que revalide precio y stock,
-    // cree la transacción en Transbank y redirija a Webpay. Se conecta en la siguiente etapa.
-    setSubmitted(true);
+    void startPayment(data);
   }
 
   return (
@@ -178,7 +218,7 @@ export function CheckoutForm({
             <Field
               label="Correo electrónico"
               required={!quoteMode}
-              hint={quoteMode ? "Opcional" : "Aquí te llega el comprobante"}
+              hint={quoteMode ? "Opcional" : "Para avisarte de tu pedido"}
             >
               <input
                 name="email"
@@ -378,22 +418,18 @@ export function CheckoutForm({
 
             <button
               type="submit"
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-brand-blue px-6 py-4 font-semibold text-white transition-colors hover:bg-brand-blue-dark"
+              disabled={sending}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-brand-blue px-6 py-4 font-semibold text-white transition-colors hover:bg-brand-blue-dark disabled:opacity-60"
             >
-              <Lock className="size-4" aria-hidden />
-              Pagar {formatPrice(subtotal)} con Webpay
+              {sending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Lock className="size-4" aria-hidden />}
+              {sending ? "Conectando con Webpay…" : `Pagar ${formatPrice(subtotal)} con Webpay`}
             </button>
             <p className="mt-3 text-center text-xs text-ink-muted">
               Serás redirigido a Webpay de Transbank para pagar con débito, crédito o prepago.
             </p>
-
-            {submitted && (
-              <p
-                role="status"
-                className="mt-4 rounded-md border-2 border-dashed border-brand-orange/60 bg-brand-orange/5 p-3 text-sm"
-              >
-                <strong className="text-brand-orange-dark">Vista previa:</strong> los datos están correctos.
-                La conexión con Webpay se activa en la siguiente etapa del desarrollo.
+            {sendError && (
+              <p role="alert" className="mt-4 rounded-md bg-brand-orange/10 p-3 text-sm text-ink">
+                {sendError}
               </p>
             )}
           </>

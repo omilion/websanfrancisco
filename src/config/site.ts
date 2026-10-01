@@ -120,11 +120,12 @@ export const services: Service[] = [
 ];
 
 /**
- * Venta en línea. Con `onlinePayments: false` los precios se muestran, pero el carrito termina en
- * una solicitud de cotización (sin Webpay). Cambiar a `true` cuando el cliente esté listo para cobrar.
+ * Venta en línea. Con `onlinePayments: true` el carrito termina en el pago con Webpay (/checkout) y la venta
+ * queda registrada en el ERP. Con `false`, los precios se muestran pero el carrito termina en una solicitud
+ * de cotización (sin Webpay).
  */
 export const commerce = {
-  onlinePayments: false,
+  onlinePayments: true,
 };
 
 /** Paso final del carrito según el modo de venta. */

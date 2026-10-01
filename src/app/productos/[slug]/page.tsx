@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { AddToCart } from "@/components/product/add-to-cart";
 import { MobileBuyBar } from "@/components/product/mobile-buy-bar";
+import { PersonalizedQuote } from "@/components/product/personalized-quote";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
@@ -274,6 +275,13 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 </>
               )}
             </div>
+
+            {/* Cotización personalizada: el mismo mueble con otro color o tamaño */}
+            <PersonalizedQuote
+              slug={product.slug}
+              name={product.name}
+              dimensions={{ width: product.dimensions.width, height: product.dimensions.height, depth: product.dimensions.depth }}
+            />
 
             {/* Stock por tienda */}
             {isStock && (

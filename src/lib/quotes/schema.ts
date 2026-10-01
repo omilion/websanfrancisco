@@ -220,8 +220,16 @@ export interface QuoteRequest {
   contact: { name: string; phone: string; email: string; commune: string };
   store: string;
   attachments: { file: string; name: string; type: string; size: number }[];
-  /** "productos": cotización de productos del catálogo desde el carrito. Sin valor: proyecto a medida. */
-  kind?: "a-medida" | "productos";
+  /**
+   * "productos": cotización de productos del catálogo desde el carrito.
+   * "personalizada": un producto del catálogo con otro color o tamaño (desde la ficha del producto).
+   * Sin valor o "a-medida": proyecto a medida.
+   */
+  kind?: "a-medida" | "productos" | "personalizada";
+  /** Producto base (solo kind "personalizada"). */
+  product?: { sku: string; slug: string; name: string; price: number | null };
+  /** Envío al módulo Cotizaciones del ERP: `id` si ya llegó; `error` si falló y se reintentará. */
+  erp?: { id?: number; syncedAt?: string; error?: string; attempts?: number };
   /** Productos cotizados (solo kind "productos"). Precios del catálogo al momento de la solicitud. */
   items?: { sku: string; name: string; quantity: number; unitPrice: number }[];
 }

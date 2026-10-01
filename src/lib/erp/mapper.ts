@@ -12,8 +12,8 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** Bodega del ERP con el stock reservado para la venta web. */
-export const ONLINE_WAREHOUSE = "internet";
+/** Bodega del ERP con el stock reservado para la venta web ("INTERNET" o "BODEGA WEB"). */
+export const ONLINE_WAREHOUSES = ["internet", "web"];
 
 // El ERP guarda los textos en mayúsculas y sin tildes: se corrigen las palabras más comunes.
 const ACCENTS: Record<string, string> = {
@@ -125,7 +125,7 @@ export function mapErpProduct(p: ErpProduct): Product {
     const slug = warehouseSlug(bodega);
     // El ERP permite stock negativo (ventas sin inventario): para la tienda cuenta como 0.
     const n = Math.max(0, cantidad);
-    if (slug === ONLINE_WAREHOUSE) onlineStock += n;
+    if (ONLINE_WAREHOUSES.includes(slug)) onlineStock += n;
     else stockByStore[slug] = (stockByStore[slug] ?? 0) + n;
   }
 
