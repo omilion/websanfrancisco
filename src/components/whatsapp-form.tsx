@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, MessageCircle } from "lucide-react";
-import { stores, whatsappUrl } from "@/config/site";
+import { useStores } from "@/components/stores-provider";
+import { headquartersOf, whatsappUrl } from "@/config/site";
 
 // Mientras no haya servicio de correo/CRM, los formularios arman el mensaje y lo abren
 // en el WhatsApp de la tienda elegida. Así ninguna consulta se pierde en el camino.
@@ -31,12 +32,13 @@ const inputClass =
   "mt-1.5 w-full rounded-md border border-sand bg-white px-3 py-2.5 text-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20";
 
 export function WhatsAppForm({ intro, fields, submitLabel }: WhatsAppFormProps) {
+  const stores = useStores();
   const [sentTo, setSentTo] = useState<string | null>(null);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const store = stores.find((s) => s.slug === data.get(STORE_FIELD)) ?? stores[0];
+    const store = stores.find((s) => s.slug === data.get(STORE_FIELD)) ?? headquartersOf(stores);
 
     const lines = fields
       .map((f) => [f.label, String(data.get(f.name) ?? "").trim()] as const)
@@ -44,7 +46,7 @@ export function WhatsAppForm({ intro, fields, submitLabel }: WhatsAppFormProps) 
       .map(([label, value]) => `*${label}:* ${value}`);
 
     const message = [intro, "", ...lines].join("\n");
-    window.open(whatsappUrl(store.phone, message), "_blank", "noopener,noreferrer");
+    window.open(whatsappUrl(store.whatsapp, message), "_blank", "noopener,noreferrer");
     setSentTo(store.city);
   }
 

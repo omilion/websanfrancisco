@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { stores } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import {
   attachmentRules,
   dimensionField,
@@ -20,6 +20,7 @@ function error(message: string, status = 400) {
 }
 
 export async function POST(request: NextRequest) {
+  const stores = await getStores();
   if (rateLimited(request))
     return error("Enviaste varias solicitudes seguidas. Intenta de nuevo en unos minutos.", 429);
 

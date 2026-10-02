@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
-import { stores, whatsappUrl } from "@/config/site";
+import { headquartersOf, whatsappUrl } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { Plank } from "./plank";
 
 /** Franja azul de cierre con llamado a cotizar. */
-export function CtaBand({
+export async function CtaBand({
   title = "¿Tienes un espacio en mente?",
   text = "Cuéntanos qué necesitas y te enviamos una cotización sin costo.",
 }: {
   title?: string;
   text?: string;
 }) {
+  const headquarters = headquartersOf(await getStores());
   return (
     <section className="bg-brand-blue text-white">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-14 md:flex-row md:items-center md:justify-between md:py-20">
@@ -28,7 +30,7 @@ export function CtaBand({
             <ArrowRight className="size-4" aria-hidden />
           </Link>
           <a
-            href={whatsappUrl(stores[0].phone, "Hola, quiero hacer una consulta.")}
+            href={whatsappUrl(headquarters.whatsapp, "Hola, quiero hacer una consulta.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/60 px-6 py-3 font-semibold transition-colors hover:bg-white/10"

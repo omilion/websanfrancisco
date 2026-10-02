@@ -1,4 +1,5 @@
-import { shippingCommunes, stores } from "@/config/site";
+import { shippingCommunes } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { rateLimited } from "@/lib/quotes/rate-limit";
 import type { QuoteRequest } from "@/lib/quotes/schema";
@@ -15,6 +16,7 @@ function error(message: string, status = 400) {
  * Precios y stock se toman del catálogo vigente, nunca de lo que envía el navegador.
  */
 export async function POST(request: Request) {
+  const stores = await getStores();
   if (rateLimited(request)) return error("Enviaste varias solicitudes seguidas. Intenta de nuevo en unos minutos.", 429);
 
   let raw: Record<string, unknown>;

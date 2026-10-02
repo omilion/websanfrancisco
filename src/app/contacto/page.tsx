@@ -6,13 +6,16 @@ import { SectionTitle } from "@/components/section-title";
 import { StoreCard } from "@/components/store-card";
 import { WhatsAppForm, type FormField } from "@/components/whatsapp-form";
 import { pageImages } from "@/config/images";
-import { site, stores } from "@/config/site";
+import { cityList, headquartersOf, site, storeCountLabel } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "Contacto",
-  description:
-    "Contáctanos por WhatsApp, teléfono o correo. Tiendas en Ancud, Castro, Quellón y Quemchi.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const stores = await getStores();
+  return {
+    title: "Contacto",
+    description: `Contáctanos por WhatsApp, teléfono o correo. Tiendas en ${cityList(stores)}.`,
+  };
+}
 
 const contactFields: FormField[] = [
   { name: "nombre", label: "Nombre", type: "text", required: true },
@@ -28,15 +31,15 @@ const contactFields: FormField[] = [
   { name: "mensaje", label: "Mensaje", type: "textarea", required: true, wide: true },
 ];
 
-const headquarters = stores.find((s) => s.isHeadquarters) ?? stores[0];
-
-export default function ContactoPage() {
+export default async function ContactoPage() {
+  const stores = await getStores();
+  const headquarters = headquartersOf(stores);
   return (
     <>
       <PageHero
         eyebrow="Contacto"
         title="Conversemos"
-        description="Escríbenos o visítanos en cualquiera de nuestras cuatro tiendas en Chiloé."
+        description={`Escríbenos o visítanos en cualquiera de nuestras ${storeCountLabel(stores.length)} en Chiloé.`}
         image={{ ...pageImages.contacto, pending: "contacto" }}
       />
 
@@ -70,11 +73,13 @@ export default function ContactoPage() {
               </li>
             ))}
           </ul>
-          <div className="mt-6">
-            <PendingText>
-              horarios de atención de cada tienda (no están publicados en su sitio actual).
-            </PendingText>
-          </div>
+          {!stores.some((s) => s.hours) && (
+            <div className="mt-6">
+              <PendingText>
+                horarios de atención de cada tienda (se cargan en el ERP, en cada sucursal).
+              </PendingText>
+            </div>
+          )}
         </div>
       </section>
 

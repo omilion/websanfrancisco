@@ -1,5 +1,6 @@
-// Datos de contacto de las tiendas. Fuente: sanfranciscomuebles.cl/contacto y la historia
-// "Contactanos" de Instagram (sep. 2026). Horarios de atención: pendientes (no están publicados).
+// Datos de contacto de las tiendas. Se administran en el ERP (Sucursales → Tienda online) y la tienda los lee
+// con getStores() en el servidor o useStores() en el navegador. `fallbackStores` es el respaldo si el ERP no
+// responde (fuente: sanfranciscomuebles.cl/contacto y la historia "Contactanos" de Instagram, sep. 2026).
 
 export interface Store {
   slug: string;
@@ -7,9 +8,13 @@ export interface Store {
   city: string;
   /** Formato E.164, sin espacios: sirve para tel: y WhatsApp. */
   phone: string;
+  /** Número del botón de WhatsApp (si en el ERP queda vacío, es el mismo teléfono). */
+  whatsapp: string;
+  /** Horario de atención, tal como se escribe en el ERP. */
+  hours: string | null;
   address: string | null;
   isHeadquarters: boolean;
-  /** Foto de la fachada (optimizada, en /public/images/tiendas). */
+  /** Foto de la fachada (URL del ERP o, en el respaldo, /public/images/tiendas). */
   image: string | null;
 }
 
@@ -20,12 +25,14 @@ export function mapsUrl(store: Store): string | null {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
-export const stores: Store[] = [
+export const fallbackStores: Store[] = [
   {
     slug: "ancud",
     name: "Tienda Ancud",
     city: "Ancud",
     phone: "+56982735261",
+    whatsapp: "+56982735261",
+    hours: null,
     address: "Arturo Prat 130, esquina Baquedano",
     isHeadquarters: true,
     image: "/images/tiendas/ancud.jpg",
@@ -35,6 +42,8 @@ export const stores: Store[] = [
     name: "Tienda Castro",
     city: "Castro",
     phone: "+56956901262",
+    whatsapp: "+56956901262",
+    hours: null,
     address: "Galvarino Riveros 1663",
     isHeadquarters: false,
     image: "/images/tiendas/castro.jpg",
@@ -44,6 +53,8 @@ export const stores: Store[] = [
     name: "Tienda Quellón",
     city: "Quellón",
     phone: "+56940975021",
+    whatsapp: "+56940975021",
+    hours: null,
     address: "Avenida La Paz 416",
     isHeadquarters: false,
     image: "/images/tiendas/quellon.jpg",
@@ -53,11 +64,32 @@ export const stores: Store[] = [
     name: "Tienda Quemchi",
     city: "Quemchi",
     phone: "+56956233768",
+    whatsapp: "+56956233768",
+    hours: null,
     address: "Pedro Montt 135, local 2",
     isHeadquarters: false,
-    image: null, // falta foto de la tienda
+    image: null,
   },
 ];
+
+/** Tienda principal: la marcada como casa central o, si ninguna lo está, la primera. */
+export function headquartersOf(stores: Store[]): Store {
+  return stores.find((s) => s.isHeadquarters) ?? stores[0];
+}
+
+const NUMBER_WORDS = ["", "una", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez"];
+
+/** 4 → "cuatro tiendas", 1 → "una tienda". */
+export function storeCountLabel(count: number): string {
+  const word = NUMBER_WORDS[count] ?? String(count);
+  return `${word} ${count === 1 ? "tienda" : "tiendas"}`;
+}
+
+/** ["Ancud", "Castro", "Quellón"] → "Ancud, Castro y Quellón". */
+export function cityList(stores: Store[]): string {
+  const cities = stores.map((s) => s.city);
+  return cities.length > 1 ? `${cities.slice(0, -1).join(", ")} y ${cities.at(-1)}` : (cities[0] ?? "");
+}
 
 export const site = {
   name: "San Francisco Muebles",

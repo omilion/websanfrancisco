@@ -9,7 +9,8 @@ import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
 import { customProjectTypes, materials } from "@/config/content";
 import { landingImages, materialImages } from "@/config/images";
-import { fulfillment, services, stores, whatsappUrl } from "@/config/site";
+import { fulfillment, headquartersOf, services, whatsappUrl } from "@/config/site";
+import { getSiteContent } from "@/lib/site-content";
 
 export const metadata: Metadata = {
   title: "Muebles a medida",
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
     "Cocinas, closets y muebles a medida fabricados en Ancud. Diseñamos contigo, fabricamos en nuestro taller e instalamos en toda la isla de Chiloé.",
 };
 
-export default function AMedidaPage() {
+export default async function AMedidaPage() {
+  const { project, stores } = await getSiteContent();
   return (
     <>
       <PageHero
@@ -57,7 +59,7 @@ export default function AMedidaPage() {
         </ul>
       </section>
 
-      {/* ── Proceso (6 pasos oficiales) ──────────────────── */}
+      {/* ── Proceso (pasos editables en el ERP) ──────────── */}
       <section className="bg-brand-blue" aria-labelledby="proceso">
         <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
           <SectionTitle
@@ -67,7 +69,7 @@ export default function AMedidaPage() {
             tone="dark"
           />
           <div className="mt-10">
-            <ProcessStepsGrid />
+            <ProcessStepsGrid steps={project.steps} />
           </div>
 
           <div className="mt-10 flex flex-col items-start gap-4 rounded-xl bg-brand-navy/40 p-6 ring-1 ring-white/10 md:flex-row md:items-center md:justify-between md:p-8">
@@ -83,7 +85,7 @@ export default function AMedidaPage() {
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <a
-                href={whatsappUrl(stores[0].phone, "Hola, quiero contarles mi idea para un mueble a medida.")}
+                href={whatsappUrl(headquartersOf(stores).whatsapp, "Hola, quiero contarles mi idea para un mueble a medida.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-white/60 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"

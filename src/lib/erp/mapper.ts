@@ -98,7 +98,7 @@ function warehouseSlug(bodega: string): string {
  * interna (127.0.0.1), las fotos saldrían con esa dirección, que el optimizador de imágenes no acepta.
  * Se reescriben al origen público ERP_IMAGES_ORIGIN.
  */
-function publicImageUrl(url: string): string {
+export function publicImageUrl(url: string): string {
   const origin = process.env.ERP_IMAGES_ORIGIN?.split(",")[0]?.trim();
   if (!origin) return url;
   try {

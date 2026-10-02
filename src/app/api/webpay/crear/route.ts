@@ -1,4 +1,5 @@
-import { shippingCommunes, stores } from "@/config/site";
+import { shippingCommunes } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { getLiveCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { newAccessKey, newBuyOrder, saveOrder, type OrderLine, type StoredOrder } from "@/lib/orders/storage";
 import { rateLimited } from "@/lib/quotes/rate-limit";
@@ -21,6 +22,7 @@ function siteUrl(request: Request): string {
  * el despacho y el armado no se cobran aquí, se coordinan después con la tienda.
  */
 export async function POST(request: Request) {
+  const stores = await getStores();
   if (rateLimited(request, "pago", 12)) return error("Hiciste varios intentos seguidos. Espera unos minutos y vuelve a intentar.", 429);
 
   let raw: Record<string, unknown>;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRight, Camera, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Camera, Clock, MapPin, MessageCircle, Phone } from "lucide-react";
 import { formatPhone, mapsUrl, whatsappUrl, type Store } from "@/config/site";
 
 /** Tarjeta de tienda con foto del local. "dark" sobre fondo azul, "light" sobre fondo claro. */
@@ -59,6 +59,12 @@ export function StoreCard({ store, tone = "dark" }: { store: Store; tone?: "ligh
           <Phone className="mt-0.5 size-4 shrink-0" aria-hidden />
           {formatPhone(store.phone)}
         </p>
+        {store.hours && (
+          <p className={`mt-2 flex gap-2 text-sm ${dark ? "text-white/80" : "text-ink-muted"}`}>
+            <Clock className="mt-0.5 size-4 shrink-0" aria-hidden />
+            {store.hours}
+          </p>
+        )}
 
         <div className="mt-auto flex gap-2 pt-5">
           <a
@@ -70,7 +76,7 @@ export function StoreCard({ store, tone = "dark" }: { store: Store; tone?: "ligh
             Llamar
           </a>
           <a
-            href={whatsappUrl(store.phone)}
+            href={whatsappUrl(store.whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`WhatsApp ${store.name}`}

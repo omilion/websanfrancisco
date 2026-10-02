@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
-import { shippingCommunes, stores } from "@/config/site";
+import { shippingCommunes } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { getProductBySlug } from "@/lib/catalog";
 import { syncQuoteToErp } from "@/lib/quotes/erp-sync";
@@ -19,6 +20,7 @@ function error(message: string, status = 400) {
  * El producto base se toma del catálogo (no de lo que envía el navegador).
  */
 export async function POST(request: NextRequest) {
+  const stores = await getStores();
   if (rateLimited(request, "personalizada"))
     return error("Enviaste varias solicitudes seguidas. Intenta de nuevo en unos minutos.", 429);
 

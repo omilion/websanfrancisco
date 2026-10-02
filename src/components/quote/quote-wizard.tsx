@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { customProjectTypes } from "@/config/content";
-import { stores, whatsappUrl } from "@/config/site";
+import { useStores } from "@/components/stores-provider";
+import { headquartersOf, whatsappUrl } from "@/config/site";
 import {
   attachmentRules,
   dimensionLabels,
@@ -91,6 +92,7 @@ function formatBytes(n: number) {
 }
 
 export function QuoteWizard() {
+  const stores = useStores();
   const params = useSearchParams();
   const topRef = useRef<HTMLDivElement>(null);
   const initialType = getQuoteType(params.get("tipo"));
@@ -222,7 +224,7 @@ export function QuoteWizard() {
 
   // ── Confirmación ──
   if (result && type) {
-    const store = stores.find((s) => s.slug === contact.tienda) ?? stores[0];
+    const store = stores.find((s) => s.slug === contact.tienda) ?? headquartersOf(stores);
     const link = `${window.location.origin}/cotizacion/${result.id}`;
     const dimText = type.dimensions
       .filter((d) => dims[d])
@@ -251,7 +253,7 @@ export function QuoteWizard() {
           WhatsApp: ya está escrito, solo presiona enviar.
         </p>
         <a
-          href={whatsappUrl(store.phone, message)}
+          href={whatsappUrl(store.whatsapp, message)}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-6 py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95"

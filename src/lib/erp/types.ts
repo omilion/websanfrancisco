@@ -119,3 +119,54 @@ export interface ErpQuote {
     plazo?: string;
   };
 }
+
+/** GET /api/ecommerce/sitio: contenido editable de la tienda (módulo Sitio web del ERP). */
+export interface ErpSiteSlide {
+  id: number;
+  imagenEscritorioUrl: string;
+  imagenCelularUrl: string | null;
+  alt: string;
+  conTexto: boolean;
+  alineacion: "izquierda" | "centro" | "derecha";
+  pretitulo: string | null;
+  titulo: string | null;
+  texto: string | null;
+  botonTexto: string | null;
+  botonLink: string | null;
+}
+
+export interface ErpSiteBanner {
+  imagenEscritorioUrl: string;
+  imagenCelularUrl: string | null;
+  alt: string;
+  link: string;
+}
+
+export interface ErpSiteProject {
+  imagenUrl: string | null;
+  alt: string;
+  pretitulo: string;
+  titulo: string;
+  texto: string;
+  pasos: { titulo: string; texto: string; icono: string }[];
+}
+
+export interface ErpSiteStore {
+  codigo: string;
+  nombre: string;
+  direccion: string | null;
+  comuna: string | null;
+  telefono: string | null;
+  whatsapp: string | null;
+  horario: string | null;
+  casaCentral: boolean;
+  orden: number;
+  foto: string | null;
+}
+
+export interface ErpSiteContent {
+  slides: ErpSiteSlide[];
+  banner: ErpSiteBanner | null;
+  proyecto: ErpSiteProject | null;
+  sucursales: ErpSiteStore[];
+}

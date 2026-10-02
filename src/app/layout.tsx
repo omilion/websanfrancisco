@@ -3,8 +3,10 @@ import { Suspense } from "react";
 import { Barlow_Condensed, Figtree } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { StoresProvider } from "@/components/stores-provider";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
-import { formatPhone, stores, whatsappUrl } from "@/config/site";
+import { formatPhone, whatsappUrl } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import "./globals.css";
 
 // Títulos: condensada y en mayúsculas, conversa con el logo y los banners de la marca.
@@ -36,24 +38,27 @@ export const metadata: Metadata = {
     "Precisión artesanal desde el corazón de Chiloé. Muebles a medida y de stock fabricados en Ancud, con despacho en toda la isla.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const stores = await getStores();
   return (
     <html lang="es-CL" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-        <Suspense fallback={null}>
-          <WhatsAppFloat
-            contacts={stores.map((s) => ({
-              slug: s.slug,
-              city: s.city,
-              phoneLabel: formatPhone(s.phone),
-              href: whatsappUrl(s.phone, "Hola, les escribo desde la página web."),
-              isHeadquarters: s.isHeadquarters,
-            }))}
-          />
-        </Suspense>
+        <StoresProvider stores={stores}>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <Suspense fallback={null}>
+            <WhatsAppFloat
+              contacts={stores.map((s) => ({
+                slug: s.slug,
+                city: s.city,
+                phoneLabel: formatPhone(s.whatsapp),
+                href: whatsappUrl(s.whatsapp, "Hola, les escribo desde la página web."),
+                isHeadquarters: s.isHeadquarters,
+              }))}
+            />
+          </Suspense>
+        </StoresProvider>
       </body>
     </html>
   );

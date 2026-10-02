@@ -14,7 +14,8 @@ import {
   Truck,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
-import { fulfillment, shippingCommunes, stores, whatsappUrl } from "@/config/site";
+import { useStores } from "@/components/stores-provider";
+import { fulfillment, headquartersOf, shippingCommunes, whatsappUrl } from "@/config/site";
 import type { CartCatalogInfo } from "@/lib/cart/catalog-info";
 import { cartSubtotal, reconcileCart, type CartLine } from "@/lib/cart/reconcile";
 import { clearCart, useCart } from "@/lib/cart/store";
@@ -37,6 +38,7 @@ export function CheckoutForm({
   catalog: CartCatalogInfo;
   mode?: "pago" | "cotizacion";
 }) {
+  const stores = useStores();
   const quoteMode = mode === "cotizacion";
   const lines = reconcileCart(useCart(), catalog).filter((l) => l.purchasable > 0);
   const subtotal = cartSubtotal(lines);
@@ -547,7 +549,8 @@ function QuoteSent({
   store: string;
   message: string;
 }) {
-  const store = stores.find((s) => s.slug === storeSlug) ?? stores[0];
+  const stores = useStores();
+  const store = stores.find((s) => s.slug === storeSlug) ?? headquartersOf(stores);
   return (
     <div className="mx-auto max-w-xl rounded-lg bg-white px-6 py-12 text-center ring-1 ring-sand">
       <CheckCircle2 className="mx-auto size-14 text-brand-blue" strokeWidth={1.5} aria-hidden />
@@ -562,7 +565,7 @@ function QuoteSent({
         WhatsApp: ya está escrito, solo presiona enviar.
       </p>
       <a
-        href={whatsappUrl(store.phone, message)}
+        href={whatsappUrl(store.whatsapp, message)}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-6 py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95"

@@ -5,7 +5,8 @@ import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { ClearCart } from "@/components/checkout/clear-cart";
 import { Plank } from "@/components/plank";
-import { stores, whatsappUrl } from "@/config/site";
+import { headquartersOf, whatsappUrl } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { formatPrice } from "@/lib/format";
 import { registerOrderInErp } from "@/lib/orders/process";
 import { readOrder } from "@/lib/orders/storage";
@@ -46,7 +47,8 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/resultado">, "
     );
   }
 
-  const store = stores.find((s) => s.slug === order.delivery.store) ?? stores.find((s) => s.isHeadquarters) ?? stores[0];
+  const stores = await getStores();
+  const store = stores.find((s) => s.slug === order.delivery.store) ?? headquartersOf(stores);
 
   if (order.status === "registrado" || order.status === "pagado") {
     const pay = order.payment;
@@ -107,7 +109,7 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/resultado">, "
             </p>
           )}
         </section>
-        <Actions whatsapp={{ phone: store.phone, message, city: store.city }} />
+        <Actions whatsapp={{ phone: store.whatsapp, message, city: store.city }} />
       </Shell>
     );
   }

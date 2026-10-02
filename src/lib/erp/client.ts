@@ -1,9 +1,10 @@
 import "server-only";
-import type { ErpOrder, ErpOrderResult, ErpProduct, ErpProductsResponse, ErpQuote } from "./types";
+import type { ErpOrder, ErpOrderResult, ErpProduct, ErpProductsResponse, ErpQuote, ErpSiteContent } from "./types";
 
 const PRODUCTS_PATH = "/api/ecommerce/productos";
 const ORDERS_PATH = "/api/ecommerce/pedidos";
 const QUOTES_PATH = "/api/ecommerce/cotizaciones";
+const SITE_PATH = "/api/ecommerce/sitio";
 
 export function isErpConfigured(): boolean {
   return Boolean(process.env.ERP_API_URL && process.env.ERP_API_KEY);
@@ -39,6 +40,14 @@ export async function fetchErpProducts(): Promise<ErpProduct[]> {
   const json = (await res.json()) as ErpProductsResponse;
   if (!Array.isArray(json?.productos)) throw new Error("ERP: respuesta sin lista de productos");
   return json.productos;
+}
+
+/** Contenido editable de la tienda: carrusel, banner, sección a medida y sucursales visibles en la web. */
+export async function fetchErpSiteContent(): Promise<ErpSiteContent> {
+  const res = await erpFetch(SITE_PATH, { signal: AbortSignal.timeout(10_000) });
+  const json = (await res.json()) as ErpSiteContent;
+  if (!Array.isArray(json?.slides) || !Array.isArray(json?.sucursales)) throw new Error("ERP: respuesta de sitio incompleta");
+  return json;
 }
 
 /** Registra en el ERP un pedido pagado con Webpay (idempotente por `orden_compra`). */

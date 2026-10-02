@@ -1,34 +1,41 @@
 // Textos compartidos entre páginas.
 
-/** Proceso a medida oficial de la empresa (6 pasos, texto del sitio actual del cliente). */
-export const processSteps = [
+export interface ProcessStep {
+  title: string;
+  text: string;
+  /** Ícono: medidas, ideas, cotizacion, diseno, fabricacion, despacho, instalacion o garantia. */
+  icon: string;
+}
+
+/** Proceso a medida (6 pasos, texto del sitio actual del cliente). Se edita en el ERP; esto es el respaldo. */
+export const processSteps: ProcessStep[] = [
   {
-    slug: "medidas",
+    icon: "medidas",
     title: "Toma de medidas",
     text: "Medidas referenciales del espacio. Podemos rectificar más adelante.",
   },
   {
-    slug: "ideas",
+    icon: "ideas",
     title: "Cuéntanos tus ideas",
     text: "En sucursales o vía WhatsApp. Envíanos fotos, planos o bocetos.",
   },
   {
-    slug: "cotizacion",
+    icon: "cotizacion",
     title: "Cotización y asesoría",
     text: "Elige material, colores y acabados. Te enviamos la propuesta del mueble o proyecto.",
   },
   {
-    slug: "diseno",
+    icon: "diseno",
     title: "Diseño",
     text: "Se estipula el diseño y hacemos los últimos retoques.",
   },
   {
-    slug: "fabricacion",
+    icon: "fabricacion",
     title: "Fabricación",
     text: "Tu proyecto cobra vida en nuestro taller, en los plazos acordados.",
   },
   {
-    slug: "despacho",
+    icon: "despacho",
     title: "Despacho e instalación",
     text: "Entrega coordinada e instalación. ¡Mueble o proyecto listo para su uso!",
   },

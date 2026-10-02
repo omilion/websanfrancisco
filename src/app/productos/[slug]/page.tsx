@@ -19,7 +19,8 @@ import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
 import { categoryImages, placeholderFor } from "@/config/images";
-import { fulfillment, stores, whatsappUrl } from "@/config/site";
+import { fulfillment, headquartersOf, storeCountLabel, whatsappUrl } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { getCatalog, getCategory, getProductBySlug } from "@/lib/catalog";
 import type { Product } from "@/lib/catalog/types";
 import { commerce } from "@/config/site";
@@ -63,7 +64,11 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [category, { products }] = await Promise.all([getCategory(product.categorySlug), getCatalog()]);
+  const [category, { products }, stores] = await Promise.all([
+    getCategory(product.categorySlug),
+    getCatalog(),
+    getStores(),
+  ]);
   const subcategory = category?.subcategories.find((s) => s.slug === product.subcategorySlug);
   const related = products
     .filter((p) => p.categorySlug === product.categorySlug && p.id !== product.id)
@@ -75,7 +80,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
   const available = isAvailable(product);
   const noPrice = isStock && product.price === null;
   const placeholder = { url: placeholderFor(product), alt: `${product.name} (foto próximamente)` };
-  const headquarters = stores.find((s) => s.isHeadquarters) ?? stores[0];
+  const headquarters = headquartersOf(stores);
   const productRef = `${product.name} (${product.sku})`;
   const storesWithStock = stores.filter((s) => (product.stockByStore[s.slug] ?? 0) > 0);
 
@@ -99,7 +104,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
               ? {
                   kind: "consultar",
                   href: whatsappUrl(
-                    headquarters.phone,
+                    headquarters.whatsapp,
                     noPrice
                       ? `Hola, quiero saber el precio de ${productRef}.`
                       : `Hola, ¿cuándo vuelve a estar disponible ${productRef}?`,
@@ -224,7 +229,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <a
                       href={whatsappUrl(
-                        headquarters.phone,
+                        headquarters.whatsapp,
                         noPrice
                           ? `Hola, quiero saber el precio de ${productRef}.`
                           : storesWithStock.length > 0
@@ -263,7 +268,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                       <ArrowRight className="size-4" aria-hidden />
                     </Link>
                     <a
-                      href={whatsappUrl(headquarters.phone, `Hola, quiero cotizar: ${productRef}.`)}
+                      href={whatsappUrl(headquarters.whatsapp, `Hola, quiero cotizar: ${productRef}.`)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border-2 border-brand-blue px-5 py-3 font-semibold text-brand-blue hover:bg-cream"
@@ -325,7 +330,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                         </span>
                         <a
                           href={whatsappUrl(
-                            store.phone,
+                            store.whatsapp,
                             `Hola, ¿tienen disponible ${productRef} en la tienda de ${store.city}?`,
                           )}
                           target="_blank"
@@ -355,7 +360,7 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
                 <li className="flex gap-3">
                   <StoreIcon className="size-5 shrink-0 text-brand-orange-dark" aria-hidden />
                   <span>
-                    <strong>Retiro en tienda</strong> en cualquiera de nuestras 4 tiendas.
+                    <strong>Retiro en tienda</strong> en cualquiera de nuestras {storeCountLabel(stores.length)}.
                   </span>
                 </li>
               )}

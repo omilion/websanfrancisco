@@ -6,15 +6,20 @@ import { SectionTitle } from "@/components/section-title";
 import { SocialLinks } from "@/components/social-links";
 import { StoreCard } from "@/components/store-card";
 import { pageImages } from "@/config/images";
-import { site, stores } from "@/config/site";
+import { cityList, site, storeCountLabel, type Store } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "Nosotros",
-  description:
-    "San Francisco Muebles: desde 1999 en Ancud, Chiloé. Fabricamos nuestra propia línea de muebles y proyectos a medida, con cuatro tiendas en la isla.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const stores = await getStores();
+  return {
+    title: "Nosotros",
+    description: `San Francisco Muebles: desde 1999 en Ancud, Chiloé. Fabricamos nuestra propia línea de muebles y proyectos a medida, con ${storeCountLabel(stores.length)} en la isla.`,
+  };
+}
 
-const milestones = [
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
+const milestonesFor = (stores: Store[]) => [
   {
     year: "1999",
     title: "Los comienzos",
@@ -32,15 +37,15 @@ const milestones = [
   },
   {
     year: "Hoy",
-    title: "Cuatro tiendas en la isla",
-    text: "Línea propia de muebles, proyectos a medida y tiendas en Ancud, Castro, Quellón y Quemchi.",
+    title: `${capitalize(storeCountLabel(stores.length))} en la isla`,
+    text: `Línea propia de muebles, proyectos a medida y tiendas en ${cityList(stores)}.`,
   },
 ];
 
-const stats = [
+const statsFor = (stores: Store[]) => [
   { value: `Desde ${site.since}`, label: "en el rubro del mueble" },
   { value: "2002", label: "fabricando muebles propios" },
-  { value: "4", label: "tiendas en Chiloé" },
+  { value: String(stores.length), label: `${stores.length === 1 ? "tienda" : "tiendas"} en Chiloé` },
 ];
 
 // Identidad oficial de la empresa (texto entregado por el cliente).
@@ -63,7 +68,10 @@ const pillars = [
   "Un profundo amor por nuestra tradición y geografía del sur",
 ];
 
-export default function NosotrosPage() {
+export default async function NosotrosPage() {
+  const stores = await getStores();
+  const milestones = milestonesFor(stores);
+  const stats = statsFor(stores);
   return (
     <>
       <PageHero
@@ -211,7 +219,7 @@ export default function NosotrosPage() {
 
       {/* ── Tiendas ──────────────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24" aria-labelledby="tiendas">
-        <SectionTitle id="tiendas" eyebrow="Visítanos" title="Cuatro tiendas en Chiloé" />
+        <SectionTitle id="tiendas" eyebrow="Visítanos" title={`${capitalize(storeCountLabel(stores.length))} en Chiloé`} />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {stores.map((store) => (
             <li key={store.slug}>

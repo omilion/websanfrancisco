@@ -1,6 +1,16 @@
 import Image from "next/image";
-import { Box, FileText, MessageCircle, Ruler, Truck, Wrench, type LucideIcon } from "lucide-react";
-import { processSteps } from "@/config/content";
+import {
+  Box,
+  FileText,
+  House,
+  MessageCircle,
+  Ruler,
+  ShieldCheck,
+  Truck,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
+import type { ProcessStep } from "@/config/content";
 import { processPhotos } from "@/config/images";
 
 const stepIcons: Record<string, LucideIcon> = {
@@ -10,18 +20,28 @@ const stepIcons: Record<string, LucideIcon> = {
   diseno: Box,
   fabricacion: Wrench,
   despacho: Truck,
+  instalacion: House,
+  garantia: ShieldCheck,
 };
 
-/** Los 6 pasos del proceso a medida. "dark" sobre fondo azul, "light" sobre fondo claro. */
-export function ProcessStepsGrid({ tone = "dark", compact = false }: { tone?: "light" | "dark"; compact?: boolean }) {
+/** Pasos del proceso a medida (se editan en el ERP). "dark" sobre fondo azul, "light" sobre fondo claro. */
+export function ProcessStepsGrid({
+  steps,
+  tone = "dark",
+  compact = false,
+}: {
+  steps: ProcessStep[];
+  tone?: "light" | "dark";
+  compact?: boolean;
+}) {
   const dark = tone === "dark";
   return (
     <ol className={`grid gap-3 sm:grid-cols-2 ${compact ? "" : "md:gap-4 lg:grid-cols-3"}`}>
-      {processSteps.map((step, i) => {
-        const Icon = stepIcons[step.slug] ?? Box;
+      {steps.map((step, i) => {
+        const Icon = stepIcons[step.icon] ?? Box;
         return (
           <li
-            key={step.slug}
+            key={i}
             className={`flex gap-4 rounded-xl p-4 md:p-5 ${dark ? "bg-white/[0.07] ring-1 ring-white/15" : "bg-white ring-1 ring-sand"}`}
           >
             <span

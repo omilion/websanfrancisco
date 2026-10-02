@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { FileText, Mail, MapPin, MessageCircle, Phone, Store as StoreIcon } from "lucide-react";
 import { Plank } from "@/components/plank";
-import { formatPhone, stores, whatsappUrl } from "@/config/site";
+import { formatPhone, whatsappUrl } from "@/config/site";
+import { getStores } from "@/lib/site-content";
 import { formatPrice } from "@/lib/format";
 import { dimensionLabels } from "@/lib/quotes/schema";
 import { readQuote } from "@/lib/quotes/storage";
@@ -28,7 +29,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
   const quote = await readQuote(id);
   if (!quote) notFound();
 
-  const store = stores.find((s) => s.slug === quote.store);
+  const store = (await getStores()).find((s) => s.slug === quote.store);
   const date = new Intl.DateTimeFormat("es-CL", {
     dateStyle: "long",
     timeStyle: "short",

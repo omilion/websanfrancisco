@@ -13,17 +13,28 @@ import {
   Store as StoreIcon,
   Truck,
 } from "lucide-react";
-import { commerce, fulfillment, formatPhone, site, stores, whatsappUrl } from "@/config/site";
+import {
+  cityList,
+  commerce,
+  fulfillment,
+  formatPhone,
+  headquartersOf,
+  site,
+  storeCountLabel,
+  type Store,
+  whatsappUrl,
+} from "@/config/site";
 import { getCategories } from "@/lib/catalog";
+import { getStores } from "@/lib/site-content";
 import { Plank } from "./plank";
 import { SocialLinks } from "./social-links";
 
-const promises = [
+const promisesFor = (stores: Store[]) => [
   { icon: Hammer, title: "Fabricado en Ancud", text: "Taller propio en el corazón de Chiloé" },
   { icon: Truck, title: "Despacho en toda la isla", text: fulfillment.shippingArea },
   commerce.onlinePayments
     ? { icon: ShieldCheck, title: "Pago seguro", text: "Webpay: débito, crédito y prepago" }
-    : { icon: StoreIcon, title: "Retiro en tienda", text: "Ancud, Castro, Quellón y Quemchi" },
+    : { icon: StoreIcon, title: "Retiro en tienda", text: cityList(stores) },
   { icon: ClipboardList, title: "Cotización sin costo", text: "Proyectos a tu medida" },
 ];
 
@@ -38,7 +49,8 @@ const helpLinks = [
 const paymentMethods = commerce.onlinePayments ? ["Webpay", "Débito", "Crédito", "Prepago"] : [];
 
 export async function SiteFooter() {
-  const categories = await getCategories();
+  const [categories, stores] = await Promise.all([getCategories(), getStores()]);
+  const promises = promisesFor(stores);
 
   return (
     <footer className="mt-auto">
@@ -89,7 +101,7 @@ export async function SiteFooter() {
             </p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
               Desde {site.since} en Ancud. Fabricamos nuestra propia línea de muebles y proyectos a medida,
-              con cuatro tiendas en la isla de Chiloé.
+              con {storeCountLabel(stores.length)} en la isla de Chiloé.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -99,7 +111,7 @@ export async function SiteFooter() {
                 Cotizar gratis
               </Link>
               <a
-                href={whatsappUrl(stores[0].phone, "Hola, les escribo desde la página web.")}
+                href={whatsappUrl(headquartersOf(stores).whatsapp, "Hola, les escribo desde la página web.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-md border border-cream/25 px-5 py-3 text-sm font-semibold text-cream transition-colors hover:border-cream/60 hover:bg-white/5"
@@ -159,7 +171,7 @@ export async function SiteFooter() {
                       {store.city}
                     </span>
                     <a
-                      href={whatsappUrl(store.phone)}
+                      href={whatsappUrl(store.whatsapp)}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`WhatsApp tienda ${store.city}`}

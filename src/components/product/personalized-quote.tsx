@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { CheckCircle2, ChevronDown, Loader2, Paintbrush, Send } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
-import { shippingCommunes, stores, whatsappUrl } from "@/config/site";
+import { useStores } from "@/components/stores-provider";
+import { headquartersOf, shippingCommunes, whatsappUrl } from "@/config/site";
 import { attachmentRules } from "@/lib/quotes/schema";
 
 const inputClass =
@@ -22,6 +23,7 @@ interface Props {
 
 /** Cotización personalizada: el mismo mueble con otro color o tamaño. Llega al módulo Cotizaciones del ERP. */
 export function PersonalizedQuote({ slug, name, dimensions }: Props) {
+  const stores = useStores();
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ id: string; code: string; store: string; summary: string } | null>(null);
@@ -85,7 +87,7 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
   }
 
   if (result) {
-    const store = stores.find((s) => s.slug === result.store) ?? stores[0];
+    const store = stores.find((s) => s.slug === result.store) ?? headquartersOf(stores);
     return (
       <section id="personalizar" className="mt-8 scroll-mt-28 rounded-lg bg-white p-6 text-center ring-1 ring-sand">
         <CheckCircle2 className="mx-auto size-12 text-brand-blue" strokeWidth={1.5} aria-hidden />
@@ -94,7 +96,7 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
           Tu código es <strong className="text-ink">{result.code}</strong>. La tienda de {store.city} te enviará el precio de tu versión personalizada.
         </p>
         <a
-          href={whatsappUrl(store.phone, result.summary)}
+          href={whatsappUrl(store.whatsapp, result.summary)}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:brightness-95"

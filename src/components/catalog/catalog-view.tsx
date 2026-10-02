@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, SearchX, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
-import { stores } from "@/config/site";
 import { getCatalog } from "@/lib/catalog";
 import {
   applyFilters,
@@ -12,6 +11,7 @@ import {
   type CatalogFilters,
 } from "@/lib/catalog/filters";
 import type { Product } from "@/lib/catalog/types";
+import { getStores } from "@/lib/site-content";
 import { FilterPanel, SortSelect, type FacetOption } from "./filter-panel";
 
 interface CatalogViewProps {
@@ -22,7 +22,7 @@ interface CatalogViewProps {
 }
 
 export async function CatalogView({ filters, basePath, lockedCategory }: CatalogViewProps) {
-  const { categories, products } = await getCatalog();
+  const [{ categories, products }, stores] = await Promise.all([getCatalog(), getStores()]);
   const omit: (keyof CatalogFilters)[] = lockedCategory ? ["categoria"] : [];
   const hrefWith = (changes: Partial<CatalogFilters>) =>
     `${basePath}${toSearchParams({ ...filters, pagina: 1, ...changes }, omit)}`;

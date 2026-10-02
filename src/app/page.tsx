@@ -8,17 +8,22 @@ import { ProcessStepsGrid } from "@/components/process-steps";
 import { ProductCard } from "@/components/product-card";
 import { SectionTitle } from "@/components/section-title";
 import { ServiceIcon } from "@/components/service-icon";
+import { SmartLink } from "@/components/smart-link";
 import { StoreCard } from "@/components/store-card";
-import { categoryImages, heroSlides, homeCustomImage } from "@/config/images";
-import { commerce, fulfillment, services, site, stores, whatsappUrl } from "@/config/site";
+import { categoryImages } from "@/config/images";
+import { commerce, fulfillment, headquartersOf, services, site, storeCountLabel, whatsappUrl } from "@/config/site";
 import { getCategories, getProducts } from "@/lib/catalog";
 import { isAvailable } from "@/lib/catalog/availability";
+import { getSiteContent } from "@/lib/site-content";
 
 export default async function Home() {
-  const [categories, stockProducts] = await Promise.all([
+  const [categories, stockProducts, { slides, banner, project, stores }] = await Promise.all([
     getCategories(),
     getProducts({ saleMode: "stock" }),
+    getSiteContent(),
   ]);
+  const headquarters = headquartersOf(stores);
+  const hasPageTitle = slides.some((s) => s.content?.isPageTitle);
   // Portada: las 6 categorías con más productos, para que quepan en una fila.
   const homeCategories = [...categories]
     .sort(
@@ -36,18 +41,18 @@ export default async function Home() {
     name: site.name,
     foundingDate: String(site.since),
     email: site.email,
-    telephone: stores[0].phone,
+    telephone: headquarters.phone,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Arturo Prat 130",
-      addressLocality: "Ancud",
+      streetAddress: headquarters.address ?? undefined,
+      addressLocality: headquarters.city,
       addressRegion: "Los Lagos",
       addressCountry: "CL",
     },
     areaServed: fulfillment.shippingArea,
     sameAs: [site.social.instagram.url, site.social.facebook.url],
     department: stores
-      .filter((s) => !s.isHeadquarters)
+      .filter((s) => s !== headquarters)
       .map((s) => ({
         "@type": "FurnitureStore",
         name: s.name,
@@ -64,7 +69,13 @@ export default async function Home() {
       />
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
-        <HeroCarousel slides={heroSlides} />
+        {/* Si ningún slide lleva texto, el h1 de la página queda solo para lectores de pantalla y Google. */}
+        {!hasPageTitle && (
+          <h1 id="hero-title" className="sr-only">
+            San Francisco Muebles: muebles de madera hechos en Chiloé
+          </h1>
+        )}
+        <HeroCarousel slides={slides} />
       </section>
 
       {/* ── Servicios ────────────────────────────────────── */}
@@ -131,29 +142,30 @@ export default async function Home() {
               ))}
             </ul>
 
-            {/* Banner de categoría: Sofás y sillones (versión recortada en celular para que el texto se lea) */}
-            <Link
-              href="/categoria/sofas"
-              aria-label="Sofás y sillones: ver categoría"
-              className="group mt-12 block overflow-hidden rounded-xl ring-1 ring-sand md:mt-16"
-            >
-              <Image
-                src="/images/banners/sofas-desktop.jpg"
-                alt="Sofás y sillones San Francisco Muebles: diseños que combinan comodidad, estilo y fabricación a medida"
-                width={2172}
-                height={724}
-                sizes="(min-width: 1280px) 1248px, 100vw"
-                className="hidden h-auto w-full transition-transform duration-700 group-hover:scale-[1.015] md:block"
-              />
-              <Image
-                src="/images/banners/sofas-movil.jpg"
-                alt="Sofás y sillones San Francisco Muebles: diseños que combinan comodidad, estilo y fabricación a medida"
-                width={1150}
-                height={724}
-                sizes="100vw"
-                className="h-auto w-full md:hidden"
-              />
-            </Link>
+            {/* Banner editable en el ERP (versión para celular opcional, para que el texto de la gráfica se lea) */}
+            {banner && (
+              <SmartLink
+                href={banner.href}
+                className="group mt-12 block overflow-hidden rounded-xl ring-1 ring-sand md:mt-16"
+              >
+                <Image
+                  src={banner.desktop}
+                  alt={banner.alt}
+                  width={2172}
+                  height={724}
+                  sizes="(min-width: 1280px) 1248px, 100vw"
+                  className="hidden h-auto w-full transition-transform duration-700 group-hover:scale-[1.015] md:block"
+                />
+                <Image
+                  src={banner.mobile}
+                  alt={banner.alt}
+                  width={1150}
+                  height={724}
+                  sizes="100vw"
+                  className="h-auto w-full md:hidden"
+                />
+              </SmartLink>
+            )}
           </div>
         </section>
       )}
@@ -163,28 +175,21 @@ export default async function Home() {
         {/* Celular: título → imagen → resto. Escritorio: imagen a la izquierda, título y contenido a la derecha. */}
         <div className="grid gap-8 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-0">
           <div className="lg:col-start-2 lg:row-start-1">
-            <SectionTitle
-              id="a-medida-title"
-              eyebrow="Hecho a medida"
-              title="Lo hacemos para tu espacio exacto"
-            />
+            <SectionTitle id="a-medida-title" eyebrow={project.pretitle} title={project.title} />
           </div>
           <div className="relative aspect-[3/4] overflow-hidden rounded-lg sm:mx-auto sm:w-full sm:max-w-md lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:max-w-none lg:self-center">
             <Image
-              src={homeCustomImage.src}
-              alt={homeCustomImage.alt}
+              src={project.image.src}
+              alt={project.image.alt}
               fill
               sizes="(min-width: 1024px) 50vw, (min-width: 640px) 448px, 100vw"
               className="object-cover"
             />
           </div>
           <div className="lg:col-start-2 lg:row-start-2">
-            <p className="text-lg text-ink-muted lg:mt-5">
-              Cocinas, closets, bibliotecas o ese rincón difícil bajo la escalera. Diseñamos y fabricamos
-              contigo, con maderas nobles y terminaciones a tu gusto.
-            </p>
+            {project.text && <p className="text-lg text-ink-muted lg:mt-5">{project.text}</p>}
             <div className="mt-8">
-              <ProcessStepsGrid tone="light" compact />
+              <ProcessStepsGrid steps={project.steps} tone="light" compact />
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -195,7 +200,7 @@ export default async function Home() {
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <a
-                href={whatsappUrl(stores[0].phone, "Hola, quiero cotizar un mueble a medida.")}
+                href={whatsappUrl(headquarters.whatsapp, "Hola, quiero cotizar un mueble a medida.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-md border-2 border-brand-blue px-6 py-3 font-semibold text-brand-blue transition-colors hover:bg-white"
@@ -216,7 +221,7 @@ export default async function Home() {
             id="tiendas-title"
             className="mt-4 font-display text-2xl font-bold uppercase leading-none sm:text-3xl md:text-4xl"
           >
-            Cuatro tiendas en Chiloé
+            {storeCountLabel(stores.length)} en Chiloé
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-white/85">
             Visítanos para ver y tocar las maderas.

@@ -23,7 +23,7 @@ export const landingImages = {
   },
 } satisfies Record<string, ResponsiveImage>;
 
-/** Carrusel del banner principal de la portada, en orden. Formato ideal: 21:9 (brief-hero-21x9-carla.md). */
+/** Carrusel de la portada (respaldo: el real se edita en el ERP, módulo Sitio web). Formato ideal: 21:9. */
 export const heroSlides: HeroSlide[] = [
   // 1 · Solo la foto de la casa central.
   {
@@ -57,7 +57,7 @@ export const heroSlides: HeroSlide[] = [
   },
 ];
 
-/** Foto de la sección "Hecho a medida" de la portada (cocina a medida real, vertical 3:4). */
+/** Foto de la sección "Hecho a medida" de la portada (respaldo si en el ERP no hay imagen; vertical 3:4). */
 export const homeCustomImage = {
   src: "/images/landing/cocina-a-medida.jpg",
   alt: "Cocina a medida San Francisco Muebles: muebles negros, isla con cubierta de madera y vigas a la vista",

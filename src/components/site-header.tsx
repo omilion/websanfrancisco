@@ -3,9 +3,10 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ShieldCheck, Truck } from "lucide-react";
 import { categoryImages, landingImages } from "@/config/images";
-import { commerce, fulfillment, formatPhone, stores, whatsappUrl } from "@/config/site";
+import { commerce, fulfillment, formatPhone, whatsappUrl } from "@/config/site";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { getCatalog } from "@/lib/catalog";
+import { getStores } from "@/lib/site-content";
 import { CartButton } from "./cart/cart-button";
 import { MegaMenu, type MenuCategory } from "./header/mega-menu";
 import { MobileMenu } from "./header/mobile-menu";
@@ -14,7 +15,11 @@ import { SearchBox } from "./header/search-box";
 import { isAvailable } from "@/lib/catalog/availability";
 
 export async function SiteHeader() {
-  const [{ categories, products }, cartCatalog] = await Promise.all([getCatalog(), getCartCatalogInfo()]);
+  const [{ categories, products }, cartCatalog, stores] = await Promise.all([
+    getCatalog(),
+    getCartCatalogInfo(),
+    getStores(),
+  ]);
   const menuCategories: MenuCategory[] = categories.map((c) => {
     const inCategory = products.filter((p) => p.categorySlug === c.slug);
     return {
@@ -32,7 +37,7 @@ export async function SiteHeader() {
     city: s.city,
     phone: s.phone,
     phoneLabel: formatPhone(s.phone),
-    whatsapp: whatsappUrl(s.phone, "Hola, les escribo desde la página web."),
+    whatsapp: whatsappUrl(s.whatsapp, "Hola, les escribo desde la página web."),
   }));
 
   return (
