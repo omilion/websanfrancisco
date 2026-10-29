@@ -53,8 +53,7 @@ export async function POST(request: NextRequest) {
     if (Number.isFinite(n) && n > 0) dimensions[d] = Math.min(Math.max(Math.round(n), dimensionField.min), dimensionField.max);
   }
   const description = text(raw.descripcion, 2000);
-  if (!color && Object.keys(dimensions).length === 0 && !description)
-    return error("Cuéntanos qué quieres cambiar: color, medidas u otra modificación.");
+  // Los cambios son opcionales: basta con los datos de contacto (la sucursal conversa el detalle).
 
   // ── Contacto ──
   const contact = {
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
   };
   if (!contact.name || contact.phone.replace(/\D/g, "").length < 8 || !contact.commune)
     return error("Completa tu nombre, teléfono y comuna.");
-  if (contact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) return error("El correo no es válido.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) return error("Ingresa un correo válido para enviarte la cotización.");
   if (!shippingCommunes.includes(contact.commune) && contact.commune.length < 2) return error("Elige tu comuna.");
   const store = stores.find((s) => s.slug === text(raw.tienda, 20));
   if (!store) return error("Elige la tienda que te atenderá.");

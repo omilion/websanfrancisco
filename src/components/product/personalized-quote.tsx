@@ -128,10 +128,48 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
 
       <div className="border-t border-sand p-5 md:p-6">
       <p className="text-sm text-ink-muted">
-        Cuéntanos qué cambios necesitas y te enviamos el precio y el plazo de tu versión del mueble.
+        Déjanos tus datos y te contactamos con el precio y el plazo de tu versión del mueble. Los detalles son opcionales.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-4 grid gap-4 sm:grid-cols-2">
+        <Field label="Tu nombre" required>
+          <input name="nombre" required autoComplete="name" className={inputClass} />
+        </Field>
+        <Field label="Teléfono" required>
+          <input name="telefono" type="tel" required autoComplete="tel" placeholder="+56 9 ..." className={inputClass} />
+        </Field>
+        <Field label="Correo" required>
+          <input name="email" type="email" required autoComplete="email" className={inputClass} />
+        </Field>
+        <Field label="Comuna" required>
+          <select name="comuna" required defaultValue="" className={inputClass}>
+            <option value="" disabled>
+              Elige tu comuna
+            </option>
+            {shippingCommunes.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Sucursal de preferencia" required wide>
+          <select name="tienda" required defaultValue="" className={inputClass}>
+            <option value="" disabled>
+              Elige una tienda
+            </option>
+            {stores.map((s) => (
+              <option key={s.slug} value={s.slug}>
+                {s.city}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <details className="group/det sm:col-span-2 rounded-md border border-sand">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold text-brand-blue [&::-webkit-details-marker]:hidden">
+            ¿Quieres darnos más detalles de lo que necesitas? (Opcional)
+            <ChevronDown className="size-4 shrink-0 transition-transform group-open/det:rotate-180" aria-hidden />
+          </summary>
+          <div className="grid gap-4 border-t border-sand p-4 sm:grid-cols-2">
         <Field label="Color o terminación" hint="Ej: blanco, roble natural">
           <input name="color" list="colores-personalizado" maxLength={80} className={inputClass} />
           <datalist id="colores-personalizado">
@@ -178,37 +216,8 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
           />
         </Field>
 
-        <Field label="Tu nombre" required>
-          <input name="nombre" required autoComplete="name" className={inputClass} />
-        </Field>
-        <Field label="Teléfono" required>
-          <input name="telefono" type="tel" required autoComplete="tel" placeholder="+56 9 ..." className={inputClass} />
-        </Field>
-        <Field label="Correo" hint="Opcional">
-          <input name="email" type="email" autoComplete="email" className={inputClass} />
-        </Field>
-        <Field label="Comuna" required>
-          <select name="comuna" required defaultValue="" className={inputClass}>
-            <option value="" disabled>
-              Elige tu comuna
-            </option>
-            {shippingCommunes.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Tienda que te atenderá" required wide>
-          <select name="tienda" required defaultValue="" className={inputClass}>
-            <option value="" disabled>
-              Elige una tienda
-            </option>
-            {stores.map((s) => (
-              <option key={s.slug} value={s.slug}>
-                {s.city}
-              </option>
-            ))}
-          </select>
-        </Field>
+          </div>
+        </details>
 
         <div className="sm:col-span-2">
           <button

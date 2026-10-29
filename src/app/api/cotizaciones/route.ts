@@ -43,7 +43,8 @@ export async function POST(request: NextRequest) {
   }
 
   // ── Tipo y detalles ──
-  const type = getQuoteType(text(raw.tipo, 20));
+  // Solo los datos de contacto son obligatorios: sin tipo elegido la solicitud entra como «otro» proyecto.
+  const type = getQuoteType(text(raw.tipo, 20) || "otro");
   if (!type) return error("Elige qué quieres fabricar.");
 
   const rawDims = (raw.medidas ?? {}) as Record<string, unknown>;
@@ -81,8 +82,8 @@ export async function POST(request: NextRequest) {
   };
   if (!contact.name || contact.phone.replace(/\D/g, "").length < 8 || !contact.commune)
     return error("Completa tu nombre, teléfono y comuna.");
-  if (contact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email))
-    return error("El correo no es válido.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email))
+    return error("Ingresa un correo válido para enviarte la cotización.");
 
   const store = stores.find((s) => s.slug === text(raw.tienda, 20));
   if (!store) return error("Elige la tienda que te atenderá.");

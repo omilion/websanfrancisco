@@ -45,7 +45,8 @@ const typeIcons: Record<string, LucideIcon> = {
   otro: PencilRuler,
 };
 
-const steps = ["¿Qué necesitas?", "Detalles", "Materiales y fotos", "Tus datos"];
+// Los datos de contacto van siempre arriba (es lo único obligatorio); estos pasos son el detalle opcional.
+const steps = ["¿Qué necesitas?", "Detalles", "Materiales y fotos"];
 
 type DetailValue = number | string | boolean;
 
@@ -98,6 +99,8 @@ export function QuoteWizard() {
   const initialType = getQuoteType(params.get("tipo"));
 
   const [step, setStep] = useState(initialType ? 1 : 0);
+  // «¿Quieres darnos más detalles?»: abierto si llegó con un tipo elegido (ej. desde un botón «Cotizar closet»).
+  const [masDetalles, setMasDetalles] = useState(Boolean(initialType));
   const [typeSlug, setTypeSlug] = useState(initialType?.slug ?? "");
   const type = getQuoteType(typeSlug);
   const [dims, setDims] = useState<Record<string, string>>({});
@@ -187,10 +190,11 @@ export function QuoteWizard() {
     if (
       !contact.nombre.trim() ||
       contact.telefono.replace(/\D/g, "").length < 8 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim()) ||
       !contact.comuna.trim() ||
       !contact.tienda
     ) {
-      return setError("Completa tu nombre, teléfono, comuna y la tienda que te atenderá.");
+      return setError("Completa tu nombre, teléfono, correo, comuna y la sucursal que te atenderá.");
     }
     setSending(true);
     setError(null);
@@ -198,7 +202,7 @@ export function QuoteWizard() {
     form.set(
       "datos",
       JSON.stringify({
-        tipo: typeSlug,
+        tipo: typeSlug || "otro",
         medidas: dims,
         detalles: details,
         material,
@@ -223,16 +227,16 @@ export function QuoteWizard() {
   }
 
   // ── Confirmación ──
-  if (result && type) {
+  if (result) {
     const store = stores.find((s) => s.slug === contact.tienda) ?? headquartersOf(stores);
     const link = `${window.location.origin}/cotizacion/${result.id}`;
-    const dimText = type.dimensions
+    const dimText = (type?.dimensions ?? [])
       .filter((d) => dims[d])
       .map((d) => `${dimensionLabels[d]} ${dims[d]} cm`)
       .join(" · ");
     const summary = [
       `Hola, envié una solicitud de cotización desde la web (${result.code}).`,
-      `*Proyecto:* ${type.name} a medida`,
+      `*Proyecto:* ${type ? `${type.name} a medida` : "Cotización (sin detalles todavía)"}`,
       dimText ? `*Medidas:* ${dimText}` : null,
       files.length > 0 ? `*Adjuntos:* ${files.length} ${files.length === 1 ? "archivo" : "archivos"}` : null,
       `*Nombre:* ${contact.nombre}`,
@@ -279,8 +283,75 @@ export function QuoteWizard() {
 
   return (
     <div ref={topRef} className="scroll-mt-28">
+        {/* ── Datos de contacto: lo único obligatorio ── */}
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
+              Cotiza gratis: tus datos
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 sm:gap-5">
+              <Field label="Nombre" required>
+                <input
+                  value={contact.nombre}
+                  onChange={(e) => setContact((c) => ({ ...c, nombre: e.target.value }))}
+                  autoComplete="name"
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Teléfono (WhatsApp)" required>
+                <input
+                  type="tel"
+                  value={contact.telefono}
+                  onChange={(e) => setContact((c) => ({ ...c, telefono: e.target.value }))}
+                  autoComplete="tel"
+                  placeholder="+56 9 ..."
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Correo" required>
+                <input
+                  type="email"
+                  value={contact.email}
+                  onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
+                  autoComplete="email"
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Comuna o sector" required>
+                <input
+                  value={contact.comuna}
+                  onChange={(e) => setContact((c) => ({ ...c, comuna: e.target.value }))}
+                  placeholder="Ej: Ancud, Chacao, Dalcahue"
+                  className={inputClass}
+                />
+              </Field>
+            </div>
+            <fieldset>
+              <legend className="text-sm font-semibold">
+                Sucursal de preferencia<span className="text-brand-orange-dark"> *</span>
+              </legend>
+              <Chips
+                options={stores.map((s) => s.city)}
+                value={stores.find((s) => s.slug === contact.tienda)?.city ?? ""}
+                onChange={(city) =>
+                  setContact((c) => ({ ...c, tienda: stores.find((s) => s.city === city)?.slug ?? "" }))
+                }
+              />
+            </fieldset>
+          </div>
+
+      <button
+        type="button"
+        onClick={() => setMasDetalles((v) => !v)}
+        aria-expanded={masDetalles}
+        className="mt-6 flex w-full items-center justify-between gap-3 rounded-lg border border-sand bg-cream px-4 py-3 text-left font-semibold text-brand-blue hover:border-brand-blue/40"
+      >
+        ¿Quieres darnos más detalles de lo que necesitas? (Opcional)
+        {masDetalles ? <Minus className="size-4" aria-hidden /> : <Plus className="size-4" aria-hidden />}
+      </button>
+      {masDetalles && (
+      <div className="mt-4 rounded-lg border border-sand p-3 sm:p-5">
       {/* Progreso */}
-      <ol className="grid grid-cols-4 gap-2" aria-label="Pasos">
+      <ol className="grid grid-cols-3 gap-2" aria-label="Pasos">
         {steps.map((label, i) => {
           const done = i < step;
           const current = i === step;
@@ -307,7 +378,7 @@ export function QuoteWizard() {
         })}
       </ol>
       <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-brand-blue sm:hidden">
-        Paso {step + 1} de 4 · {steps[step]}
+        Paso {step + 1} de 3 · {steps[step]}
       </p>
 
       <div className="mt-5 sm:mt-8">
@@ -346,6 +417,19 @@ export function QuoteWizard() {
               })}
             </div>
           </fieldset>
+        )}
+
+        {step === 2 && (
+          <div className="mt-6">
+            <fieldset>
+              <legend className="text-sm font-semibold">¿Para cuándo lo necesitas?</legend>
+              <Chips
+                options={quoteDeadlines}
+                value={contact.plazo}
+                onChange={(plazo) => setContact((c) => ({ ...c, plazo }))}
+              />
+            </fieldset>
+          </div>
         )}
 
         {/* ── Paso 2: detalles ── */}
@@ -525,72 +609,23 @@ export function QuoteWizard() {
           </div>
         )}
 
-        {/* ── Paso 4: contacto ── */}
-        {step === 3 && (
-          <div className="space-y-4 sm:space-y-6">
-            <h2 className="font-display text-xl font-bold uppercase text-brand-blue sm:text-2xl md:text-3xl">
-              Tus datos
-            </h2>
-            <div className="grid gap-3 sm:grid-cols-2 sm:gap-5">
-              <Field label="Nombre" required>
-                <input
-                  value={contact.nombre}
-                  onChange={(e) => setContact((c) => ({ ...c, nombre: e.target.value }))}
-                  autoComplete="name"
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="Teléfono (WhatsApp)" required>
-                <input
-                  type="tel"
-                  value={contact.telefono}
-                  onChange={(e) => setContact((c) => ({ ...c, telefono: e.target.value }))}
-                  autoComplete="tel"
-                  placeholder="+56 9 ..."
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="Correo" hint="Opcional">
-                <input
-                  type="email"
-                  value={contact.email}
-                  onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
-                  autoComplete="email"
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="Comuna o sector" required>
-                <input
-                  value={contact.comuna}
-                  onChange={(e) => setContact((c) => ({ ...c, comuna: e.target.value }))}
-                  placeholder="Ej: Ancud, Chacao, Dalcahue"
-                  className={inputClass}
-                />
-              </Field>
-            </div>
-            <fieldset>
-              <legend className="text-sm font-semibold">
-                Tienda que te atenderá<span className="text-brand-orange-dark"> *</span>
-              </legend>
-              <Chips
-                options={stores.map((s) => s.city)}
-                value={stores.find((s) => s.slug === contact.tienda)?.city ?? ""}
-                onChange={(city) =>
-                  setContact((c) => ({ ...c, tienda: stores.find((s) => s.city === city)?.slug ?? "" }))
-                }
-              />
-            </fieldset>
-            <fieldset>
-              <legend className="text-sm font-semibold">¿Para cuándo lo necesitas?</legend>
-              <Chips
-                options={quoteDeadlines}
-                value={contact.plazo}
-                onChange={(plazo) => setContact((c) => ({ ...c, plazo }))}
-              />
-            </fieldset>
-          </div>
-        )}
       </div>
+      {step > 0 || (step === 0 && type) ? (
+        <div className="mt-5 flex items-center justify-between gap-3">
+          {step > 0 ? (
+            <button type="button" onClick={() => goTo(step - 1)} className="inline-flex items-center gap-2 rounded-md px-4 py-2 font-semibold text-brand-blue hover:bg-cream">
+              <ArrowLeft className="size-4" aria-hidden /> Atrás
+            </button>
+          ) : <span />}
+          {step < 2 && (
+            <button type="button" disabled={!canNext || processing} onClick={() => goTo(step + 1)} className="inline-flex items-center gap-2 rounded-md border border-brand-blue px-5 py-2 font-semibold text-brand-blue hover:bg-brand-blue/5 disabled:opacity-50">
+              Siguiente <ArrowRight className="size-4" aria-hidden />
+            </button>
+          )}
+        </div>
+      ) : null}
+      </div>
+      )}
 
       {error && (
         <p role="alert" className="mt-4 rounded-md sm:mt-6 bg-brand-orange/10 px-4 py-3 text-sm text-ink">
@@ -598,44 +633,18 @@ export function QuoteWizard() {
         </p>
       )}
 
-      {/* Navegación */}
-      {step > 0 && (
-        <div className="mt-6 flex items-center justify-between gap-3 border-t border-sand pt-4 sm:mt-8 sm:pt-6">
-          <button
-            type="button"
-            onClick={() => goTo(step - 1)}
-            className="inline-flex items-center gap-2 rounded-md px-4 py-3 font-semibold text-brand-blue hover:bg-cream"
-          >
-            <ArrowLeft className="size-4" aria-hidden />
-            Atrás
-          </button>
-          {step < 3 ? (
-            <button
-              type="button"
-              disabled={!canNext || processing}
-              onClick={() => goTo(step + 1)}
-              className="inline-flex items-center gap-2 rounded-md bg-brand-blue px-6 py-3 font-semibold text-white hover:bg-brand-blue-dark disabled:opacity-50"
-            >
-              Siguiente
-              <ArrowRight className="size-4" aria-hidden />
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={sending}
-              onClick={() => void submit()}
-              className="inline-flex items-center gap-2 rounded-md bg-brand-blue px-6 py-3 font-semibold text-white hover:bg-brand-blue-dark disabled:opacity-60"
-            >
-              {sending ? (
-                <Loader2 className="size-4 animate-spin" aria-hidden />
-              ) : (
-                <Check className="size-4" aria-hidden />
-              )}
-              {sending ? "Enviando…" : "Enviar solicitud"}
-            </button>
-          )}
-        </div>
-      )}
+      <div className="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-sand pt-4 sm:mt-8 sm:pt-6">
+        <p className="mr-auto text-sm text-ink-muted">Puedes enviar solo con tus datos: te contactamos para conversar el proyecto.</p>
+        <button
+          type="button"
+          disabled={sending || processing}
+          onClick={() => void submit()}
+          className="inline-flex items-center gap-2 rounded-md bg-brand-blue px-6 py-3 font-semibold text-white hover:bg-brand-blue-dark disabled:opacity-60"
+        >
+          {sending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Check className="size-4" aria-hidden />}
+          {sending ? "Enviando…" : "Enviar solicitud"}
+        </button>
+      </div>
     </div>
   );
 }
