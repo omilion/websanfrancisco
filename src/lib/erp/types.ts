@@ -112,7 +112,9 @@ export interface ErpQuote {
   producto?: { sku: string; nombre: string; precio: number | null };
   descripcion?: string;
   detalle: {
+    /** Medidas en la unidad indicada (la tienda envía "mm"; el ERP guarda siempre mm). */
     medidas?: Record<string, number>;
+    unidad?: "mm" | "cm";
     campos?: { label: string; value: string }[];
     material?: string;
     terminacion?: string;

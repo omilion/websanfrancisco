@@ -1,12 +1,12 @@
 import type { NextRequest } from "next/server";
-import { shippingCommunes } from "@/config/site";
+import { quoteCommunes } from "@/config/site";
 import { getStores } from "@/lib/site-content";
 import { getCartCatalogInfo } from "@/lib/cart/catalog-info";
 import { getProductBySlug } from "@/lib/catalog";
 import { syncQuoteToErp } from "@/lib/quotes/erp-sync";
 import { sniffFile } from "@/lib/quotes/files";
 import { rateLimited } from "@/lib/quotes/rate-limit";
-import { attachmentRules, dimensionField, type QuoteRequest } from "@/lib/quotes/schema";
+import { attachmentRules, toMillimeters, type QuoteRequest } from "@/lib/quotes/schema";
 import { newQuoteIds, saveQuote } from "@/lib/quotes/storage";
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -49,8 +49,8 @@ export async function POST(request: NextRequest) {
   const dimensions: Record<string, number> = {};
   const rawDims = (raw.medidas ?? {}) as Record<string, unknown>;
   for (const d of ["ancho", "alto", "profundidad"]) {
-    const n = Number(rawDims[d]);
-    if (Number.isFinite(n) && n > 0) dimensions[d] = Math.min(Math.max(Math.round(n), dimensionField.min), dimensionField.max);
+    const mm = toMillimeters(rawDims[d], raw.unidad);
+    if (mm !== null) dimensions[d] = mm;
   }
   const description = text(raw.descripcion, 2000);
   // Los cambios son opcionales: basta con los datos de contacto (la sucursal conversa el detalle).
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   if (!contact.name || contact.phone.replace(/\D/g, "").length < 8 || !contact.commune)
     return error("Completa tu nombre, teléfono y comuna.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) return error("Ingresa un correo válido para enviarte la cotización.");
-  if (!shippingCommunes.includes(contact.commune) && contact.commune.length < 2) return error("Elige tu comuna.");
+  if (!quoteCommunes.includes(contact.commune)) return error("Elige tu comuna.");
   const store = stores.find((s) => s.slug === text(raw.tienda, 20));
   if (!store) return error("Elige la tienda que te atenderá.");
 
@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
     type: "personalizada",
     typeName: "Personalización de producto",
     dimensions,
+    unidad: "mm",
     details,
     material: "",
     finish: "",
@@ -119,7 +120,8 @@ export async function POST(request: NextRequest) {
   }
 
   // Llega al módulo Cotizaciones del ERP como "personalizada". Si el ERP no responde, se reintenta luego.
-  await syncQuoteToErp(quote);
+  // El cliente recibe el código del ERP (el mismo que ve el vendedor); si el ERP no respondió, el de la tienda.
+  const synced = await syncQuoteToErp(quote);
 
-  return Response.json({ ok: true, id, code });
+  return Response.json({ ok: true, id, code: synced.erp?.codigo ?? code });
 }

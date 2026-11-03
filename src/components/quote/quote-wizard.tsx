@@ -24,16 +24,17 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { customProjectTypes } from "@/config/content";
 import { useStores } from "@/components/stores-provider";
-import { headquartersOf, whatsappUrl } from "@/config/site";
+import { headquartersOf, quoteCommunes, whatsappUrl } from "@/config/site";
 import {
   attachmentRules,
   dimensionLabels,
+  dimensionUnits,
   getQuoteType,
   quoteDeadlines,
   quoteMaterials,
   quoteTypes,
+  type DimensionUnit,
   type QuoteField,
-  type QuoteType,
 } from "@/lib/quotes/schema";
 
 const typeIcons: Record<string, LucideIcon> = {
@@ -58,12 +59,6 @@ interface Attachment {
 
 const inputClass =
   "mt-1 w-full rounded-md border border-sand bg-white px-3 py-2 text-base outline-none sm:mt-1.5 sm:py-2.5 transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20";
-
-function initialDetails(type: QuoteType | undefined): Record<string, DetailValue> {
-  const out: Record<string, DetailValue> = {};
-  for (const f of type?.fields ?? []) out[f.name] = f.initial ?? (f.kind === "toggle" ? false : "");
-  return out;
-}
 
 /** Reduce fotos grandes del celular antes de subirlas (máx. 2400 px, JPEG). Planos y PDF se envían tal cual. */
 async function prepareFile(file: File): Promise<File> {
@@ -99,12 +94,14 @@ export function QuoteWizard() {
   const initialType = getQuoteType(params.get("tipo"));
 
   const [step, setStep] = useState(initialType ? 1 : 0);
-  // «¿Quieres darnos más detalles?»: abierto si llegó con un tipo elegido (ej. desde un botón «Cotizar closet»).
-  const [masDetalles, setMasDetalles] = useState(Boolean(initialType));
+  // «¿Quieres darnos más detalles?» parte cerrado: un botón como «Cotizar closet» solo deja marcado el tipo.
+  const [masDetalles, setMasDetalles] = useState(false);
   const [typeSlug, setTypeSlug] = useState(initialType?.slug ?? "");
   const type = getQuoteType(typeSlug);
   const [dims, setDims] = useState<Record<string, string>>({});
-  const [details, setDetails] = useState<Record<string, DetailValue>>(() => initialDetails(initialType));
+  const [unit, setUnit] = useState<DimensionUnit>("cm");
+  // Parte vacío: solo se envía lo que el cliente responde (nada de valores de ejemplo).
+  const [details, setDetails] = useState<Record<string, DetailValue>>({});
   const [material, setMaterial] = useState("");
   const [finish, setFinish] = useState("");
   const [description, setDescription] = useState("");
@@ -140,7 +137,7 @@ export function QuoteWizard() {
     if (slug !== typeSlug) {
       setTypeSlug(slug);
       setDims({});
-      setDetails(initialDetails(getQuoteType(slug)));
+      setDetails({});
     }
     goTo(1);
   }
@@ -204,6 +201,7 @@ export function QuoteWizard() {
       JSON.stringify({
         tipo: typeSlug || "otro",
         medidas: dims,
+        unidad: unit,
         detalles: details,
         material,
         terminacion: finish,
@@ -232,7 +230,7 @@ export function QuoteWizard() {
     const link = `${window.location.origin}/cotizacion/${result.id}`;
     const dimText = (type?.dimensions ?? [])
       .filter((d) => dims[d])
-      .map((d) => `${dimensionLabels[d]} ${dims[d]} cm`)
+      .map((d) => `${dimensionLabels[d]} ${dims[d]} ${unit}`)
       .join(" · ");
     const summary = [
       `Hola, envié una solicitud de cotización desde la web (${result.code}).`,
@@ -316,13 +314,19 @@ export function QuoteWizard() {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Comuna o sector" required>
-                <input
+              <Field label="Comuna" required>
+                <select
                   value={contact.comuna}
                   onChange={(e) => setContact((c) => ({ ...c, comuna: e.target.value }))}
-                  placeholder="Ej: Ancud, Chacao, Dalcahue"
                   className={inputClass}
-                />
+                >
+                  <option value="" disabled>
+                    Elige tu comuna
+                  </option>
+                  {quoteCommunes.map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </select>
               </Field>
             </div>
             <fieldset>
@@ -444,10 +448,12 @@ export function QuoteWizard() {
                 <legend className="text-xs font-bold uppercase tracking-wide text-ink sm:text-sm">
                   Medidas del espacio
                 </legend>
-                <p className="mt-1 text-xs text-ink-muted sm:text-sm">
-                  Medidas referenciales en centímetros. Si no las tienes, déjalas en blanco: podemos medir más
-                  adelante.
-                </p>
+                <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-ink-muted sm:text-sm">
+                    Si no las tienes, déjalas en blanco: podemos medir más adelante.
+                  </p>
+                  <UnitSwitch value={unit} onChange={setUnit} />
+                </div>
                 <div className="mt-2 grid grid-cols-3 gap-2 sm:mt-3 sm:gap-3">
                   {type.dimensions.map((d) => (
                     <label key={d} className="block">
@@ -456,15 +462,15 @@ export function QuoteWizard() {
                         <input
                           type="number"
                           inputMode="numeric"
-                          min={10}
-                          max={2000}
+                          min={unit === "mm" ? 100 : 10}
+                          max={unit === "mm" ? 20000 : 2000}
                           value={dims[d] ?? ""}
                           onChange={(e) => setDims((p) => ({ ...p, [d]: e.target.value }))}
                           placeholder="0"
                           className={`${inputClass} pr-8 sm:pr-10`}
                         />
                         <span className="pointer-events-none absolute bottom-2.5 right-2.5 text-xs text-ink-muted sm:bottom-3 sm:right-3 sm:text-sm">
-                          cm
+                          {unit}
                         </span>
                       </div>
                     </label>
@@ -680,7 +686,9 @@ function DetailInput({
   }
 
   if (field.kind === "stepper") {
-    const n = typeof value === "number" ? value : Number(value) || 0;
+    // Sin responder se muestra «–»: el primer toque fija el número (así 0 también es una respuesta).
+    const answered = typeof value === "number";
+    const n = answered ? value : null;
     const min = field.min ?? 0;
     const max = field.max ?? 99;
     return (
@@ -694,8 +702,8 @@ function DetailInput({
         >
           <button
             type="button"
-            onClick={() => onChange(Math.max(min, n - 1))}
-            disabled={n <= min}
+            onClick={() => onChange(Math.max(min, (n ?? min + 1) - 1))}
+            disabled={n !== null && n <= min}
             aria-label={`Menos ${field.label.toLowerCase()}`}
             className="flex size-9 items-center justify-center text-brand-blue disabled:opacity-30 sm:size-11"
           >
@@ -705,12 +713,12 @@ function DetailInput({
             className="w-8 text-center text-base font-bold tabular-nums sm:w-10 sm:text-lg"
             aria-live="polite"
           >
-            {n}
+            {n ?? "–"}
           </span>
           <button
             type="button"
-            onClick={() => onChange(Math.min(max, n + 1))}
-            disabled={n >= max}
+            onClick={() => onChange(n === null ? Math.max(min, 1) : Math.min(max, n + 1))}
+            disabled={n !== null && n >= max}
             aria-label={`Más ${field.label.toLowerCase()}`}
             className="flex size-9 items-center justify-center text-brand-blue disabled:opacity-30 sm:size-11"
           >
@@ -751,6 +759,26 @@ function DetailInput({
         )}
       </div>
     </label>
+  );
+}
+
+/** Unidad en que el cliente escribe las medidas; el servidor las guarda en milímetros. */
+export function UnitSwitch({ value, onChange }: { value: DimensionUnit; onChange: (u: DimensionUnit) => void }) {
+  return (
+    <div className="inline-flex rounded-full border border-sand bg-white p-0.5" role="radiogroup" aria-label="Unidad de las medidas">
+      {dimensionUnits.map((u) => (
+        <button
+          key={u}
+          type="button"
+          role="radio"
+          aria-checked={value === u}
+          onClick={() => onChange(u)}
+          className={`rounded-full px-3 py-1 text-xs font-semibold transition ${value === u ? "bg-brand-blue text-white" : "text-ink hover:text-brand-blue"}`}
+        >
+          {u}
+        </button>
+      ))}
+    </div>
   );
 }
 

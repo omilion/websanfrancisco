@@ -40,6 +40,9 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
   const items = quote.items ?? [];
   const total = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
   const dims = Object.entries(quote.dimensions);
+  const unit = quote.unidad ?? "cm";
+  // El código que ve el cliente es el del ERP (el mismo que maneja la sucursal); si aún no llegó, el de la tienda.
+  const code = quote.erp?.codigo ?? quote.code;
   const images = quote.attachments.filter((a) => a.type.startsWith("image/") && a.type !== "image/heic");
   const others = quote.attachments.filter((a) => !images.includes(a));
   const fileUrl = (file: string) => `/cotizacion/${quote.id}/archivos/${file}`;
@@ -48,7 +51,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
     <div className="mx-auto max-w-4xl px-4 py-10 md:py-14">
       <Plank className="w-12" />
       <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-orange-dark">
-        Solicitud de cotización · {quote.code}
+        Solicitud de cotización · {code}
       </p>
       <h1 className="mt-2 font-display text-2xl font-bold uppercase leading-none text-brand-blue sm:text-4xl md:text-[2.75rem]">
         {isProducts ? "Cotización de productos" : isPersonalized ? "Cotización personalizada" : `${quote.typeName} a medida`}
@@ -106,7 +109,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
                   <Row
                     key={k}
                     label={dimensionLabels[k as keyof typeof dimensionLabels] ?? k}
-                    value={`${v} cm`}
+                    value={`${v} ${unit}`}
                   />
                 ))}
                 {dims.length === 0 && !isProducts && !isPersonalized && (
@@ -205,7 +208,7 @@ async function QuoteDetail({ params }: Pick<PageProps<"/cotizacion/[id]">, "para
           <a
             href={whatsappUrl(
               quote.contact.phone.replace(/\D/g, "").replace(/^(9\d{8})$/, "56$1"),
-              `Hola ${quote.contact.name}, te escribimos de San Francisco Muebles por tu cotización ${quote.code}.`,
+              `Hola ${quote.contact.name}, te escribimos de San Francisco Muebles por tu cotización ${code}.`,
             )}
             target="_blank"
             rel="noopener noreferrer"

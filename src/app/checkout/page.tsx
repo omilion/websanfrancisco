@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { Plank } from "@/components/plank";
-import { checkoutPath, commerce } from "@/config/site";
+import { commerce } from "@/config/site";
 import { getLiveCartCatalogInfo } from "@/lib/cart/catalog-info";
 
 export const metadata: Metadata = {
@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   // Sin pago en línea, el carrito termina en la solicitud de cotización.
-  if (!commerce.onlinePayments) redirect(checkoutPath);
+  // Sin pago en línea, el carrito no termina en una venta: se cotiza con el formulario de cotización.
+  if (!commerce.onlinePayments) redirect("/cotizar");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">

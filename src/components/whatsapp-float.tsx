@@ -43,7 +43,6 @@ export function WhatsAppFloat({ contacts }: { contacts: WhatsAppContact[] }) {
   if (
     pathname.startsWith("/checkout") ||
     pathname.startsWith("/cotizar") ||
-    pathname.startsWith("/solicitar-cotizacion") ||
     cartOpen
   )
     return null;

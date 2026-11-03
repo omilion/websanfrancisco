@@ -153,15 +153,14 @@ export const services: Service[] = [
 
 /**
  * Venta en línea. Con `onlinePayments: true` el carrito termina en el pago con Webpay (/checkout) y la venta
- * queda registrada en el ERP. Con `false`, los precios se muestran pero el carrito termina en una solicitud
- * de cotización (sin Webpay).
+ * queda registrada en el ERP. Con `false`, los precios se muestran y el carrito deriva al cotizador (/cotizar).
  */
 export const commerce = {
   onlinePayments: true,
 };
 
-/** Paso final del carrito según el modo de venta. */
-export const checkoutPath = commerce.onlinePayments ? "/checkout" : "/solicitar-cotizacion";
+/** Paso final del carrito. */
+export const checkoutPath = "/checkout";
 
 // Reglas de entrega (confirmadas por el cliente, sep. 2026).
 export const fulfillment = {
@@ -179,6 +178,21 @@ export const fulfillment = {
 
 /** Comunas de la Isla Grande de Chiloé con despacho a domicilio. */
 export const shippingCommunes = ["Ancud", "Castro", "Chonchi", "Dalcahue", "Queilén", "Quellón", "Quemchi"];
+
+/** Comunas que se pueden elegir al cotizar: las 10 de Chiloé y una opción para el resto (sirve para repartir la cotización). */
+export const quoteCommunes = [
+  "Ancud",
+  "Castro",
+  "Chonchi",
+  "Curaco de Vélez",
+  "Dalcahue",
+  "Puqueldón",
+  "Queilén",
+  "Quellón",
+  "Quemchi",
+  "Quinchao",
+  "Fuera de Chiloé",
+];
 
 /** "+56982735261" → "+56 9 8273 5261" */
 export function formatPhone(phone: string): string {

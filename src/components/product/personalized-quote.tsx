@@ -5,8 +5,9 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { CheckCircle2, ChevronDown, Loader2, Paintbrush, Send } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useStores } from "@/components/stores-provider";
-import { headquartersOf, shippingCommunes, whatsappUrl } from "@/config/site";
-import { attachmentRules } from "@/lib/quotes/schema";
+import { UnitSwitch } from "@/components/quote/quote-wizard";
+import { headquartersOf, quoteCommunes, whatsappUrl } from "@/config/site";
+import { attachmentRules, type DimensionUnit } from "@/lib/quotes/schema";
 
 const inputClass =
   "mt-1.5 w-full rounded-md border border-sand bg-white px-3 py-2.5 outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20";
@@ -25,6 +26,7 @@ interface Props {
 export function PersonalizedQuote({ slug, name, dimensions }: Props) {
   const stores = useStores();
   const [sending, setSending] = useState(false);
+  const [unit, setUnit] = useState<DimensionUnit>("cm");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ id: string; code: string; store: string; summary: string } | null>(null);
 
@@ -43,6 +45,7 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
       producto: slug,
       color: data.get("color"),
       medidas,
+      unidad: unit,
       descripcion: data.get("descripcion"),
       nombre: data.get("nombre"),
       telefono: data.get("telefono"),
@@ -63,7 +66,7 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
       const changes = [
         payload.color ? `Color: ${payload.color}` : "",
         Object.entries(medidas)
-          .map(([k, v]) => `${k} ${v} cm`)
+          .map(([k, v]) => `${k} ${v} ${unit}`)
           .join(", "),
         String(payload.descripcion ?? ""),
       ].filter(Boolean);
@@ -146,7 +149,7 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
             <option value="" disabled>
               Elige tu comuna
             </option>
-            {shippingCommunes.map((c) => (
+            {quoteCommunes.map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
@@ -179,7 +182,10 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
           </datalist>
         </Field>
         <fieldset className="sm:col-span-2">
-          <legend className="text-sm font-semibold">Medidas que necesitas (cm)</legend>
+          <legend className="flex w-full items-center justify-between gap-2 text-sm font-semibold">
+            Medidas que necesitas
+            <UnitSwitch value={unit} onChange={setUnit} />
+          </legend>
           <div className="mt-1.5 grid grid-cols-3 gap-3">
             {(
               [
@@ -194,9 +200,9 @@ export function PersonalizedQuote({ slug, name, dimensions }: Props) {
                   name={key}
                   type="number"
                   inputMode="numeric"
-                  min={10}
-                  max={2000}
-                  placeholder={base ? `Actual: ${base}` : "cm"}
+                  min={unit === "mm" ? 100 : 10}
+                  max={unit === "mm" ? 20000 : 2000}
+                  placeholder={base ? `Actual: ${unit === "mm" ? base * 10 : base}` : unit}
                   className={inputClass.replace("mt-1.5", "mt-1")}
                 />
               </label>

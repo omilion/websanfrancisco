@@ -2,12 +2,13 @@ import type { NextRequest } from "next/server";
 import { getStores } from "@/lib/site-content";
 import {
   attachmentRules,
-  dimensionField,
   getQuoteType,
   quoteDeadlines,
   quoteMaterials,
+  toMillimeters,
   type QuoteRequest,
 } from "@/lib/quotes/schema";
+import { quoteCommunes } from "@/config/site";
 import { syncQuoteToErp } from "@/lib/quotes/erp-sync";
 import { sniffFile as sniff } from "@/lib/quotes/files";
 import { rateLimited } from "@/lib/quotes/rate-limit";
@@ -47,20 +48,21 @@ export async function POST(request: NextRequest) {
   const type = getQuoteType(text(raw.tipo, 20) || "otro");
   if (!type) return error("Elige qué quieres fabricar.");
 
+  // Medidas en cm o mm según lo que eligió el cliente; se guardan siempre en milímetros.
   const rawDims = (raw.medidas ?? {}) as Record<string, unknown>;
   const dimensions: Record<string, number> = {};
   for (const d of type.dimensions) {
-    const n = Number(rawDims[d]);
-    if (Number.isFinite(n) && n > 0)
-      dimensions[d] = Math.min(Math.max(Math.round(n), dimensionField.min), dimensionField.max);
+    const mm = toMillimeters(rawDims[d], raw.unidad);
+    if (mm !== null) dimensions[d] = mm;
   }
 
   const rawDetails = (raw.detalles ?? {}) as Record<string, unknown>;
   const details: QuoteRequest["details"] = [];
+  // Solo lo que el cliente respondió: un campo sin tocar no llega (no se inventan valores por defecto).
   for (const f of type.fields) {
     const v = rawDetails[f.name];
     if (f.kind === "toggle") {
-      details.push({ label: f.label, value: v === true ? "Sí" : "No" });
+      if (typeof v === "boolean") details.push({ label: f.label, value: v ? "Sí" : "No" });
     } else if (f.kind === "select") {
       const s = text(v, 60);
       if (f.options?.includes(s)) details.push({ label: f.label, value: s });
@@ -84,6 +86,7 @@ export async function POST(request: NextRequest) {
     return error("Completa tu nombre, teléfono y comuna.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email))
     return error("Ingresa un correo válido para enviarte la cotización.");
+  if (!quoteCommunes.includes(contact.commune)) return error("Elige tu comuna.");
 
   const store = stores.find((s) => s.slug === text(raw.tienda, 20));
   if (!store) return error("Elige la tienda que te atenderá.");
@@ -119,6 +122,7 @@ export async function POST(request: NextRequest) {
     type: type.slug,
     typeName: type.name,
     dimensions,
+    unidad: "mm",
     details,
     material: quoteMaterials.includes(material) ? material : "",
     finish: text(raw.terminacion, 120),
@@ -137,7 +141,8 @@ export async function POST(request: NextRequest) {
   }
 
   // Llega al módulo Cotizaciones del ERP como "a medida" (proyecto). Si el ERP no responde, se reintenta luego.
-  await syncQuoteToErp(quote);
+  // El cliente recibe el código del ERP (el mismo que ve el vendedor); si el ERP no respondió, el de la tienda.
+  const synced = await syncQuoteToErp(quote);
 
-  return Response.json({ ok: true, id, code });
+  return Response.json({ ok: true, id, code: synced.erp?.codigo ?? code });
 }

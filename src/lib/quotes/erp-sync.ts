@@ -12,8 +12,7 @@ const SYNCED_KINDS = new Set(["a-medida", "personalizada", undefined]);
 
 export function quoteToErp(quote: QuoteRequest): ErpQuote {
   const personalized = quote.kind === "personalizada";
-  const fields = [...quote.details];
-  if (quote.finish) fields.push({ label: "Color o terminación", value: quote.finish });
+  // La terminación va solo en `detalle.terminacion` (el ERP la muestra como «Terminación»): no se repite en los campos.
   return {
     referencia: quote.id,
     codigo: quote.code,
@@ -30,7 +29,9 @@ export function quoteToErp(quote: QuoteRequest): ErpQuote {
     descripcion: quote.description || undefined,
     detalle: {
       medidas: quote.dimensions,
-      campos: fields.map((f) => ({ label: f.label, value: f.value })),
+      // Las solicitudes antiguas (sin `unidad`) tienen las medidas en cm; el ERP las pasa a mm.
+      unidad: quote.unidad ?? "cm",
+      campos: quote.details.map((f) => ({ label: f.label, value: f.value })),
       material: quote.material || undefined,
       terminacion: quote.finish || undefined,
       plazo: quote.deadline || undefined,
@@ -48,7 +49,10 @@ export async function syncQuoteToErp(quote: QuoteRequest): Promise<QuoteRequest>
       if (data) files.push({ name: a.name, type: a.type, data });
     }
     const result = await createErpQuote(quoteToErp(quote), files);
-    const synced: QuoteRequest = { ...quote, erp: { id: result.id, syncedAt: new Date().toISOString() } };
+    const synced: QuoteRequest = {
+      ...quote,
+      erp: { id: result.id, codigo: result.codigo, syncedAt: new Date().toISOString() },
+    };
     await saveQuote(synced, []);
     return synced;
   } catch (e) {

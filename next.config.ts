@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: erpImagePatterns(),
   },
+  // La solicitud de cotización desde el carrito se eliminó: el enlace viejo lleva al cotizador.
+  async redirects() {
+    return [{ source: "/solicitar-cotizacion", destination: "/cotizar", permanent: true }];
+  },
 };
 
 export default nextConfig;
