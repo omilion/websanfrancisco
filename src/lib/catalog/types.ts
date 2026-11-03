@@ -30,7 +30,7 @@ export interface Product {
    * el pago y los filtros de disponibilidad.
    */
   stock: number;
-  /** Stock físico por tienda (ancud, castro, quellon, quemchi). Solo referencia para retiro o consulta. */
+  /** Stock físico por tienda (ancud, castro, quellon). Solo referencia para retiro o consulta. */
   stockByStore: Record<string, number>;
   saleMode: SaleMode;
   categorySlug: string;

@@ -59,17 +59,6 @@ export const fallbackStores: Store[] = [
     isHeadquarters: false,
     image: "/images/tiendas/quellon.jpg",
   },
-  {
-    slug: "quemchi",
-    name: "Tienda Quemchi",
-    city: "Quemchi",
-    phone: "+56956233768",
-    whatsapp: "+56956233768",
-    hours: null,
-    address: "Pedro Montt 135, local 2",
-    isHeadquarters: false,
-    image: null,
-  },
 ];
 
 /** Tienda principal: la marcada como casa central o, si ninguna lo está, la primera. */
