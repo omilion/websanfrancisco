@@ -34,9 +34,12 @@ async function erpFetch(path: string, init: RequestInit = {}): Promise<Response>
   return res;
 }
 
-/** Descarga todos los productos del ERP (el endpoint devuelve el catálogo completo, sin paginar). */
+/**
+ * Productos publicados en la tienda (activos y marcados para la web). Se filtra en el ERP: el catálogo completo
+ * (miles de productos con su stock) tardaba segundos en armarse y frenaba al ERP cada vez que la tienda recargaba.
+ */
 export async function fetchErpProducts(): Promise<ErpProduct[]> {
-  const res = await erpFetch(PRODUCTS_PATH, { signal: AbortSignal.timeout(20_000) });
+  const res = await erpFetch(`${PRODUCTS_PATH}?activo=true&web=true`, { signal: AbortSignal.timeout(20_000) });
   const json = (await res.json()) as ErpProductsResponse;
   if (!Array.isArray(json?.productos)) throw new Error("ERP: respuesta sin lista de productos");
   return json.productos;
