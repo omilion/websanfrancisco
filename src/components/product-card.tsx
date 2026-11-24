@@ -34,6 +34,11 @@ export function ProductCard({ product, note }: { product: Product; note?: string
             Agotado
           </span>
         )}
+        {!soldOut && product.priceBefore && product.promotion && (
+          <span className="absolute right-3 top-3 rounded bg-brand-orange-dark px-2 py-0.5 text-xs font-bold text-white">
+            -{Math.round(product.promotion.percent)}%
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-4">
@@ -41,6 +46,9 @@ export function ProductCard({ product, note }: { product: Product; note?: string
         <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{product.shortDescription}</p>
         {note && <p className="mt-2 text-xs font-semibold text-brand-orange-dark">{note}</p>}
         <p className="mt-auto pt-3 text-lg font-bold text-brand-blue">
+          {product.priceBefore ? (
+            <span className="mr-2 text-sm font-normal text-ink-muted line-through">{formatPrice(product.priceBefore)}</span>
+          ) : null}
           {product.price !== null ? formatPrice(product.price) : "Cotizar"}
         </p>
       </div>

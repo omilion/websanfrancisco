@@ -28,9 +28,13 @@ export interface ErpProduct {
     venta2Contado: number;
     venta1Efectivo: number;
     venta2Efectivo: number;
-    /** Precio específico para la web; si viene > 0 tiene prioridad. */
+    /** Precio específico para la web; si viene > 0 tiene prioridad. Con promoción, ya viene con el descuento. */
     web: number;
+    /** Precio de lista antes de la promoción web vigente (null si no hay promoción). */
+    webAntes?: number | null;
   };
+  /** Promoción web vigente (Productos → Descuentos en el ERP). */
+  promocion?: { nombre: string; porcentaje: number; hasta: string | null } | null;
   iva: number;
   stockCritico: number;
   diasEntrega: number;

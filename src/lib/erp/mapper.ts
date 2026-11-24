@@ -148,6 +148,8 @@ export function mapErpProduct(p: ErpProduct): Product {
     shortDescription: description.length > 160 ? `${description.slice(0, 157)}…` : description,
     description,
     price: price(p),
+    priceBefore: p.promocion && p.precios.webAntes && p.precios.webAntes > (price(p) ?? 0) ? p.precios.webAntes : null,
+    promotion: p.promocion ? { name: p.promocion.nombre, percent: p.promocion.porcentaje, until: p.promocion.hasta } : null,
     stock: onlineStock,
     stockByStore,
     // El ERP solo publica productos de stock; los proyectos a medida se piden en el cotizador.

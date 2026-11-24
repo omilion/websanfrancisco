@@ -164,7 +164,22 @@ async function ProductContent({ params }: Pick<PageProps<"/productos/[slug]">, "
             <div className="mt-6">
               {product.price !== null ? (
                 <>
-                  <p className="text-3xl font-bold text-ink">{formatPrice(product.price)}</p>
+                  {product.priceBefore && product.promotion ? (
+                    <p className="text-sm font-semibold text-brand-orange-dark">
+                      {product.promotion.name} · {Math.round(product.promotion.percent)}% de descuento
+                      {product.promotion.until
+                        ? ` hasta el ${product.promotion.until.split("-").reverse().join("-")}`
+                        : ""}
+                    </p>
+                  ) : null}
+                  <p className="text-3xl font-bold text-ink">
+                    {product.priceBefore ? (
+                      <span className="mr-3 text-lg font-normal text-ink-muted line-through">
+                        {formatPrice(product.priceBefore)}
+                      </span>
+                    ) : null}
+                    {formatPrice(product.price)}
+                  </p>
                   <p className="text-sm text-ink-muted">IVA incluido</p>
                 </>
               ) : (

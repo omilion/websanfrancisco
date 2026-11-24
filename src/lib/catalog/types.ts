@@ -25,6 +25,10 @@ export interface Product {
   description: string;
   /** Pesos chilenos, IVA incluido. null en productos a medida sin precio base. */
   price: number | null;
+  /** Precio antes de la promoción vigente (se muestra tachado). null sin promoción. */
+  priceBefore?: number | null;
+  /** Promoción vigente: nombre, % y hasta cuándo rige (AAAA-MM-DD). */
+  promotion?: { name: string; percent: number; until: string | null } | null;
   /**
    * Stock vendible online: el de la bodega "Internet" del ERP. Es el que usan el carrito,
    * el pago y los filtros de disponibilidad.
